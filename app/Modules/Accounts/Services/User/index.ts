@@ -7,6 +7,7 @@ import UsersRepository from 'App/Modules/Accounts/Repositories/UsersRepository'
 import RolesRepository from 'App/Modules/Accounts/Repositories/RolesRepository'
 
 import NotFoundException from 'App/Shared/Exceptions/NotFoundException'
+import BadRequestException from 'App/Shared/Exceptions/BadRequestException'
 
 import DTOs = IUser.DTOs
 import { UsersDefault } from 'App/Modules/Accounts/Defaults'
@@ -31,19 +32,34 @@ export const getUser = async (userId: string): Promise<User> => {
   return user
 }
 
-export const storeUser = async (data: DTOs.Store): Promise<User> => usersRepository.store(data)
+export const storeUser = async (data: DTOs.Store): Promise<User> => {
+  const { roles, ...userDto } = data
+
+  const user = await usersRepository.store(userDto)
+  if (roles.length > 0) user.related('roles').attach(roles)
+
+  return user.refresh()
+}
 
 export const editUser = async (userId: string, data: DTOs.Edit): Promise<User> => {
   const user = await usersRepository.findBy('id', userId)
   if (!user) throw new NotFoundException('User not found or not available.')
-  user.merge(data)
+  if (user.isRole('root')) throw new BadRequestException('Can not edit this user.')
+
+  const { roles, ...userDto } = data
+
+  user.merge(userDto)
   await usersRepository.save(user)
-  return user
+  if (roles && roles.length > 0) user.related('roles').sync(roles)
+
+  return user.refresh()
 }
 
 export const deleteUser = async (userId: string): Promise<void> => {
   const user = await usersRepository.findBy('id', userId)
   if (!user) throw new NotFoundException('User not found or not available.')
+  if (user.isRole('root')) throw new BadRequestException('Can not edit this user.')
+
   user.merge({
     email: `deleted:${user.email}`,
     username: `deleted:${user.username}`,

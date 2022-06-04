@@ -1,6 +1,16 @@
 import { DateTime } from 'luxon'
 import Hash from '@ioc:Adonis/Core/Hash'
-import { column, beforeSave, computed, manyToMany, ManyToMany, scope } from '@ioc:Adonis/Lucid/Orm'
+import {
+  column,
+  beforeSave,
+  computed,
+  manyToMany,
+  ManyToMany,
+  scope,
+  afterFind,
+  afterFetch,
+  afterPaginate,
+} from '@ioc:Adonis/Lucid/Orm'
 
 import BaseModel from 'App/Shared/Models/BaseModel'
 import Role from 'App/Modules/Accounts/Models/Role'
@@ -68,6 +78,17 @@ export default class User extends BaseModel {
     if (user.$dirty.password) user.password = await Hash.make(user.password)
   }
 
+  @afterFind()
+  public static async loadRolesOnGet(user: User): Promise<void> {
+    await user.load('roles', (builder) => builder.orderBy('slug'))
+  }
+
+  @afterFetch()
+  @afterPaginate()
+  public static async loadRolesOnPaginate(users: Array<User>): Promise<void> {
+    for (const user of users) await user.load('roles', (builder) => builder.orderBy('slug'))
+  }
+
   /**
    * ------------------------------------------------------
    * Relationships
@@ -105,7 +126,7 @@ export default class User extends BaseModel {
    * ------------------------------------------------------
    */
 
-  public isRoot(): boolean {
-    return !!this.roles.find((role) => role.name === 'root')
+  public isRole(name: string): boolean {
+    return !!this.roles.find((role) => role.name === name)
   }
 }
