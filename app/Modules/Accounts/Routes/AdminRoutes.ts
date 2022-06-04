@@ -10,9 +10,6 @@ Route.group(() => {
   Route.group(() => {
     Route.get('/', new RolesController().list).as('roles.admin.list')
     Route.get('/:id', new RolesController().get).as('roles.admin.get')
-    Route.post('/', new RolesController().store).as('roles.admin.store')
-    Route.put('/:id', new RolesController().edit).as('roles.admin.edit')
-    Route.delete('/:id', new RolesController().delete).as('roles.admin.delete')
   }).prefix('roles')
 
   /**

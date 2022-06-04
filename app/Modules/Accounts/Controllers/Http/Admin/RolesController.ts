@@ -1,13 +1,23 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
+import { getRole, listRoles } from 'App/Modules/Accounts/Services/Role'
+
 export default class RolesController {
-  public async list({}: HttpContextContract): Promise<void> {}
+  public async list({ request, response }: HttpContextContract): Promise<void> {
+    const page = request.input('page', 1)
+    const perPage = request.input('per_page', 10)
+    const search = request.input('search', '')
 
-  public async get({}: HttpContextContract): Promise<void> {}
+    const roles = await listRoles({ page, perPage, search })
 
-  public async store({}: HttpContextContract): Promise<void> {}
+    return response.json(roles)
+  }
 
-  public async edit({}: HttpContextContract): Promise<void> {}
+  public async get({ params, response }: HttpContextContract): Promise<void> {
+    const { id: roleId } = params
 
-  public async delete({}: HttpContextContract): Promise<void> {}
+    const role = await getRole(roleId)
+
+    return response.json(role)
+  }
 }
