@@ -1,7 +1,7 @@
 import Route from '@ioc:Adonis/Core/Route'
 
 import RolesController from 'App/Modules/Accounts/Controllers/Http/Admin/RolesController'
-import UsersController from 'App/Modules/Accounts/Controllers/Http/User/UsersController'
+import UsersController from 'App/Modules/Accounts/Controllers/Http/Admin/UsersController'
 
 Route.group(() => {
   /**
@@ -10,7 +10,9 @@ Route.group(() => {
   Route.group(() => {
     Route.get('/', new RolesController().list).as('roles.admin.list')
     Route.get('/:id', new RolesController().get).as('roles.admin.get')
-  }).prefix('roles')
+  })
+    .prefix('roles')
+    .middleware(['auth', 'acl:root,admin'])
 
   /**
    * User Routes
@@ -22,4 +24,6 @@ Route.group(() => {
     Route.put('/:id', new UsersController().edit).as('users.admin.edit')
     Route.delete('/:id', new UsersController().delete).as('users.admin.delete')
   }).prefix('users')
-}).prefix('admin')
+})
+  .prefix('admin')
+  .middleware(['auth', 'acl:root,admin'])

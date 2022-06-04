@@ -9,7 +9,9 @@ Route.group(() => {
   Route.post('/', new UsersController().store).as('users.store')
   Route.put('/:id', new UsersController().edit).as('users.edit')
   Route.delete('/:id', new UsersController().delete).as('users.delete')
-}).prefix('users')
+})
+  .prefix('users')
+  .middleware(['auth', 'acl:root,admin,user,guest'])
 
 Route.group(() => {
   Route.post('/login', new AuthController().store).as('auth.store')
