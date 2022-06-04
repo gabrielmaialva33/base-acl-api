@@ -11,10 +11,12 @@ import {
   afterFetch,
   afterPaginate,
   ModelQueryBuilderContract,
+  afterCreate,
 } from '@ioc:Adonis/Lucid/Orm'
 
 import BaseModel from 'App/Shared/Models/BaseModel'
 import Role from 'App/Modules/Accounts/Models/Role'
+import RolesRepository from 'App/Modules/Accounts/Repositories/RolesRepository'
 
 export default class User extends BaseModel {
   public static table = 'users'
@@ -89,6 +91,24 @@ export default class User extends BaseModel {
   public static async loadRolesOnPaginate(users: Array<User>): Promise<void> {
     for (const user of users) await user.load('roles', (builder) => builder.orderBy('slug'))
   }
+
+  @afterCreate()
+  public static async attachRoleUser(user: User): Promise<void> {
+    const roleId = await new RolesRepository().pluckBy('id', { where: { name: 'user' } })
+    if (user) await user.related('roles').attach(roleId)
+  }
+
+  // @beforeCreate()
+  // public static async attachUserName(user: User): Promise<void> {
+  //   if (!user.username) {
+  //     user.username = user.email.split('@')[0]
+  //     for (let i = 0; ; i++) {
+  //       const isExists = await User.query().where('username', user.username).first()
+  //       if (isExists) user.username = `${user.username}${i}`
+  //       else break
+  //     }
+  //   }
+  // }
 
   /**
    * ------------------------------------------------------

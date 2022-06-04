@@ -39,7 +39,7 @@ export const storeUser = async (data: DTOs.Store): Promise<User> => {
   const { roles, ...userDto } = data
 
   const user = await usersRepository.store(userDto)
-  if (roles.length > 0) user.related('roles').attach(roles)
+  if (roles && roles.length > 0) user.related('roles').attach(roles)
 
   return user.refresh()
 }

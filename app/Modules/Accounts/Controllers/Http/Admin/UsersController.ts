@@ -7,7 +7,10 @@ import {
   editUser,
   deleteUser,
 } from 'App/Modules/Accounts/Services/User'
-import { EditUserSchema, StoreUserSchema } from 'App/Modules/Accounts/Validators/User'
+import {
+  EditUserWithAdminSchema,
+  StoreUserWithAdminSchema,
+} from 'App/Modules/Accounts/Validators/User'
 
 export default class UsersController {
   public async list({ request, response }: HttpContextContract): Promise<void> {
@@ -25,14 +28,14 @@ export default class UsersController {
   }
 
   public async store({ request, response }: HttpContextContract): Promise<void> {
-    const userDto = await request.validate({ schema: StoreUserSchema })
+    const userDto = await request.validate({ schema: StoreUserWithAdminSchema })
     const user = await storeUser(userDto)
     return response.json(user)
   }
 
   public async edit({ request, params, response }: HttpContextContract): Promise<void> {
     const { id: userId } = params
-    const userDto = await request.validate({ schema: EditUserSchema })
+    const userDto = await request.validate({ schema: EditUserWithAdminSchema })
     const user = await editUser(userId, userDto)
     return response.json(user)
   }

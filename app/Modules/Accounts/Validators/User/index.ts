@@ -16,6 +16,24 @@ export const StoreUserSchema = schema.create({
     rules.unique({ table: 'users', column: 'email', whereNot: { is_deleted: true } }),
   ]),
   password: schema.string({ escape: true, trim: true }, [rules.confirmed()]),
+})
+
+export const StoreUserWithAdminSchema = schema.create({
+  first_name: schema.string({ escape: true, trim: true }, [
+    rules.minLength(4),
+    rules.maxLength(80),
+  ]),
+  last_name: schema.string({ escape: true, trim: true }, [rules.minLength(4), rules.maxLength(80)]),
+  username: schema.string({ escape: true, trim: true }, [
+    rules.requiredIfNotExists('email'),
+    rules.unique({ table: 'users', column: 'username', whereNot: { is_deleted: true } }),
+  ]),
+  email: schema.string({ escape: true, trim: true }, [
+    rules.email(),
+    rules.requiredIfNotExists('username'),
+    rules.unique({ table: 'users', column: 'email', whereNot: { is_deleted: true } }),
+  ]),
+  password: schema.string({ escape: true, trim: true }, [rules.confirmed()]),
   roles: schema
     .array([rules.minLength(1)])
     .members(
@@ -26,6 +44,27 @@ export const StoreUserSchema = schema.create({
 })
 
 export const EditUserSchema = schema.create({
+  first_name: schema.string.optional({ escape: true, trim: true }, [
+    rules.minLength(4),
+    rules.maxLength(80),
+  ]),
+  last_name: schema.string.optional({ escape: true, trim: true }, [
+    rules.minLength(4),
+    rules.maxLength(80),
+  ]),
+  username: schema.string.optional({ escape: true, trim: true }, [
+    rules.requiredIfNotExists('email'),
+    rules.unique({ table: 'users', column: 'username', whereNot: { is_deleted: true } }),
+  ]),
+  email: schema.string.optional({ escape: true, trim: true }, [
+    rules.email(),
+    rules.requiredIfNotExists('username'),
+    rules.unique({ table: 'users', column: 'email', whereNot: { is_deleted: true } }),
+  ]),
+  password: schema.string.optional({ escape: true, trim: true }, [rules.confirmed()]),
+})
+
+export const EditUserWithAdminSchema = schema.create({
   first_name: schema.string.optional({ escape: true, trim: true }, [
     rules.minLength(4),
     rules.maxLength(80),

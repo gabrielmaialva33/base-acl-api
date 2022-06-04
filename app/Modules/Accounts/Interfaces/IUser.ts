@@ -18,7 +18,7 @@ export namespace IUser {
       last_name: string
       username: string
       email: string
-      roles: Array<string>
+      roles?: Array<string>
     }
 
     export type Edit = {
