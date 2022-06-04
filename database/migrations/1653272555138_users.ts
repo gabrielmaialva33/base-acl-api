@@ -18,9 +18,7 @@ export default class UsersSchema extends BaseSchema {
       table.boolean('is_online').notNullable().defaultTo(false)
       table.boolean('is_blocked').notNullable().defaultTo(false)
       table.boolean('is_deleted').notNullable().defaultTo(false)
-      /**
-       * Uses timestampz for PostgreSQL and DATETIME2 for MSSQL
-       */
+
       table.timestamp('created_at', { useTz: true }).notNullable()
       table.timestamp('updated_at', { useTz: true }).notNullable()
       table.timestamp('deleted_at', { useTz: true }).defaultTo(null)
