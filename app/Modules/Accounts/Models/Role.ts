@@ -55,7 +55,7 @@ export default class Role extends BaseModel {
    * ------------------------------------------------------
    * Relationships
    * ------------------------------------------------------
-   * - define User model relationships
+   * - define Role model relationships
    */
 
   /**

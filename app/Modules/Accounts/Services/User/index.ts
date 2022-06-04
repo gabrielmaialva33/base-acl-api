@@ -4,12 +4,15 @@ import { PaginateContractType } from 'App/Shared/Interfaces/BaseInterface'
 import { IUser } from 'App/Modules/Accounts/Interfaces/IUser'
 import User from 'App/Modules/Accounts/Models/User'
 import UsersRepository from 'App/Modules/Accounts/Repositories/UsersRepository'
+import RolesRepository from 'App/Modules/Accounts/Repositories/RolesRepository'
 
 import NotFoundException from 'App/Shared/Exceptions/NotFoundException'
 
 import DTOs = IUser.DTOs
+import { UsersDefault } from 'App/Modules/Accounts/Defaults'
 
 const usersRepository = new UsersRepository()
+const rolesRepository = new RolesRepository()
 
 export const listUsers = async ({
   page = 1,
@@ -48,4 +51,15 @@ export const deleteUser = async (userId: string): Promise<void> => {
     deleted_at: DateTime.now(),
   })
   await usersRepository.save(user)
+}
+
+export const storeDefaultUser = async () => {
+  for (const data of UsersDefault) {
+    const { roleName, ...userDto } = data
+    const user = await usersRepository.findOrStore({ username: userDto.username }, userDto)
+    const role = await rolesRepository.pluckBy('id', {
+      like: { column: 'name', match: roleName },
+    })
+    await user.related('roles').attach(role)
+  }
 }
