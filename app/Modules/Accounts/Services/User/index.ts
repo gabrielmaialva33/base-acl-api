@@ -23,7 +23,10 @@ export const listUsers = async ({
   usersRepository.listWithPagination({
     page,
     perPage,
-    scopes: (scopes) => scopes.searchQueryScope(search),
+    scopes: (scopes) => {
+      scopes.searchQueryScope(search)
+      scopes.hideRoot()
+    },
   })
 
 export const getUser = async (userId: string): Promise<User> => {

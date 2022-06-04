@@ -17,7 +17,10 @@ export const listRoles = async ({
   rolesRepository.listWithPagination({
     page,
     perPage,
-    scopes: (scopes) => scopes.searchQueryScope(search),
+    scopes: (scopes) => {
+      scopes.searchQueryScope(search)
+      scopes.onlyAdminContext()
+    },
   })
 
 export const getRole = async (roleId: string) => {

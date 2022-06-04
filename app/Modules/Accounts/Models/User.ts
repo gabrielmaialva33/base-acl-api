@@ -10,6 +10,7 @@ import {
   afterFind,
   afterFetch,
   afterPaginate,
+  ModelQueryBuilderContract,
 } from '@ioc:Adonis/Lucid/Orm'
 
 import BaseModel from 'App/Shared/Models/BaseModel'
@@ -119,6 +120,10 @@ export default class User extends BaseModel {
 
     return query.whereRaw(`(${sql})`)
   })
+
+  public static hideRoot = scope((query: ModelQueryBuilderContract<typeof Role>) =>
+    query.andWhereNot('username', 'root')
+  )
 
   /**
    * ------------------------------------------------------

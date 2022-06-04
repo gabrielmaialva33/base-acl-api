@@ -1,5 +1,5 @@
 import BaseModel from 'App/Shared/Models/BaseModel'
-import { beforeSave, column, scope } from '@ioc:Adonis/Lucid/Orm'
+import { beforeSave, column, ModelQueryBuilderContract, scope } from '@ioc:Adonis/Lucid/Orm'
 import { DateTime } from 'luxon'
 
 export default class Role extends BaseModel {
@@ -73,6 +73,10 @@ export default class Role extends BaseModel {
 
     return query.whereRaw(`(${sql})`)
   })
+
+  public static onlyAdminContext = scope((query: ModelQueryBuilderContract<typeof Role>) =>
+    query.andWhereNot('name', 'root')
+  )
 
   /**
    * ------------------------------------------------------
