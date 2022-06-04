@@ -74,7 +74,7 @@ export default class Role extends BaseModel {
     return query.whereRaw(`(${sql})`)
   })
 
-  public static onlyAdminContext = scope((query: ModelQueryBuilderContract<typeof Role>) =>
+  public static hideRoot = scope((query: ModelQueryBuilderContract<typeof Role>) =>
     query.andWhereNot('name', 'root')
   )
 

@@ -19,7 +19,7 @@ export const listRoles = async ({
     perPage,
     scopes: (scopes) => {
       scopes.searchQueryScope(search)
-      scopes.onlyAdminContext()
+      scopes.hideRoot()
     },
   })
 
