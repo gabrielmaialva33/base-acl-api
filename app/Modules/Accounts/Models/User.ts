@@ -1,6 +1,8 @@
 import { DateTime } from 'luxon'
 import Hash from '@ioc:Adonis/Core/Hash'
-import { column, beforeSave, BaseModel } from '@ioc:Adonis/Lucid/Orm'
+import { column, beforeSave } from '@ioc:Adonis/Lucid/Orm'
+
+import BaseModel from 'App/Shared/Models/BaseModel'
 
 export default class User extends BaseModel {
   public static table = 'users'
