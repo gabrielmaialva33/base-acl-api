@@ -52,3 +52,8 @@ export const EditUserSchema = schema.create({
       ])
     ),
 })
+
+export const LoginSchema = schema.create({
+  uid: schema.string({ trim: true }, []),
+  password: schema.string({ trim: true }),
+})

@@ -1,7 +1,7 @@
 import Route from '@ioc:Adonis/Core/Route'
 
 import RolesController from 'App/Modules/Accounts/Controllers/Http/Admin/RolesController'
-import UsersController from 'App/Modules/Accounts/Controllers/Http/Admin/UsersController'
+import UsersController from 'App/Modules/Accounts/Controllers/Http/User/UsersController'
 
 Route.group(() => {
   /**
