@@ -1,6 +1,6 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-import { getRole, listRoles } from 'App/Modules/Accounts/Services/Role'
+import { getRoleById, listRoles } from 'App/Modules/Accounts/Services/Role'
 
 export default class RolesController {
   public async list({ request, response }: HttpContextContract): Promise<void> {
@@ -16,7 +16,7 @@ export default class RolesController {
   public async get({ params, response }: HttpContextContract): Promise<void> {
     const { id: roleId } = params
 
-    const role = await getRole(roleId)
+    const role = await getRoleById(roleId)
 
     return response.json(role)
   }

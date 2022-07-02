@@ -8,6 +8,7 @@
 import type { Config } from '@japa/runner'
 import TestUtils from '@ioc:Adonis/Core/TestUtils'
 import { apiClient, assert, runFailedTests, specReporter } from '@japa/preset-adonis'
+import execa from 'execa'
 
 /*
 |--------------------------------------------------------------------------
@@ -47,8 +48,8 @@ export const reporters: Config['reporters'] = [specReporter()]
 |
 */
 export const runnerHooks: Required<Pick<Config, 'setup' | 'teardown'>> = {
-  setup: [() => TestUtils.ace().loadCommands()],
-  teardown: [],
+  setup: [() => TestUtils.ace().loadCommands(), () => runMigrations(), () => runSeeders()],
+  teardown: [() => rollbackMigrations()],
 }
 
 /*
@@ -66,4 +67,28 @@ export const configureSuite: Config['configureSuite'] = (suite) => {
   if (suite.name === 'functional') {
     suite.setup(() => TestUtils.httpServer().start())
   }
+}
+
+/*
+|--------------------------------------------------------------------------
+| Test Utils
+|--------------------------------------------------------------------------
+|
+*/
+async function runMigrations() {
+  await execa.node('ace', ['migration:run'], {
+    stdio: 'pipe',
+  })
+}
+
+async function runSeeders() {
+  await execa.node('ace', ['db:seed'], {
+    stdio: 'pipe',
+  })
+}
+
+async function rollbackMigrations() {
+  await execa.node('ace', ['migration:rollback'], {
+    stdio: 'pipe',
+  })
 }
