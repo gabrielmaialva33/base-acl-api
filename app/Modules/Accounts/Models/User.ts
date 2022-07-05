@@ -17,6 +17,7 @@ import {
 import BaseModel from 'App/Shared/Models/BaseModel'
 import Role from 'App/Modules/Accounts/Models/Role'
 import RolesRepository from 'App/Modules/Accounts/Repositories/RolesRepository'
+import { getRoleByName } from 'App/Modules/Accounts/Services/Role'
 
 export default class User extends BaseModel {
   public static table = 'users'
@@ -93,7 +94,7 @@ export default class User extends BaseModel {
   }
 
   @afterCreate()
-  public static async attachRoleUser(user: User): Promise<void> {
+  public static async attachUserRole(user: User): Promise<void> {
     const roleId = await new RolesRepository().pluckBy('id', { where: { name: 'user' } })
     if (user) await user.related('roles').attach(roleId)
   }
@@ -150,8 +151,12 @@ export default class User extends BaseModel {
    * Misc
    * ------------------------------------------------------
    */
-
   public isRole(name: string): boolean {
     return !!this.roles.find((role) => role.name === name)
+  }
+
+  public async attachRoleByName(this, name: string): Promise<void> {
+    const { id: roleId } = await getRoleByName(name)
+    await this.related('roles').attach([roleId])
   }
 }
