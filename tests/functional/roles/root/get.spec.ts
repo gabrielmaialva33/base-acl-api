@@ -1,4 +1,5 @@
 import { test } from '@japa/runner'
+
 import UserFactory from 'Database/factories/UserFactory'
 import RoleFactory from 'Database/factories/RoleFactory'
 
