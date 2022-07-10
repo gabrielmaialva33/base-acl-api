@@ -1,9 +1,12 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
-import { storeDefaultUser } from 'App/Modules/Accounts/Services/User'
+import { container } from 'tsyringe'
+
+import { UserServices } from 'App/Modules/Accounts/Services/User'
 
 export default class extends BaseSchema {
   public async up() {
-    await storeDefaultUser()
+    const userServices = container.resolve(UserServices)
+    await userServices.storeDefault()
   }
 
   public async down() {

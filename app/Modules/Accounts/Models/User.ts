@@ -11,13 +11,13 @@ import {
   afterFetch,
   afterPaginate,
   ModelQueryBuilderContract,
-  afterCreate,
+  beforeCreate,
 } from '@ioc:Adonis/Lucid/Orm'
+import { container } from 'tsyringe'
 
 import BaseModel from 'App/Shared/Models/BaseModel'
 import Role from 'App/Modules/Accounts/Models/Role'
-import RolesRepository from 'App/Modules/Accounts/Repositories/RolesRepository'
-import { getRoleByName } from 'App/Modules/Accounts/Services/Role'
+import { RoleServices } from 'App/Modules/Accounts/Services/Admin'
 
 export default class User extends BaseModel {
   public static table = 'users'
@@ -93,23 +93,17 @@ export default class User extends BaseModel {
     for (const user of users) await user.load('roles', (builder) => builder.orderBy('slug'))
   }
 
-  @afterCreate()
-  public static async attachUserRole(user: User): Promise<void> {
-    const roleId = await new RolesRepository().pluckBy('id', { where: { name: 'user' } })
-    if (user) await user.related('roles').attach(roleId)
+  @beforeCreate()
+  public static async attachUserName(user: User): Promise<void> {
+    if (!user.username) {
+      user.username = user.email.split('@')[0]
+      for (let i = 0; ; i++) {
+        if (!(await User.query().where('username', user.username).first()))
+          user.username = `${user.username}${i}`
+        else break
+      }
+    }
   }
-
-  // @beforeCreate()
-  // public static async attachUserName(user: User): Promise<void> {
-  //   if (!user.username) {
-  //     user.username = user.email.split('@')[0]
-  //     for (let i = 0; ; i++) {
-  //       const isExists = await User.query().where('username', user.username).first()
-  //       if (isExists) user.username = `${user.username}${i}`
-  //       else break
-  //     }
-  //   }
-  // }
 
   /**
    * ------------------------------------------------------
@@ -156,7 +150,8 @@ export default class User extends BaseModel {
   }
 
   public async attachRoleByName(this, name: string): Promise<void> {
-    const { id: roleId } = await getRoleByName(name)
+    const roleServices = container.resolve(RoleServices)
+    const { id: roleId } = await roleServices.getByName(name)
     await this.related('roles').attach([roleId])
   }
 }

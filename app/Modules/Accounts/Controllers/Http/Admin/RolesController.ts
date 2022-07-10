@@ -1,6 +1,7 @@
+import { container } from 'tsyringe'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-import { getRoleById, listRoles } from 'App/Modules/Accounts/Services/Role'
+import { RoleServices } from 'App/Modules/Accounts/Services/Admin'
 
 export default class RolesController {
   public async list({ request, response }: HttpContextContract): Promise<void> {
@@ -8,7 +9,8 @@ export default class RolesController {
     const perPage = request.input('per_page', 10)
     const search = request.input('search', '')
 
-    const roles = await listRoles({ page, perPage, search })
+    const roleServices = container.resolve(RoleServices)
+    const roles = await roleServices.list({ page, perPage, search })
 
     return response.json(roles)
   }
@@ -16,7 +18,8 @@ export default class RolesController {
   public async get({ params, response }: HttpContextContract): Promise<void> {
     const { id: roleId } = params
 
-    const role = await getRoleById(roleId)
+    const roleServices = container.resolve(RoleServices)
+    const role = await roleServices.getById(roleId)
 
     return response.json(role)
   }

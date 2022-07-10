@@ -1,4 +1,5 @@
 import { test } from '@japa/runner'
+
 import UserFactory from 'Database/factories/UserFactory'
 
 test.group('Role: Root - List', () => {
@@ -16,10 +17,11 @@ test.group('Role: Root - List', () => {
       uid: username,
       password: 'password',
     })
-    assert.isObject(loginResponse.body())
-    assert.properties(loginResponse.body(), ['token'])
 
-    const token = loginResponse.body().token
+    assert.isObject(loginResponse.body())
+    assert.properties(loginResponse.body(), ['auth'])
+
+    const token = loginResponse.body().auth.token
 
     /** fetch list all roles */
     const listRoles = await client.get('/admin/roles').bearerToken(token)

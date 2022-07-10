@@ -1,10 +1,12 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
+import { container } from 'tsyringe'
 
-import { storeDefaultRole } from 'App/Modules/Accounts/Services/Role'
+import { RoleServices } from 'App/Modules/Accounts/Services/Admin'
 
 export default class extends BaseSchema {
   public async up() {
-    await storeDefaultRole()
+    const roleServices = container.resolve(RoleServices)
+    await roleServices.storeDefault()
   }
 
   public async down() {

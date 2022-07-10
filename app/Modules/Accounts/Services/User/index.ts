@@ -1,5 +1,1 @@
-export { listUsers } from './list'
-export { getUser } from './get'
-export { storeUser, storeDefaultUser } from './store'
-export { editUser } from './edit'
-export { deleteUser } from './delete'
+export { default as UserServices } from './UserServices'

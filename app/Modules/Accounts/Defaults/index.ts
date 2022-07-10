@@ -15,7 +15,7 @@ export const RolesDefault: Array<ModelType<typeof Role>> = [
   {
     slug: 'Admin',
     name: 'admin',
-    description: 'a admin user system',
+    description: 'a Admin user system',
     is_active: true,
     deletable: false,
   },
@@ -47,10 +47,10 @@ export const UsersDefault: Array<UserDefaultType> = [
   {
     first_name: 'Admin',
     last_name: 'User',
-    username: 'admin',
-    email: 'admin@acl.com',
+    username: 'Admin',
+    email: 'Admin@acl.com',
     password: 'acl@2022',
-    roleName: 'admin',
+    roleName: 'Admin',
   },
   {
     first_name: 'Gabriel',
