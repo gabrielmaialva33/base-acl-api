@@ -2,9 +2,8 @@ import stringHelpers from '@adonisjs/core/helpers/string'
 import { BaseModel } from '@adonisjs/lucid/orm'
 import { ModelAttributes, ModelQueryBuilderContract } from '@adonisjs/lucid/types/model'
 
-import {
+import LucidRepositoryInterface, {
   DefaultOptions,
-  LucidRepositoryInterface,
   ModelKeys,
   OrderDirection,
   PaginateOptions,

@@ -13,7 +13,7 @@ import { SimplePaginatorContract } from '@adonisjs/lucid/types/querybuilder'
  * Repository interface for working with AdonisJS Lucid models.
  * Provides a consistent API for common CRUD operations and query enhancements.
  */
-export interface LucidRepositoryInterface<T extends typeof BaseModel> {
+export default interface LucidRepositoryInterface<T extends typeof BaseModel> {
   /**
    * Create a new model instance.
    * @param payload - The attributes to initialize the model with.
