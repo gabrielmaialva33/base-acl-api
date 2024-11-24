@@ -19,6 +19,9 @@ export default class LucidRepository<T extends typeof BaseModel>
   protected DEFAULT_SORT = 'id'
   protected DEFAULT_DIRECTION: OrderDirection = 'asc'
 
+  static ORDER_ASC = 'asc' as const
+  static ORDER_DESC = 'desc' as const
+
   constructor(protected model: T) {}
 
   /**
@@ -41,55 +44,21 @@ export default class LucidRepository<T extends typeof BaseModel>
     value: ModelAttributes<InstanceType<T>>[K],
     opts?: DefaultOptions<T>
   ): Promise<InstanceType<T> | null> {
-    const query = this.model.query().where({
-      [field]: value,
-    })
-    if (opts) {
-      const { modifyQuery, scopes } = opts
-
-      if (modifyQuery) modifyQuery(query)
-      if (scopes) query.withScopes(scopes)
-    }
-
-    return query.first()
+    return this.buildQuery({ field, value, opts }).first()
   }
 
   async list(opts?: DefaultOptions<T>): Promise<InstanceType<T>[]> {
-    const query = this.model.query()
+    const query = this.buildQuery({ opts })
 
-    const {
-      modifyQuery,
-      scopes,
-      direction = this.DEFAULT_DIRECTION,
-      sortBy = this.DEFAULT_SORT,
-    } = opts || {}
-
-    if (modifyQuery) modifyQuery(query)
-    if (scopes) query.withScopes(scopes)
-    if (sortBy !== this.DEFAULT_SORT) this.validateSortBy(sortBy)
-    if (direction !== this.DEFAULT_DIRECTION) this.validateDirection(direction)
-
-    query.orderBy(sortBy, direction)
+    query.orderBy(opts?.sortBy || this.DEFAULT_SORT, opts?.direction || this.DEFAULT_DIRECTION)
 
     return query
   }
 
   async paginate(options: PaginateOptions<T>): Promise<PaginateResult<T>> {
-    const query = this.model.query()
+    const query = this.buildQuery({ opts: options })
 
-    const {
-      modifyQuery,
-      scopes,
-      direction = this.DEFAULT_DIRECTION,
-      sortBy = this.DEFAULT_SORT,
-    } = options
-
-    if (modifyQuery) modifyQuery(query)
-    if (scopes) query.withScopes(scopes)
-    if (sortBy !== this.DEFAULT_SORT) this.validateSortBy(sortBy)
-    if (direction !== this.DEFAULT_DIRECTION) this.validateDirection(direction)
-
-    query.orderBy(sortBy, direction)
+    query.orderBy(options.sortBy || this.DEFAULT_SORT, options.direction || this.DEFAULT_DIRECTION)
 
     return query.paginate(
       options.page || this.DEFAULT_PAGE,
@@ -98,30 +67,12 @@ export default class LucidRepository<T extends typeof BaseModel>
   }
 
   async first(opts?: DefaultOptions<T>): Promise<InstanceType<T> | null> {
-    const query = this.model.query()
-
-    if (opts) {
-      const { modifyQuery, scopes } = opts
-
-      if (modifyQuery) modifyQuery(query)
-      if (scopes) query.withScopes(scopes)
-    }
-
-    return query.first()
+    return this.buildQuery({ opts }).first()
   }
 
   async count(opts?: DefaultOptions<T>): Promise<number> {
-    const query = this.model.query()
-
-    if (opts) {
-      const { modifyQuery, scopes } = opts
-
-      if (modifyQuery) modifyQuery(query)
-      if (scopes) query.withScopes(scopes)
-    }
-
+    const query = this.buildQuery({ opts })
     const rows = await query.count('* as count')
-
     return +rows[0].$extras.count
   }
 
@@ -147,8 +98,11 @@ export default class LucidRepository<T extends typeof BaseModel>
   }
 
   protected validateDirection(direction: string): void {
-    if (direction !== 'asc' && direction !== 'desc')
-      throw new Error('Invalid direction. Must be "asc" or "desc".')
+    if (direction !== LucidRepository.ORDER_ASC && direction !== LucidRepository.ORDER_DESC) {
+      throw new Error(
+        `Invalid direction. Must be "${LucidRepository.ORDER_ASC}" or "${LucidRepository.ORDER_DESC}".`
+      )
+    }
   }
 
   destroy<K extends ModelKeys<T>>(
@@ -159,5 +113,33 @@ export default class LucidRepository<T extends typeof BaseModel>
       .query()
       .where({ [field]: value })
       .delete()
+  }
+
+  /**
+   * Build a query with optional modifiers and scopes
+   */
+  protected buildQuery<K extends ModelKeys<T>>({
+    field,
+    value,
+    opts,
+  }: {
+    field?: K
+    value?: ModelAttributes<InstanceType<T>>[K]
+    opts?: DefaultOptions<T>
+  }): ModelQueryBuilderContract<T, InstanceType<T>> {
+    const query = this.model.query()
+
+    if (field && value) {
+      query.where({ [field]: value })
+    }
+
+    if (opts) {
+      const { modifyQuery, scopes } = opts
+
+      if (modifyQuery) modifyQuery(query)
+      if (scopes) query.withScopes(scopes)
+    }
+
+    return query
   }
 }
