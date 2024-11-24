@@ -9,7 +9,7 @@ import {
   OrderDirection,
   PaginateOptions,
   PaginateResult,
-} from '../lucid/lucid_repository_interface'
+} from '#shared/lucid/lucid_repository_interface'
 
 export default class LucidRepository<T extends typeof BaseModel>
   implements LucidRepositoryInterface<T>
