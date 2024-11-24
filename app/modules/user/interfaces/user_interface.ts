@@ -1,4 +1,4 @@
-import { LucidRepositoryInterface } from '#shared/lucid/lucid_repository_interface'
+import { LucidRepositoryInterface } from '../../../shared/lucid/lucid_repository_interface'
 import User from '#modules/user/models/user'
 
 namespace IUser {

@@ -1,4 +1,4 @@
-import LucidRepository from '#shared/lucid/lucid_repository'
+import LucidRepository from '../../../shared/lucid/lucid_repository'
 import User from '#modules/user/models/user'
 
 import IUser from '#modules/user/interfaces/user_interface'

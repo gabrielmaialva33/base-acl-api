@@ -1,13 +1,13 @@
 CREATE
   DATABASE db;
 CREATE
-  DATABASE development;
+  DATABASE db_development;
 CREATE
-  DATABASE testing;
+  DATABASE db_testing;
 
 GRANT ALL PRIVILEGES ON DATABASE
   db TO postgres;
 GRANT ALL PRIVILEGES ON DATABASE
-  development TO postgres;
+  db_development TO postgres;
 GRANT ALL PRIVILEGES ON DATABASE
-  testing TO postgres;
+  db_testing TO postgres;
