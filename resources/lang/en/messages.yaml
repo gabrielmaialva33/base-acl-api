@@ -1,0 +1,3 @@
+successfully_deleted: '{resource} successfully deleted.'
+successfully_updated: '{resource} successfully updated.'
+successfully_created: '{resource} successfully created.'

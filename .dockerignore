@@ -1,6 +1,7 @@
 # Adonis default .gitignore ignores
 node_modules
 build
+dist
 coverage
 .vscode
 .DS_STORE

@@ -14,32 +14,29 @@ services:
     env_file:
       - .env
     environment:
+      TZ: ${TZ}
       PORT: ${PORT}
       HOST: ${HOST}
-      NODE_ENV: ${NODE_ENV}
+      LOG_LEVEL: ${LOG_LEVEL}
       APP_KEY: ${APP_KEY}
-      DRIVE_DISK: ${DRIVE_DISK}
+      NODE_ENV: ${NODE_ENV}
 
-      DB_CONNECTION: ${DB_CONNECTION}
-      PG_HOST: postgres
-      PG_PORT: ${PG_PORT}
-      PG_USER: ${PG_USER}
-      PG_PASSWORD: ${PG_PASSWORD}
-      PG_DB_NAME: ${PG_DB_NAME}
+      ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET}
+      REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET}
 
-      REDIS_CONNECTION: ${REDIS_CONNECTION}
-      REDIS_HOST: redis
-      REDIS_PORT: ${REDIS_PORT}
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      DB_HOST: postgres
+      DB_PORT: ${PG_PORT}
+      DB_USER: ${PG_USER}
+      DB_PASSWORD: ${PG_PASSWORD}
+      DB_DATABASE: ${PG_DB_NAME}
 
     networks:
       - app-network
-
   postgres:
     image: postgres:latest
     container_name: base-acl-postgres
     healthcheck:
-      test: ['CMD', 'pg_isready', '-q', '-d', 'postgres', '-U', 'postgres']
+      test: [ 'CMD', 'pg_isready', '-q', '-d', 'postgres', '-U', 'postgres' ]
       timeout: 45s
       interval: 10s
       retries: 10
@@ -57,25 +54,8 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - app-network
-
-  redis:
-    image: redis:latest
-    restart: always
-    container_name: base-acl-redis
-    command: redis-server --requirepass redis
-    environment:
-      - REDIS_REPLICATION_MODE=master
-    ports:
-      - '6379:6379'
-    expose:
-      - 6379
-    volumes:
-      - dbredis:/var/lib/redis/data
-    networks:
-      - app-network
 networks:
   app-network:
     driver: bridge
 volumes:
   database:
-  dbredis:

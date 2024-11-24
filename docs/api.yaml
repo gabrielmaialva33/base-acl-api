@@ -1,0 +1,497 @@
+openapi: 3.1.0
+info:
+  title: Base ACL API
+  description: This is the API documentation for the Base ACL API.
+  version: 0.0.1
+
+servers:
+  - url: http://localhost:3333
+    description: Local server
+
+tags:
+  - name: Auth
+    description: Operations related to authentication
+  - name: Social auth
+    description: Operations related to social authentication
+  - name: User
+    description: Operations related to users
+
+paths:
+  /health:
+    get:
+      summary: System Health Check
+      description: Returns the system health status and detailed checks.
+      tags:
+        - Health
+      parameters:
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            example: application/json
+      responses:
+        '200':
+          description: System health information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheckResponse'
+
+  /users:
+    get:
+      summary: Paginated list of users
+      description: Get a paginated list of users.
+      tags:
+        - User
+      parameters:
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            example: application/json
+        - name: page
+          in: query
+          required: false
+          description: The page number to retrieve. Defaults to 1.
+          schema:
+            type: number
+            example: 1
+        - name: per_page
+          in: query
+          required: false
+          description: The number of items per page. Defaults to 10.
+          schema:
+            type: number
+            example: 10
+        - name: sort_by
+          in: query
+          required: false
+          description: The field to sort by. Defaults to id.
+          schema:
+            type: string
+            example: id
+        - name: direction
+          in: query
+          required: false
+          description: The direction to sort by. Defaults to asc.
+          schema:
+            type: enum
+            enum:
+              - asc
+              - desc
+            example: asc
+      responses:
+        '200':
+          description: A list of users.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+    post:
+      summary: Create a user
+      description: Create a new user.
+      tags:
+        - User
+      parameters:
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            example: application/json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+  /users/{id}:
+    get:
+      summary: Get a user
+      description: Get a user by ID.
+      tags:
+        - User
+      parameters:
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            example: application/json
+        - name: id
+          in: path
+          required: true
+          description: The ID of the user to retrieve.
+          schema:
+            type: number
+            example: 1
+      responses:
+        '200':
+          description: The user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+    put:
+      summary: Update a user
+      description: Update a user by ID.
+      tags:
+        - User
+      parameters:
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            example: application/json
+        - name: id
+          in: path
+          required: true
+          description: The ID of the user to update.
+          schema:
+            type: number
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+      responses:
+        '200':
+          description: The updated user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    # errors
+    Unauthorized:
+      type: object
+      properties:
+        status:
+          type: number
+          description: The status code of the error.
+          example: 401
+        message:
+          type: string
+          description: The error message.
+          example: Invalid user credentials
+    NotFound:
+      type: object
+      properties:
+        status:
+          type: number
+          description: The status code of the error.
+          example: 404
+        message:
+          type: string
+          description: The error message.
+          example: Entity not found
+
+    # generic
+    SuccessfulAuth:
+      type: object
+      properties:
+        user_id:
+          type: number
+          description: The unique identifier for a user.
+          example: 1
+        access_token:
+          type: string
+          description: The token of the user.
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+        refresh_token:
+          type: string
+          description: The refresh token of the user.
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+
+    # user schemas
+    User:
+      type: object
+      properties:
+        id:
+          type: number
+          description: The unique identifier for a user.
+          example: 1
+        full_name:
+          type: string
+          description: The name of the user.
+          example: John Doe
+        username:
+          type: string
+          description: The email of the user.
+          example: stra1g
+        email:
+          type: string
+          description: The email of the user.
+          example: email@email.com
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the user was created.
+          example: 2024-05-05T22:54:02.362+00:00
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time the user was last updated.
+          example: 2024-05-05T22:54:02.362+00:00
+      example:
+        { 'id': 1, 'full_name': 'John Doe', 'username': 'johndoe', 'email': 'johndoe@email.com' }
+    UserCreate:
+      type: object
+      properties:
+        full_name:
+          type: string
+          description: The name of the user.
+          example: John Doe
+          required: true
+        username:
+          type: string
+          description: The username of the user.
+          example: johndoe
+          required: false
+        email:
+          type: string
+          description: The email of the user.
+          example: johndoe@email.com
+          required: true
+        password:
+          type: string
+          description: The password of the user.
+          example: 123456
+          required: true
+        password_confirmation:
+          type: string
+          description: The password confirmation of the user.
+          example: 123456
+          required: true
+      example:
+        {
+          'full_name': 'John Doe',
+          'username': 'johndoe',
+          'email': 'johndoe@email.com',
+          'password': '123456',
+          'password_confirmation': '123456',
+        }
+    UserUpdate:
+      type: object
+      properties:
+        full_name:
+          type: string
+          description: The name of the user.
+          example: Doe John
+          required: false
+        username:
+          type: string
+          description: The username of the user.
+          example: doejohn
+          required: false
+        email:
+          type: string
+          description: The email of the user.
+          example: doejohn@email.com
+          required: false
+        password:
+          type: string
+          description: The password of the user.
+          example: 654321
+          required: false
+        password_confirmation:
+          type: string
+          description: The password confirmation of the user.
+          example: 654321
+          required: false
+      example:
+        {
+          'full_name': 'Doe John',
+          'username': 'doejohn',
+          'email': 'doejohn@email.com',
+          'password': '654321',
+          'password_confirmation': '654321',
+        }
+
+    HealthCheckResponse:
+      type: object
+      properties:
+        isHealthy:
+          type: boolean
+          description: Indicates if the system is healthy.
+          example: false
+        status:
+          type: string
+          description: The overall health status.
+          example: error
+        finishedAt:
+          type: string
+          format: date-time
+          description: The timestamp when the health check was completed.
+          example: 2024-11-24T20:18:20.947Z
+        debugInfo:
+          type: object
+          properties:
+            pid:
+              type: integer
+              description: Process ID of the application.
+              example: 20813
+            ppid:
+              type: integer
+              description: Parent process ID of the application.
+              example: 20810
+            platform:
+              type: string
+              description: Platform on which the application is running.
+              example: darwin
+            uptime:
+              type: number
+              description: Uptime of the application in seconds.
+              example: 3.838426084
+            version:
+              type: string
+              description: Application version.
+              example: v22.11.0
+        checks:
+          type: array
+          items:
+            $ref: '#/components/schemas/HealthCheck'
+    HealthCheck:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the health check.
+          example: Disk space check
+        isCached:
+          type: boolean
+          description: Indicates if the result is cached.
+          example: false
+        message:
+          type: string
+          description: Message describing the health check result.
+          example: Disk usage is under defined thresholds
+        status:
+          type: string
+          description: Status of the health check.
+          enum:
+            - ok
+            - warning
+            - error
+          example: ok
+        finishedAt:
+          type: string
+          format: date-time
+          description: The timestamp when the check was completed.
+          example: 2024-11-24T20:18:20.947Z
+        meta:
+          type: object
+          description: Additional metadata about the health check.
+          properties:
+            sizeInPercentage:
+              type: object
+              nullable: true
+              properties:
+                used:
+                  type: integer
+                  description: Used disk percentage.
+                  example: 48
+                failureThreshold:
+                  type: integer
+                  description: Threshold for failure in percentage.
+                  example: 80
+                warningThreshold:
+                  type: integer
+                  description: Threshold for warnings in percentage.
+                  example: 75
+            memoryInBytes:
+              type: object
+              nullable: true
+              properties:
+                used:
+                  type: integer
+                  description: Memory used in bytes.
+                  example: 37537600
+                failureThreshold:
+                  type: integer
+                  description: Threshold for failure in bytes.
+                  example: 314572800
+                warningThreshold:
+                  type: integer
+                  description: Threshold for warnings in bytes.
+                  example: 262144000
+            error:
+              type: object
+              nullable: true
+              properties:
+                errno:
+                  type: integer
+                  description: Error number.
+                  example: -61
+                code:
+                  type: string
+                  description: Error code.
+                  example: ECONNREFUSED
+                syscall:
+                  type: string
+                  description: System call that failed.
+                  example: connect
+                address:
+                  type: string
+                  description: Address of the connection attempt.
+                  example: 127.0.0.1
+                port:
+                  type: integer
+                  description: Port of the connection attempt.
+                  example: 5432
+            connection:
+              type: object
+              nullable: true
+              properties:
+                name:
+                  type: string
+                  description: Name of the connection.
+                  example: postgres
+                dialect:
+                  type: string
+                  description: Database dialect.
+                  example: postgres

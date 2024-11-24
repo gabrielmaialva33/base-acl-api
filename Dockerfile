@@ -36,4 +36,4 @@ RUN yarn add pino-pretty
 # Expose port to outside world
 EXPOSE 3333
 # Start server up
-CMD [ "yarn", "docker" ]
+CMD [ "node", "bin/server.js" ]

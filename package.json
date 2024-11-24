@@ -1,72 +1,90 @@
 {
   "name": "base-acl-api",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
   "scripts": {
-    "dev": "node ace serve --watch",
-    "build": "node ace build --production",
-    "start": "node server.js",
-    "lint": "eslint . --ext=.ts",
+    "start": "node bin/server.js",
+    "build": "node ace build",
+    "dev": "node ace serve --hmr",
+    "test": "node ace test",
+    "lint": "eslint .",
     "format": "prettier --write .",
-    "docker": "node ace migration:run && node ace db:seed && node server.js"
+    "typecheck": "tsc --noEmit",
+    "docker": "node ace migration:run && node ace db:seed && node bin/server.js"
   },
-  "eslintConfig": {
-    "extends": [
-      "plugin:adonis/typescriptApp",
-      "prettier"
-    ],
-    "plugins": [
-      "prettier"
-    ],
-    "rules": {
-      "prettier/prettier": [
-        "error"
-      ]
-    }
-  },
-  "eslintIgnore": [
-    "build"
-  ],
-  "prettier": {
-    "trailingComma": "es5",
-    "semi": false,
-    "singleQuote": true,
-    "useTabs": false,
-    "quoteProps": "consistent",
-    "bracketSpacing": true,
-    "arrowParens": "always",
-    "printWidth": 100
+  "imports": {
+    "#controllers/*": "./app/controllers/*.js",
+    "#exceptions/*": "./app/exceptions/*.js",
+    "#models/*": "./app/models/*.js",
+    "#mails/*": "./app/mails/*.js",
+    "#services/*": "./app/services/*.js",
+    "#listeners/*": "./app/listeners/*.js",
+    "#events/*": "./app/events/*.js",
+    "#middleware/*": "./app/middleware/*.js",
+    "#validators/*": "./app/validators/*.js",
+    "#providers/*": "./providers/*.js",
+    "#policies/*": "./app/policies/*.js",
+    "#abilities/*": "./app/abilities/*.js",
+    "#modules/*": "./app/modules/*.js",
+    "#shared/*": "./app/shared/*.js",
+    "#auth/*": "./app/auth/*.js",
+    "#database/*": "./database/*.js",
+    "#start/*": "./start/*.js",
+    "#tests/*": "./tests/*.js",
+    "#config/*": "./config/*.js"
   },
   "devDependencies": {
-    "@adonisjs/assembler": "^5.9.5",
-    "@japa/preset-adonis": "^1.2.0",
-    "@japa/runner": "^2.2.2",
-    "adonis-preset-ts": "^2.1.0",
-    "eslint": "^8.33.0",
-    "eslint-config-prettier": "^8.6.0",
-    "eslint-plugin-adonis": "^2.1.1",
-    "eslint-plugin-prettier": "^4.2.1",
-    "openapi-types": "^12.1.0",
-    "pino-pretty": "^9.1.1",
-    "prettier": "^2.8.3",
-    "typescript": "^4.9.5",
-    "yarn-upgrade-all": "^0.7.2",
-    "youch": "^3.2.2",
-    "youch-terminal": "^2.1.5"
+    "@adonisjs/assembler": "^7.8.2",
+    "@adonisjs/eslint-config": "2.0.0-beta.7",
+    "@adonisjs/prettier-config": "^1.4.0",
+    "@adonisjs/tsconfig": "^1.4.0",
+    "@japa/api-client": "^2.0.4",
+    "@japa/assert": "^3.0.0",
+    "@japa/plugin-adonisjs": "^3.0.1",
+    "@japa/runner": "^3.1.4",
+    "@swc/core": "1.9.3",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/luxon": "^3.4.2",
+    "@types/node": "^22.9.3",
+    "eslint": "^9.15.0",
+    "hot-hook": "^0.4.0",
+    "pino-pretty": "^13.0.0",
+    "prettier": "^3.3.3",
+    "ts-node-maintained": "^10.9.4",
+    "typescript": "~5.7.2"
   },
   "dependencies": {
-    "@adonisjs/auth": "^8.2.3",
-    "@adonisjs/core": "^5.9.0",
-    "@adonisjs/lucid": "^18.3.0",
-    "@adonisjs/redis": "^7.3.2",
-    "@adonisjs/repl": "^3.1.11",
-    "luxon": "^3.2.1",
-    "pg": "^8.9.0",
-    "phc-argon2": "^1.1.4",
-    "proxy-addr": "^2.0.7",
-    "reflect-metadata": "^0.1.13",
-    "socket.io": "^4.5.4",
-    "source-map-support": "^0.5.21",
-    "tsyringe": "^4.7.0"
-  }
+    "@adonisjs/auth": "^9.2.4",
+    "@adonisjs/core": "^6.14.1",
+    "@adonisjs/cors": "^2.2.1",
+    "@adonisjs/i18n": "^2.1.1",
+    "@adonisjs/lucid": "^21.4.0",
+    "@vinejs/vine": "^2.1.0",
+    "argon2": "^0.41.1",
+    "bcrypt": "^5.1.1",
+    "jsonwebtoken": "^9.0.2",
+    "luxon": "^3.5.0",
+    "pg": "^8.13.1",
+    "reflect-metadata": "^0.2.2"
+  },
+  "hotHook": {
+    "boundaries": [
+      "./app/controllers/**/*.ts",
+      "./app/middleware/*.ts"
+    ]
+  },
+  "overrides": {
+    "strtok3": "8.0.1"
+  },
+  "resolutions": {
+    "strtok3": "8.0.1"
+  },
+  "pnpm": {
+    "overrides": {
+      "strtok3": "8.0.1"
+    }
+  },
+  "prettier": "@adonisjs/prettier-config"
 }

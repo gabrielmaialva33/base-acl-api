@@ -1,7 +1,13 @@
-CREATE DATABASE base_acl_db;
-CREATE DATABASE base_acl_db_development;
-CREATE DATABASE base_acl_db_testing;
+CREATE
+  DATABASE db;
+CREATE
+  DATABASE development;
+CREATE
+  DATABASE testing;
 
-GRANT ALL PRIVILEGES ON DATABASE base_acl_db TO postgres;
-GRANT ALL PRIVILEGES ON DATABASE base_acl_db_development TO postgres;
-GRANT ALL PRIVILEGES ON DATABASE base_acl_db_testing TO postgres;
+GRANT ALL PRIVILEGES ON DATABASE
+  db TO postgres;
+GRANT ALL PRIVILEGES ON DATABASE
+  development TO postgres;
+GRANT ALL PRIVILEGES ON DATABASE
+  testing TO postgres;
