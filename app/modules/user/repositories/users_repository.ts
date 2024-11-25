@@ -16,11 +16,17 @@ export default class UsersRepository
     return this.model.verifyCredentials(uid, password)
   }
 
-  async generateToken(userId: number, abilities?: string[]): Promise<AccessToken> {
+  async generateAccessToken(userId: number, abilities?: string[]): Promise<AccessToken> {
     const user = await this.model.findByOrFail({ id: userId })
     return this.model.accessTokens.create(user, abilities, {
-      expiresIn: '1d',
       name: `access_token:${user.id}:${user.email}`,
+    })
+  }
+
+  async generateRefreshToken(userId: number, abilities?: string[]): Promise<AccessToken> {
+    const user = await this.model.findByOrFail({ id: userId })
+    return this.model.refreshTokens.create(user, abilities, {
+      name: `refresh_token:${user.id}:${user.email}`,
     })
   }
 }

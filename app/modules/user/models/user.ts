@@ -26,6 +26,10 @@ const AuthFinder = withAuthFinder(() => hash.use('argon'), {
 
 export default class User extends compose(BaseModel, AuthFinder) {
   static accessTokens = DbAccessTokensProvider.forModel(User)
+  static refreshTokens = DbAccessTokensProvider.forModel(User, {
+    type: 'refresh_token',
+    expiresIn: '3d',
+  })
 
   static table = 'users'
 

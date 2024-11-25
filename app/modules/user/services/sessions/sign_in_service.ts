@@ -1,6 +1,7 @@
 import { inject } from '@adonisjs/core'
+
 import UsersRepository from '#modules/user/repositories/users_repository'
-import GenerateAuthTokensService from '#modules/user/services/auth_tokens/generate_auth_tokens_service'
+import AccessTokensService from '#modules/user/services/access_tokens/access_tokens_service'
 
 type SignInRequest = {
   uid: string
@@ -11,13 +12,13 @@ type SignInRequest = {
 export default class SignInService {
   constructor(
     private usersRepository: UsersRepository,
-    private generateAuthTokensService: GenerateAuthTokensService
+    private accessTokensService: AccessTokensService
   ) {}
 
   async run({ uid, password }: SignInRequest) {
     const user = await this.usersRepository.verifyCredentials(uid, password)
 
-    const payload = await this.generateAuthTokensService.run(user.id)
+    const payload = await this.accessTokensService.run(user.id)
 
     return { ...user.toJSON(), auth: payload }
   }

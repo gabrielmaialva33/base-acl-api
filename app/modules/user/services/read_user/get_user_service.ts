@@ -6,11 +6,11 @@ import NotFoundException from '#exceptions/not_found_exception'
 
 @inject()
 export default class GetUserService {
-  constructor(private userRepository: UsersRepository) {}
+  constructor(private usersRepository: UsersRepository) {}
 
   async run(id: number) {
     const { i18n } = HttpContext.getOrFail()
-    const user = await this.userRepository.findBy('id', id)
+    const user = await this.usersRepository.findBy('id', id)
     if (!user) {
       throw new NotFoundException(
         i18n.t('errors.not_found', {
