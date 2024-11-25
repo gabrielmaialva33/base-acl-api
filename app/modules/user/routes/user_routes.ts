@@ -1,5 +1,6 @@
 import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
+import IRole from '#modules/role/interfaces/role_interface'
 
 const UsersController = () => import('#modules/user/controllers/users_controller')
 
@@ -17,5 +18,10 @@ router
       .as('user.update')
     router.delete('/:id', [UsersController, 'delete']).as('user.delete')
   })
-  .use([middleware.auth()])
+  .use([
+    middleware.auth(),
+    middleware.acl({
+      role_slugs: [IRole.Slugs.USER],
+    }),
+  ])
   .prefix('users')

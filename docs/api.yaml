@@ -78,6 +78,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Unauthorized'
+  /sessions/sign-up:
+    post:
+      summary: Sign up
+      description: Sign up to the system.
+      tags:
+        - Session
+      parameters:
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            example: application/json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+      responses:
+        '200':
+          description: Sign up successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessfulAuth'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
 
   /users:
     get:

@@ -3,6 +3,7 @@ import SignInService from '#modules/user/services/sessions/sign_in_service'
 
 import { createUserValidator, signInValidator } from '#modules/user/validators/users_validator'
 import app from '@adonisjs/core/services/app'
+import SignUpService from '#modules/user/services/sessions/sign_up_service'
 
 export default class SessionsController {
   async signIn({ request, response }: HttpContext) {
@@ -17,6 +18,9 @@ export default class SessionsController {
   async signUp({ request, response }: HttpContext) {
     const payload = await request.validateUsing(createUserValidator)
 
-    return response.json(payload)
+    const service = await app.container.make(SignUpService)
+    const userWithAuth = await service.run(payload)
+
+    return response.json(userWithAuth)
   }
 }
