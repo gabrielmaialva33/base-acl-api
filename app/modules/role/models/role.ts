@@ -17,6 +17,9 @@ export default class Role extends BaseModel {
   declare name: string
 
   @column()
+  declare description: string | null
+
+  @column()
   declare slug: IRole.Slugs
 
   @column.dateTime({ autoCreate: true })

@@ -1,4 +1,5 @@
 import router from '@adonisjs/core/services/router'
+import { middleware } from '#start/kernel'
 
 const UsersController = () => import('#modules/user/controllers/users_controller')
 
@@ -16,4 +17,5 @@ router
       .as('user.update')
     router.delete('/:id', [UsersController, 'delete']).as('user.delete')
   })
+  .use([middleware.auth()])
   .prefix('users')

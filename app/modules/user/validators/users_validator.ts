@@ -58,3 +58,10 @@ export const editUserValidator = vine.withMetaData<{ userId: number }>().compile
       .requiredIfAnyExists(['password']),
   })
 )
+
+export const signInValidator = vine.compile(
+  vine.object({
+    uid: vine.string().trim(),
+    password: vine.string().trim(),
+  })
+)

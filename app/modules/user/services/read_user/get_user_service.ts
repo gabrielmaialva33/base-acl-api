@@ -19,6 +19,8 @@ export default class GetUserService {
       )
     }
 
+    await user.load('roles')
+
     return user
   }
 }

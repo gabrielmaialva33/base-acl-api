@@ -1,21 +1,29 @@
 openapi: 3.1.0
 info:
   title: Base ACL API
-  description: This is the API documentation for the Base ACL API.
   version: 0.0.1
+  description: |
+    ## About
+    This is the API documentation for the Base ACL API.
 
+    ## Authentication
+    The API uses JWT for authentication. To authenticate, you must send the `Authorization` header with the value `Bearer <token>`. The token is obtained by signing in to the system.
+
+    ### Postman Post-Request Script
+    You can use the following code to get a token in Postman:
+    ```js
+    var responseData = pm.response.json();
+    var token = responseData.auth.access_token;
+    pm.environment.set("bearerToken", token);
+    ```
 servers:
   - url: http://localhost:3333
     description: Local server
-
 tags:
-  - name: Auth
-    description: Operations related to authentication
-  - name: Social auth
-    description: Operations related to social authentication
+  - name: Session
+    description: Operations related to sessions
   - name: User
     description: Operations related to users
-
 paths:
   /health:
     get:
@@ -38,12 +46,47 @@ paths:
               schema:
                 $ref: '#/components/schemas/HealthCheckResponse'
 
+  /sessions/sign-in:
+    post:
+      summary: Sign in
+      description: Sign in to the system.
+      tags:
+        - Session
+      parameters:
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            example: application/json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignIn'
+      responses:
+        '200':
+          description: Sign in successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessfulAuth'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+
   /users:
     get:
       summary: Paginated list of users
       description: Get a paginated list of users.
       tags:
         - User
+      security:
+        - bearerToken: []
       parameters:
         - name: Content-Type
           in: header
@@ -77,11 +120,9 @@ paths:
           required: false
           description: The direction to sort by. Defaults to asc.
           schema:
-            type: enum
-            enum:
-              - asc
-              - desc
+            type: string
             example: asc
+            description: Allowed values are `asc` and `desc`.
       responses:
         '200':
           description: A list of users.
@@ -102,6 +143,8 @@ paths:
       description: Create a new user.
       tags:
         - User
+      security:
+        - bearerToken: []
       parameters:
         - name: Content-Type
           in: header
@@ -121,6 +164,8 @@ paths:
       description: Get a user by ID.
       tags:
         - User
+      security:
+        - bearerToken: []
       parameters:
         - name: Content-Type
           in: header
@@ -159,6 +204,8 @@ paths:
       description: Update a user by ID.
       tags:
         - User
+      security:
+        - bearerToken: []
       parameters:
         - name: Content-Type
           in: header
@@ -198,10 +245,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFound'
-
 components:
   securitySchemes:
-    bearerAuth:
+    bearerToken:
       type: http
       scheme: bearer
       bearerFormat: JWT
@@ -352,6 +398,23 @@ components:
           'password_confirmation': '654321',
         }
 
+    # session schemas
+    SignIn:
+      type: object
+      properties:
+        uid:
+          type: string
+          description: The unique identifier for a user. This can be the email or username.
+          example: johndoe
+          required: true
+        password:
+          type: string
+          description: The password of the user.
+          example: 123456
+          required: true
+      example: { 'uid': 'johndoe', 'password': '123456' }
+
+    # health schemas
     HealthCheckResponse:
       type: object
       properties:

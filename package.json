@@ -30,6 +30,7 @@
     "#modules/*": "./app/modules/*.js",
     "#shared/*": "./app/shared/*.js",
     "#auth/*": "./app/auth/*.js",
+    "#extensions/*": "./app/extensions/*.js",
     "#database/*": "./database/*.js",
     "#start/*": "./start/*.js",
     "#tests/*": "./tests/*.js",

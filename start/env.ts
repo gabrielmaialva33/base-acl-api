@@ -28,7 +28,7 @@ export default await Env.create(new URL('../', import.meta.url), {
   |----------------------------------------------------------
   */
   ACCESS_TOKEN_SECRET: Env.schema.string(),
-  ACCESS_TOKEN_EXPIRATION: Env.schema.string(),
+  REFRESH_TOKEN_SECRET: Env.schema.string(),
   /*
   |----------------------------------------------------------
   | Variables for configuring database connection
