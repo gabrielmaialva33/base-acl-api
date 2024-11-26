@@ -8,10 +8,10 @@
 */
 
 import router from '@adonisjs/core/services/router'
+import '#modules/health/routes/index'
+import '#modules/role/routes/index'
+import '#modules/user/routes/index'
 
 router.get('/', async () => {
   return { hello: 'world' }
 })
-
-import '#modules/health/routes/index'
-import '#modules/user/routes/index'

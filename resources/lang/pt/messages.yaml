@@ -1,3 +1,4 @@
 successfully_deleted: '{resource} deletado com sucesso.'
 successfully_updated: '{resource} atualizado com sucesso.'
 successfully_created: '{resource} criado com sucesso.'
+successfully_attached: '{resource} anexado com sucesso.'

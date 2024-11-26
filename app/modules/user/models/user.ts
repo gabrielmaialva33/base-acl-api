@@ -14,9 +14,9 @@ import {
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 import * as model from '@adonisjs/lucid/types/model'
+import type { ManyToMany } from '@adonisjs/lucid/types/relations'
 
 import Role from '#modules/role/models/role'
-import type { ManyToMany } from '@adonisjs/lucid/types/relations'
 import IRole from '#modules/role/interfaces/role_interface'
 
 const AuthFinder = withAuthFinder(() => hash.use('argon'), {
