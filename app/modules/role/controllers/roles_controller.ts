@@ -18,6 +18,7 @@ export default class RolesController {
 
   async attach({ request, response, i18n }: HttpContext) {
     const data = request.body()
+
     const { user_id: userId, role_ids: roleIds } = await attachRoleValidator.validate(data)
 
     const syncRolesService = await app.container.make(SyncRolesService)

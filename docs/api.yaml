@@ -24,6 +24,8 @@ tags:
     description: Operations related to sessions
   - name: User
     description: Operations related to users
+  - name: Role
+    description: Operations related to roles
 paths:
   /health:
     get:
@@ -110,6 +112,108 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Unauthorized'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableEntity'
+
+  /admin/roles:
+    get:
+      summary: List of roles
+      description: Get a list of roles.
+      tags:
+        - Role
+      security:
+        - bearerToken: []
+      parameters:
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            example: application/json
+        - name: sort_by
+          in: query
+          required: false
+          description: The field to sort by. Defaults to id.
+          schema:
+            type: string
+            example: id
+        - name: direction
+          in: query
+          required: false
+          description: The direction to sort by. Defaults to asc.
+          schema:
+            type: string
+            example: asc
+            description: Allowed values are `asc` and `desc`.
+      responses:
+        '200':
+          description: A list of roles.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+  /admin/roles/attach:
+    put:
+      summary: Attach roles
+      description: Attach roles to a user.
+      tags:
+        - Role
+      security:
+        - bearerToken: []
+      parameters:
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            example: application/json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: number
+                  description: The ID of the user to assign the roles to.
+                role_ids:
+                  type: array
+                  items:
+                    type: number
+                  description: The IDs of the roles to assign to the user.
+              example: { 'user_id': 1, 'role_ids': [1, 2] }
+      responses:
+        '200':
+          description: The role.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
 
   /users:
     get:
@@ -161,9 +265,14 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+                  meta:
+                    $ref: '#/components/schemas/MetaPagination'
         '401':
           description: Unauthorized
           content:
@@ -307,23 +416,130 @@ components:
           type: string
           description: The error message.
           example: Entity not found
+    UnprocessableEntity:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+                description: The error message.
+                example: The email has already been taken
+              rule:
+                type: string
+                description: The rule that was broken.
+                example: database.unique
+              field:
+                type: string
+                description: The field that caused the error.
+                example: email
+            example:
+              - {
+                  'message': 'The email has already been taken',
+                  'rule': 'database.unique',
+                  'field': 'email',
+                }
+              - {
+                  'message': 'The username has already been taken',
+                  'rule': 'database.unique',
+                  'field': 'username',
+                }
 
     # generic
     SuccessfulAuth:
       type: object
       properties:
-        user_id:
+        id:
           type: number
           description: The unique identifier for a user.
           example: 1
-        access_token:
+        full_name:
           type: string
-          description: The token of the user.
-          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
-        refresh_token:
+          description: The name of the user.
+          example: John Doe
+        email:
           type: string
-          description: The refresh token of the user.
-          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+          description: The email of the user.
+          example: 'johndoe@email.com'
+        username:
+          type: string
+          description: The username of the user.
+          example: johndoe
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the user was created.
+          example: 2024-05-05T22:54:02.362+00:00
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time the user was last updated.
+          example: 2024-05-05T22:54:02.362+00:00
+        auth:
+          type: object
+          properties:
+            access_token:
+              type: string
+              description: The access token.
+              example: oat_NDU.ZUxrN1BrcVpnQkxGaHl1bDVzdC1ySGJmUG0zYnIwYmZ2Qm00cnFSTDk2OTUyMDMzOQ
+            refresh_token:
+              type: string
+              description: The refresh token.
+              example: oat_NDY.S21aaUw0WE1KUXBvWjNZSU9WTExseW5HOFN6dG5BNjFUMnNFSnExTjE5NjI3MjM5NzQ
+    MetaPagination:
+      type: object
+      properties:
+        total:
+          type: number
+          description: The total number of items.
+          example: 2
+        per_page:
+          type: number
+          description: The number of items per page.
+          example: 10
+        current_page:
+          type: number
+          description: The current page number.
+          example: 1
+        last_page:
+          type: number
+          description: The last page number.
+          example: 1
+        first_page:
+          type: number
+          description: The first page number.
+          example: 1
+        first_page_url:
+          type: string
+          description: The URL to the first page.
+          example: /?page=1
+        last_page_url:
+          type: string
+          description: The URL to the last page.
+          example: /?page=1
+        next_page_url:
+          type: string
+          description: The URL to the next page.
+          example: null
+        previous_page_url:
+          type: string
+          description: The URL to the previous page.
+          example: null
+      example:
+        {
+          'total': 2,
+          'per_page': 10,
+          'current_page': 1,
+          'last_page': 1,
+          'first_page': 1,
+          'first_page_url': '/?page=1',
+          'last_page_url': '/?page=1',
+          'next_page_url': null,
+          'previous_page_url': null,
+        }
 
     # user schemas
     User:
@@ -445,6 +661,48 @@ components:
           example: 123456
           required: true
       example: { 'uid': 'johndoe', 'password': '123456' }
+    SignUp:
+      $ref: '#/components/schemas/UserCreate'
+
+    # role schemas
+    Role:
+      type: object
+      properties:
+        id:
+          type: number
+          description: The unique identifier for a role.
+          example: 1
+        name:
+          type: string
+          description: The name of the role.
+          example: Admin
+        slug:
+          type: string
+          description: The slug of the role.
+          example: admin
+        description:
+          type: string
+          description: The description of the role.
+          example: Administrator
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the role was created.
+          example: 2024-05-05T22:54:02.362+00:00
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time the role was last updated.
+          example: 2024-05-05T22:54:02.362+00:00
+      example:
+        {
+          'id': 1,
+          'name': 'Root',
+          'description': null,
+          'slug': 'root',
+          'created_at': '2024-11-25T03:52:55.924+00:00',
+          'updated_at': '2024-11-25T03:52:55.925+00:00',
+        }
 
     # health schemas
     HealthCheckResponse:
