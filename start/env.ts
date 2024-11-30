@@ -24,13 +24,6 @@ export default await Env.create(new URL('../', import.meta.url), {
   LOG_LEVEL: Env.schema.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']),
   /*
   |----------------------------------------------------------
-  | Variables for configuring jwt
-  |----------------------------------------------------------
-  */
-  ACCESS_TOKEN_SECRET: Env.schema.string(),
-  REFRESH_TOKEN_SECRET: Env.schema.string(),
-  /*
-  |----------------------------------------------------------
   | Variables for configuring database connection
   |----------------------------------------------------------
   */

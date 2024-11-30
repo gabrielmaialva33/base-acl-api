@@ -1,35 +1,39 @@
 import { defineConfig } from '@adonisjs/auth'
 import { tokensGuard, tokensUserProvider } from '@adonisjs/auth/access_tokens'
 import type { Authenticators, InferAuthEvents } from '@adonisjs/auth/types'
+import { sessionGuard, sessionUserProvider } from '@adonisjs/auth/session'
+import { basicAuthGuard, basicAuthUserProvider } from '@adonisjs/auth/basic_auth'
 
-/*
- * Uncomment the following snippet if you want to use
- * the JWT guard for authenticating users.
- */
-
-// const authConfig = defineConfig({
-//   default: 'jwt',
-//   guards: {
-//     jwt: jwtGuard({
-//       // tokenExpiresIn is the duration of the validity of the token, it's a optional value
-//       tokenExpiresIn: '1h',
-//       // if you want to use cookies for the authentication instead of the bearer token (optional)
-//       useCookies: true,
-//       provider: sessionUserProvider({
-//         model: () => import('#modules/user/models/user'),
-//       }),s
-//     }),
-//   },
-// })
+import { jwtGuard } from '#auth/guards/jwt/define_config'
+import { JwtGuardUser } from '#auth/guards/jwt/types'
 
 const authConfig = defineConfig({
-  default: 'api',
+  default: 'jwt',
   guards: {
     api: tokensGuard({
       provider: tokensUserProvider({
         tokens: 'accessTokens',
         model: () => import('#modules/user/models/user'),
       }),
+    }),
+    web: sessionGuard({
+      useRememberMeTokens: false,
+      provider: sessionUserProvider({
+        model: () => import('#modules/user/models/user'),
+      }),
+    }),
+    basicAuth: basicAuthGuard({
+      provider: basicAuthUserProvider({
+        model: () => import('#modules/user/models/user'),
+      }),
+    }),
+    jwt: jwtGuard({
+      tokenExpiresIn: '1h',
+      useCookies: true,
+      provider: sessionUserProvider({
+        model: () => import('#modules/user/models/user'),
+      }),
+      content: <User>(user: JwtGuardUser<User>) => ({ userId: user.getId() }),
     }),
   },
 })

@@ -2,10 +2,9 @@ import { inject } from '@adonisjs/core'
 
 import JwtService from '#shared/jwt/jwt_service'
 import env from '#start/env'
+import { BaseJwtContent } from '#auth/guards/jwt/types'
 
-type GenerateAuthTokens = {
-  user_id: number
-}
+export interface JwtContent extends BaseJwtContent {}
 
 type GenerateAuthTokensResponse = {
   access_token: string
@@ -16,22 +15,18 @@ type GenerateAuthTokensResponse = {
 export default class JwtAuthTokensService {
   constructor(private jwtService: JwtService) {}
 
-  async run(userId: number): Promise<GenerateAuthTokensResponse> {
-    const accessToken = await this.generateAccessToken({
-      user_id: userId,
-    })
-    const refreshToken = await this.generateRefreshToken({
-      user_id: userId,
-    })
+  async run(payload: JwtContent): Promise<GenerateAuthTokensResponse> {
+    const accessToken = await this.generateAccessToken(payload)
+    const refreshToken = await this.generateRefreshToken(payload)
 
     return { access_token: accessToken, refresh_token: refreshToken }
   }
 
-  private generateAccessToken(payload: GenerateAuthTokens): Promise<string> {
-    return this.jwtService.sign(payload, env.get('ACCESS_TOKEN_SECRET'), '15m')
+  private generateAccessToken(payload: JwtContent): Promise<string> {
+    return this.jwtService.sign(payload, env.get('APP_KEY'), '15m')
   }
 
-  private generateRefreshToken(payload: GenerateAuthTokens): Promise<string> {
-    return this.jwtService.sign(payload, env.get('REFRESH_TOKEN_SECRET'), '3d')
+  private generateRefreshToken(payload: JwtContent): Promise<string> {
+    return this.jwtService.sign(payload, env.get('APP_KEY'), '3d')
   }
 }
