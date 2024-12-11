@@ -59,7 +59,7 @@
     "@adonisjs/auth": "^9.2.4",
     "@adonisjs/core": "^6.16.0",
     "@adonisjs/cors": "^2.2.1",
-    "@adonisjs/i18n": "^2.1.1",
+    "@adonisjs/i18n": "^2.2.0",
     "@adonisjs/lucid": "^21.5.0",
     "@vinejs/vine": "^3.0.0",
     "argon2": "^0.41.1",
