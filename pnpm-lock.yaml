@@ -16,7 +16,7 @@ importers:
         version: 5.0.2(@adonisjs/core@6.17.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@vinejs/vine@3.0.0)(argon2@0.41.1)(bcrypt@5.1.1))
       '@adonisjs/auth':
         specifier: ^9.3.0
-        version: 9.3.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@adonisjs/core@6.17.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@vinejs/vine@3.0.0)(argon2@0.41.1)(bcrypt@5.1.1))(@adonisjs/lucid@21.6.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@adonisjs/core@6.17.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@vinejs/vine@3.0.0)(argon2@0.41.1)(bcrypt@5.1.1))(@vinejs/vine@3.0.0)(luxon@3.5.0)(pg@8.13.1))(@japa/api-client@2.0.4(@japa/assert@4.0.1(@japa/runner@4.1.0))(@japa/runner@4.1.0))(@japa/plugin-adonisjs@3.0.1(@adonisjs/core@6.17.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@vinejs/vine@3.0.0)(argon2@0.41.1)(bcrypt@5.1.1))(@japa/api-client@2.0.4(@japa/assert@4.0.1(@japa/runner@4.1.0))(@japa/runner@4.1.0))(@japa/runner@4.1.0))
+        version: 9.3.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@adonisjs/core@6.17.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@vinejs/vine@3.0.0)(argon2@0.41.1)(bcrypt@5.1.1))(@adonisjs/lucid@21.6.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@adonisjs/core@6.17.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@vinejs/vine@3.0.0)(argon2@0.41.1)(bcrypt@5.1.1))(@vinejs/vine@3.0.0)(luxon@3.5.0)(pg@8.13.1))(@japa/api-client@2.0.4(@japa/assert@4.0.1(@japa/runner@4.2.0))(@japa/runner@4.2.0))(@japa/plugin-adonisjs@3.0.1(@adonisjs/core@6.17.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@vinejs/vine@3.0.0)(argon2@0.41.1)(bcrypt@5.1.1))(@japa/api-client@2.0.4(@japa/assert@4.0.1(@japa/runner@4.2.0))(@japa/runner@4.2.0))(@japa/runner@4.2.0))
       '@adonisjs/core':
         specifier: ^6.17.0
         version: 6.17.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@vinejs/vine@3.0.0)(argon2@0.41.1)(bcrypt@5.1.1)
@@ -65,16 +65,16 @@ importers:
         version: 1.4.0
       '@japa/api-client':
         specifier: ^2.0.4
-        version: 2.0.4(@japa/assert@4.0.1(@japa/runner@4.1.0))(@japa/runner@4.1.0)
+        version: 2.0.4(@japa/assert@4.0.1(@japa/runner@4.2.0))(@japa/runner@4.2.0)
       '@japa/assert':
         specifier: ^4.0.1
-        version: 4.0.1(@japa/runner@4.1.0)
+        version: 4.0.1(@japa/runner@4.2.0)
       '@japa/plugin-adonisjs':
         specifier: ^3.0.1
-        version: 3.0.1(@adonisjs/core@6.17.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@vinejs/vine@3.0.0)(argon2@0.41.1)(bcrypt@5.1.1))(@japa/api-client@2.0.4(@japa/assert@4.0.1(@japa/runner@4.1.0))(@japa/runner@4.1.0))(@japa/runner@4.1.0)
+        version: 3.0.1(@adonisjs/core@6.17.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@vinejs/vine@3.0.0)(argon2@0.41.1)(bcrypt@5.1.1))(@japa/api-client@2.0.4(@japa/assert@4.0.1(@japa/runner@4.2.0))(@japa/runner@4.2.0))(@japa/runner@4.2.0)
       '@japa/runner':
-        specifier: ^4.1.0
-        version: 4.1.0
+        specifier: ^4.2.0
+        version: 4.2.0
       '@swc/core':
         specifier: 1.10.7
         version: 1.10.7
@@ -434,8 +434,8 @@ packages:
     resolution: {integrity: sha512-+vaqMiPnVaxlKH1sAwRQ80AwzlPysPKivhB8q1I2+BGe35lNrfiHKGMC52fuGAZBNuH5W2nInSCxr4cN/BTEIQ==}
     engines: {node: '>=18.16.0'}
 
-  '@japa/errors-printer@4.1.0':
-    resolution: {integrity: sha512-PdmNFcVYU//vbVeLR+lEOT8DckVgoVVx/JxuTulM/IHCEzz7zsYBY9BYEjcIxXY34nAMqLAkRSmnjUnL0tiJVA==}
+  '@japa/errors-printer@4.1.2':
+    resolution: {integrity: sha512-exl/r07ssJhEEsMdFT2sXgP1sV7Tp3mZvYUEDMXZ8YjWZPHTFLLcA7o9q9FJSSB1ITrEIbx2SWTB+2fFUaZ3NA==}
     engines: {node: '>=18.16.0'}
 
   '@japa/plugin-adonisjs@3.0.1':
@@ -455,8 +455,8 @@ packages:
       playwright:
         optional: true
 
-  '@japa/runner@4.1.0':
-    resolution: {integrity: sha512-tbKp4yuhy+LjOPEWOF9YaB9lhmqVvrcpAkkLysG2q3gKY7FFSaMaUlVc25eufuvZ7KMW+Gx03Sma05/vB4EztQ==}
+  '@japa/runner@4.2.0':
+    resolution: {integrity: sha512-e3BFn1rca/OTiagilkmRTrLVhl00iC/LrY5j4Ns/VZDONYHs9BKAbHaImxjD1zoHMEhwQEF+ce7fgMO/BK+lfg==}
     engines: {node: '>=18.16.0'}
 
   '@jest/schemas@29.6.3':
@@ -1221,6 +1221,10 @@ packages:
 
   emittery@1.0.3:
     resolution: {integrity: sha512-tJdCJitoy2lrC2ldJcqN4vkqJ00lT+tOWNT1hBJjO/3FDMJa5TTIiYGCKGkn/WfCyOzUMObeohbVTj00fhiLiA==}
+    engines: {node: '>=14.16'}
+
+  emittery@1.1.0:
+    resolution: {integrity: sha512-rsX7ktqARv/6UQDgMaLfIqUWAEzzbCQiVh7V9rhDXp6c37yoJcks12NVD+XPkgl4AEavmNhVfrhGoqYwIsMYYA==}
     engines: {node: '>=14.16'}
 
   emoji-regex@10.4.0:
@@ -2691,6 +2695,10 @@ packages:
     resolution: {integrity: sha512-rfgpoi08xagF3JSdtJlCwMq9DGNDE0IMh3Mkpc1wUypg9vPi786AiqeBBKcqvIkq42azsBM85N490fyZjeUftw==}
     engines: {node: '>=16'}
 
+  type-fest@4.33.0:
+    resolution: {integrity: sha512-s6zVrxuyKbbAsSAD5ZPTB77q4YIdRctkTbJ2/Dqlinwz+8ooH2gd+YA7VA6Pa93KML9GockVvoxjZ2vHP+mu8g==}
+    engines: {node: '>=16'}
+
   type-is@1.6.18:
     resolution: {integrity: sha512-TkRKr9sUTxEH8MdfuCSP7VizJyzRNMjj2J2do2Jr3Kym598JVdEksuzPQCnlFPW4ky9Q+iA+ma9BGm06XQBy8g==}
     engines: {node: '>= 0.6'}
@@ -2831,8 +2839,8 @@ packages:
   youch@3.3.4:
     resolution: {integrity: sha512-UeVBXie8cA35DS6+nBkls68xaBBXCye0CNznrhszZjTbRVnJKQuNsyLKBTTL4ln1o1rh2PKtv35twV7irj5SEg==}
 
-  youch@4.1.0-beta.4:
-    resolution: {integrity: sha512-sknU8tgzmqx7PJBEqAdqBYjleLjHfNnFBTi3HwQTh6I+4OoJaIHkezxxUJ/ta7cpfgdG87bdYPCucVZV+GzhRA==}
+  youch@4.1.0-beta.5:
+    resolution: {integrity: sha512-92+bvKtAjm18S2o+IP0aLBpLtzY332Ji9geNLp07cLgHsK3aHVjWrg2eyE5LIKMv6j+GWu+Ehx4My7BTXxMbsA==}
     engines: {node: '>=20.6.0'}
 
 snapshots:
@@ -2889,7 +2897,7 @@ snapshots:
     transitivePeerDependencies:
       - babel-plugin-macros
 
-  '@adonisjs/auth@9.3.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@adonisjs/core@6.17.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@vinejs/vine@3.0.0)(argon2@0.41.1)(bcrypt@5.1.1))(@adonisjs/lucid@21.6.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@adonisjs/core@6.17.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@vinejs/vine@3.0.0)(argon2@0.41.1)(bcrypt@5.1.1))(@vinejs/vine@3.0.0)(luxon@3.5.0)(pg@8.13.1))(@japa/api-client@2.0.4(@japa/assert@4.0.1(@japa/runner@4.1.0))(@japa/runner@4.1.0))(@japa/plugin-adonisjs@3.0.1(@adonisjs/core@6.17.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@vinejs/vine@3.0.0)(argon2@0.41.1)(bcrypt@5.1.1))(@japa/api-client@2.0.4(@japa/assert@4.0.1(@japa/runner@4.1.0))(@japa/runner@4.1.0))(@japa/runner@4.1.0))':
+  '@adonisjs/auth@9.3.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@adonisjs/core@6.17.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@vinejs/vine@3.0.0)(argon2@0.41.1)(bcrypt@5.1.1))(@adonisjs/lucid@21.6.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@adonisjs/core@6.17.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@vinejs/vine@3.0.0)(argon2@0.41.1)(bcrypt@5.1.1))(@vinejs/vine@3.0.0)(luxon@3.5.0)(pg@8.13.1))(@japa/api-client@2.0.4(@japa/assert@4.0.1(@japa/runner@4.2.0))(@japa/runner@4.2.0))(@japa/plugin-adonisjs@3.0.1(@adonisjs/core@6.17.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@vinejs/vine@3.0.0)(argon2@0.41.1)(bcrypt@5.1.1))(@japa/api-client@2.0.4(@japa/assert@4.0.1(@japa/runner@4.2.0))(@japa/runner@4.2.0))(@japa/runner@4.2.0))':
     dependencies:
       '@adonisjs/core': 6.17.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@vinejs/vine@3.0.0)(argon2@0.41.1)(bcrypt@5.1.1)
       '@adonisjs/presets': 2.6.4(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@adonisjs/core@6.17.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@vinejs/vine@3.0.0)(argon2@0.41.1)(bcrypt@5.1.1))
@@ -2897,8 +2905,8 @@ snapshots:
       basic-auth: 2.0.1
     optionalDependencies:
       '@adonisjs/lucid': 21.6.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@adonisjs/core@6.17.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@vinejs/vine@3.0.0)(argon2@0.41.1)(bcrypt@5.1.1))(@vinejs/vine@3.0.0)(luxon@3.5.0)(pg@8.13.1)
-      '@japa/api-client': 2.0.4(@japa/assert@4.0.1(@japa/runner@4.1.0))(@japa/runner@4.1.0)
-      '@japa/plugin-adonisjs': 3.0.1(@adonisjs/core@6.17.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@vinejs/vine@3.0.0)(argon2@0.41.1)(bcrypt@5.1.1))(@japa/api-client@2.0.4(@japa/assert@4.0.1(@japa/runner@4.1.0))(@japa/runner@4.1.0))(@japa/runner@4.1.0)
+      '@japa/api-client': 2.0.4(@japa/assert@4.0.1(@japa/runner@4.2.0))(@japa/runner@4.2.0)
+      '@japa/plugin-adonisjs': 3.0.1(@adonisjs/core@6.17.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@vinejs/vine@3.0.0)(argon2@0.41.1)(bcrypt@5.1.1))(@japa/api-client@2.0.4(@japa/assert@4.0.1(@japa/runner@4.2.0))(@japa/runner@4.2.0))(@japa/runner@4.2.0)
     transitivePeerDependencies:
       - '@adonisjs/assembler'
 
@@ -3242,9 +3250,9 @@ snapshots:
 
   '@humanwhocodes/retry@0.4.1': {}
 
-  '@japa/api-client@2.0.4(@japa/assert@4.0.1(@japa/runner@4.1.0))(@japa/runner@4.1.0)':
+  '@japa/api-client@2.0.4(@japa/assert@4.0.1(@japa/runner@4.2.0))(@japa/runner@4.2.0)':
     dependencies:
-      '@japa/runner': 4.1.0
+      '@japa/runner': 4.2.0
       '@poppinss/hooks': 7.2.5
       '@poppinss/macroable': 1.0.4
       '@types/superagent': 8.1.9
@@ -3252,13 +3260,13 @@ snapshots:
       set-cookie-parser: 2.7.1
       superagent: 8.1.2
     optionalDependencies:
-      '@japa/assert': 4.0.1(@japa/runner@4.1.0)
+      '@japa/assert': 4.0.1(@japa/runner@4.2.0)
     transitivePeerDependencies:
       - supports-color
 
-  '@japa/assert@4.0.1(@japa/runner@4.1.0)':
+  '@japa/assert@4.0.1(@japa/runner@4.2.0)':
     dependencies:
-      '@japa/runner': 4.1.0
+      '@japa/runner': 4.2.0
       '@poppinss/macroable': 1.0.4
       '@types/chai': 5.0.1
       assertion-error: 2.0.1
@@ -3270,28 +3278,28 @@ snapshots:
       '@poppinss/macroable': 1.0.4
       '@poppinss/string': 1.2.0
       async-retry: 1.3.3
-      emittery: 1.0.3
+      emittery: 1.1.0
       string-width: 7.2.0
       time-span: 5.1.0
 
-  '@japa/errors-printer@4.1.0':
+  '@japa/errors-printer@4.1.2':
     dependencies:
       '@poppinss/colors': 4.1.4
       jest-diff: 29.7.0
       supports-color: 10.0.0
-      youch: 4.1.0-beta.4
+      youch: 4.1.0-beta.5
 
-  '@japa/plugin-adonisjs@3.0.1(@adonisjs/core@6.17.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@vinejs/vine@3.0.0)(argon2@0.41.1)(bcrypt@5.1.1))(@japa/api-client@2.0.4(@japa/assert@4.0.1(@japa/runner@4.1.0))(@japa/runner@4.1.0))(@japa/runner@4.1.0)':
+  '@japa/plugin-adonisjs@3.0.1(@adonisjs/core@6.17.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@vinejs/vine@3.0.0)(argon2@0.41.1)(bcrypt@5.1.1))(@japa/api-client@2.0.4(@japa/assert@4.0.1(@japa/runner@4.2.0))(@japa/runner@4.2.0))(@japa/runner@4.2.0)':
     dependencies:
       '@adonisjs/core': 6.17.0(@adonisjs/assembler@7.8.2(typescript@5.7.3))(@vinejs/vine@3.0.0)(argon2@0.41.1)(bcrypt@5.1.1)
-      '@japa/runner': 4.1.0
+      '@japa/runner': 4.2.0
     optionalDependencies:
-      '@japa/api-client': 2.0.4(@japa/assert@4.0.1(@japa/runner@4.1.0))(@japa/runner@4.1.0)
+      '@japa/api-client': 2.0.4(@japa/assert@4.0.1(@japa/runner@4.2.0))(@japa/runner@4.2.0)
 
-  '@japa/runner@4.1.0':
+  '@japa/runner@4.2.0':
     dependencies:
       '@japa/core': 10.3.0
-      '@japa/errors-printer': 4.1.0
+      '@japa/errors-printer': 4.1.2
       '@poppinss/colors': 4.1.4
       '@poppinss/hooks': 7.2.5
       fast-glob: 3.3.3
@@ -4033,6 +4041,8 @@ snapshots:
 
   emittery@1.0.3: {}
 
+  emittery@1.1.0: {}
+
   emoji-regex@10.4.0: {}
 
   emoji-regex@8.0.0: {}
@@ -4389,7 +4399,7 @@ snapshots:
       lowercase-keys: 3.0.0
       p-cancelable: 4.0.1
       responselike: 3.0.0
-      type-fest: 4.32.0
+      type-fest: 4.33.0
 
   graceful-fs@4.2.11: {}
 
@@ -4894,7 +4904,7 @@ snapshots:
     dependencies:
       '@babel/code-frame': 7.26.2
       index-to-position: 0.1.2
-      type-fest: 4.32.0
+      type-fest: 4.33.0
 
   parse-ms@4.0.0: {}
 
@@ -5101,7 +5111,7 @@ snapshots:
       '@types/normalize-package-data': 2.4.4
       normalize-package-data: 6.0.2
       parse-json: 8.1.0
-      type-fest: 4.32.0
+      type-fest: 4.33.0
       unicorn-magic: 0.1.0
 
   readable-stream@3.6.2:
@@ -5179,7 +5189,7 @@ snapshots:
 
   serialize-error@12.0.0:
     dependencies:
-      type-fest: 4.32.0
+      type-fest: 4.33.0
 
   set-blocking@2.0.0: {}
 
@@ -5427,6 +5437,8 @@ snapshots:
 
   type-fest@4.32.0: {}
 
+  type-fest@4.33.0: {}
+
   type-is@1.6.18:
     dependencies:
       media-typer: 0.3.0
@@ -5543,7 +5555,7 @@ snapshots:
       mustache: 4.2.0
       stacktracey: 2.1.8
 
-  youch@4.1.0-beta.4:
+  youch@4.1.0-beta.5:
     dependencies:
       '@poppinss/dumper': 0.6.2
       '@speed-highlight/core': 1.2.7

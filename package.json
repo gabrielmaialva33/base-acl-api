@@ -42,7 +42,7 @@
     "@japa/api-client": "^2.0.4",
     "@japa/assert": "^4.0.1",
     "@japa/plugin-adonisjs": "^3.0.1",
-    "@japa/runner": "^4.1.0",
+    "@japa/runner": "^4.2.0",
     "@swc/core": "1.10.7",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/luxon": "^3.4.2",
