@@ -20,12 +20,16 @@ servers:
   - url: http://localhost:3333
     description: Local server
 tags:
+  - name: Health
+    description: Operations related to system health
   - name: Session
     description: Operations related to sessions
   - name: User
     description: Operations related to users
   - name: Role
     description: Operations related to roles
+  - name: File
+    description: Operations related to files
 paths:
   /health:
     get:
@@ -386,6 +390,43 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFound'
+
+  /files/upload:
+    post:
+      summary: Upload a file
+      description: Upload a file.
+      tags:
+        - File
+      security:
+        - bearerToken: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: The uploaded file.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    description: The URL of the uploaded file.
+                    example: http://localhost:3333/uploads/1/file.jpg
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
 components:
   securitySchemes:
     bearerToken:
