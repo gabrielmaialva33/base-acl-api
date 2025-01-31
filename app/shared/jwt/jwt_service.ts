@@ -12,6 +12,7 @@ export default class JwtService {
 
   async sign(payload: any, secret: string, expiresIn: string): Promise<string> {
     return new Promise((resolve, reject) => {
+      // @ts-ignore
       jwt.sign(payload, secret, { expiresIn }, (err, token) => {
         if (err) return reject(err)
         if (!token) return reject('Token not generated')
