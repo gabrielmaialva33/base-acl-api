@@ -9,4 +9,10 @@ export default class RolesRepository
   constructor() {
     super(Role)
   }
+
+  isAdmin(roles: Role[]): boolean {
+    const { ROOT, ADMIN } = IRole.Slugs
+
+    return roles.some((role) => [ROOT, ADMIN].includes(role.slug))
+  }
 }
