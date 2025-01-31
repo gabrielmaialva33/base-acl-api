@@ -35,6 +35,7 @@ export default defineConfig({
     () => import('@adonisjs/i18n/i18n_provider'),
     () => import('#providers/app_provider'),
     () => import('@adonisjs/ally/ally_provider'),
+    () => import('@adonisjs/drive/drive_provider'),
   ],
 
   /*
