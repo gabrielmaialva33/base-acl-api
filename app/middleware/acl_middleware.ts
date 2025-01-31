@@ -4,7 +4,7 @@ import type { NextFn } from '@adonisjs/core/types/http'
 
 import IRole from '#modules/role/interfaces/role_interface'
 import UnauthorizedException from '#exceptions/unauthorized_exception'
-import GetUserService from '#modules/user/services/read_user/get_user_service'
+import GetUserService from '#modules/user/services/get-user/get-user.service'
 
 export default class AclMiddleware {
   async handle(
@@ -17,7 +17,9 @@ export default class AclMiddleware {
 
     if (user) {
       await user.load('roles')
-      const hasNecessaryRole = user.roles.some((role) => opts.role_slugs.includes(role.slug))
+      const hasNecessaryRole = user.roles.some((role: { slug: IRole.Slugs }) =>
+        opts.role_slugs.includes(role.slug)
+      )
       if (hasNecessaryRole) return next()
     }
 
