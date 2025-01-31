@@ -1,8 +1,8 @@
 import { inject } from '@adonisjs/core'
 
-import JwtService from '#shared/jwt/jwt_service'
 import env from '#start/env'
 import { BaseJwtContent } from '#auth/guards/jwt/types'
+import JwtService from '#shared/jwt/jwt_service'
 
 export interface JwtContent extends BaseJwtContent {}
 

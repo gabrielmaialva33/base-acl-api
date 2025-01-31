@@ -1,7 +1,7 @@
 import { inject } from '@adonisjs/core'
 
+import JwtAuthTokensService from '#modules/user/services/jwt/jwt-auth-tokens.service'
 import UsersRepository from '#modules/user/repositories/users_repository'
-import JwtAuthTokensService from '#modules/user/services/jwt/jwt_auth_tokens_service'
 
 type SignInRequest = {
   uid: string

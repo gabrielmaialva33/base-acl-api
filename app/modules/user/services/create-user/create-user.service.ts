@@ -1,5 +1,4 @@
 import { inject } from '@adonisjs/core'
-
 import UsersRepository from '#modules/user/repositories/users_repository'
 import IUser from '#modules/user/interfaces/user_interface'
 

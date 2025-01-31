@@ -1,8 +1,8 @@
 import { inject } from '@adonisjs/core'
 
-import IUser from '#modules/user/interfaces/user_interface'
+import JwtAuthTokensService from '#modules/user/services/jwt/jwt-auth-tokens.service'
 import UsersRepository from '#modules/user/repositories/users_repository'
-import JwtAuthTokensService from '#modules/user/services/jwt/jwt_auth_tokens_service'
+import IUser from '#modules/user/interfaces/user_interface'
 
 @inject()
 export default class SignUpService {
