@@ -1,7 +1,7 @@
 import { BaseSchema } from '@adonisjs/lucid/schema'
 import app from '@adonisjs/core/services/app'
 
-import CreateDefaultRolesService from '#modules/role/services/create-role/create-default-roles.service'
+import CreateDefaultRolesService from '#modules/role/services/create-role/create_default_roles_service'
 
 export default class extends BaseSchema {
   async up() {
