@@ -4,7 +4,7 @@ import type { NextFn } from '@adonisjs/core/types/http'
 
 import IRole from '#modules/role/interfaces/role_interface'
 import UnauthorizedException from '#exceptions/unauthorized_exception'
-import GetUserService from '#modules/user/services/get-user/get-user.service'
+import GetUserService from '#modules/user/services/get-user/get_user_service'
 
 export default class AclMiddleware {
   async handle(
