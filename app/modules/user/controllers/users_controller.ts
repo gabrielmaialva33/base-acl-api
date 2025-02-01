@@ -2,11 +2,11 @@ import { inject } from '@adonisjs/core'
 import { HttpContext } from '@adonisjs/core/http'
 import app from '@adonisjs/core/services/app'
 
-import PaginateUserService from '#modules/user/services/paginate-users/paginate-user.service'
-import GetUserService from '#modules/user/services/get-user/get-user.service'
-import CreateUserService from '#modules/user/services/create-user/create-user.service'
-import EditUserService from '#modules/user/services/edit-user/edit-user.service'
-import DeleteUserService from '#modules/user/services/delete-user/delete-user.service'
+import PaginateUserService from '#modules/user/services/paginate-users/paginate_user_service'
+import GetUserService from '#modules/user/services/get-user/get_user_service'
+import CreateUserService from '#modules/user/services/create-user/create_user_service'
+import EditUserService from '#modules/user/services/edit-user/edit_user_service'
+import DeleteUserService from '#modules/user/services/delete-user/delete_user_service'
 
 import { createUserValidator, editUserValidator } from '#modules/user/validators/users_validator'
 

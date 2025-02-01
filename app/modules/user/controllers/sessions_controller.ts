@@ -3,8 +3,8 @@ import { HttpContext } from '@adonisjs/core/http'
 import { createUserValidator, signInValidator } from '#modules/user/validators/users_validator'
 import app from '@adonisjs/core/services/app'
 
-import SignInService from '#modules/user/services/sign-in/sign-in.service'
-import SignUpService from '#modules/user/services/sign-up/sign-up.service'
+import SignInService from '#modules/user/services/sign-in/sign_in_service'
+import SignUpService from '#modules/user/services/sign-up/sign_up_service'
 
 export default class SessionsController {
   async signIn({ request, response }: HttpContext) {
