@@ -1,4 +1,4 @@
-version: '3.8'
+---
 services:
   app:
     build:
@@ -10,7 +10,6 @@ services:
       - '3333:3333'
     depends_on:
       - postgres
-      - redis
     env_file:
       - .env
     environment:
@@ -25,26 +24,83 @@ services:
       REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET}
 
       DB_HOST: postgres
-      DB_PORT: ${PG_PORT}
-      DB_USER: ${PG_USER}
-      DB_PASSWORD: ${PG_PASSWORD}
-      DB_DATABASE: ${PG_DB_NAME}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+
+      # Web Clients
+      DISCORD_CLIENT_ID: ${DISCORD_CLIENT_ID}
+      DISCORD_CLIENT_SECRET: ${DISCORD_CLIENT_SECRET}
+
+      FACEBOOK_CLIENT_ID: ${FACEBOOK_CLIENT_ID}
+      FACEBOOK_CLIENT_SECRET: ${FACEBOOK_CLIENT_SECRET}
+
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID}
+      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET}
+
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+
+      LINKEDIN_CLIENT_ID: ${LINKEDIN_CLIENT_ID}
+      LINKEDIN_CLIENT_SECRET: ${LINKEDIN_CLIENT_SECRET}
+
+      SPOTIFY_CLIENT_ID: ${SPOTIFY_CLIENT_ID}
+      SPOTIFY_CLIENT_SECRET: ${SPOTIFY_CLIENT_SECRET}
+
+      TWITTER_CLIENT_ID: ${TWITTER_CLIENT_ID}
+      TWITTER_CLIENT_SECRET: ${TWITTER_CLIENT_SECRET}
+
+      # SMTP
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASS: ${SMTP_PASS}
+
+      # Drive
+      DRIVE_DISK: ${DRIVE_DISK}
+
+      # AWS
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${AWS_REGION}
+
+      # S3
+      S3_BUCKET: ${S3_BUCKET}
+
+      # Digital Ocean Spaces
+      SPACES_KEY: ${SPACES_KEY}
+      SPACES_SECRET: ${SPACES_SECRET}
+      SPACES_REGION: ${SPACES_REGION}
+      SPACES_BUCKET: ${SPACES_BUCKET}
+      SPACES_ENDPOINT: ${SPACES_ENDPOINT}
+
+      # R2
+      R2_KEY: ${R2_KEY}
+      R2_SECRET: ${R2_SECRET}
+      R2_BUCKET: ${R2_BUCKET}
+      R2_ENDPOINT: ${R2_ENDPOINT}
+
+      # GCS
+      GCS_KEY: ${GCS_KEY}
+      GCS_BUCKET: ${GCS_BUCKET}
 
     networks:
       - app-network
+
   postgres:
     image: postgres:latest
     container_name: base-acl-postgres
     healthcheck:
-      test: ['CMD', 'pg_isready', '-q', '-d', 'postgres', '-U', 'postgres']
+      test: [ 'CMD', 'pg_isready', '-q', '-d', '${DB_DATABASE}', '-U', '${DB_USER}' ]
       timeout: 45s
       interval: 10s
       retries: 10
     restart: always
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_DATABASE}
     ports:
       - '5432:5432'
     expose:
@@ -54,8 +110,10 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - app-network
+
 networks:
   app-network:
     driver: bridge
+
 volumes:
   database:
