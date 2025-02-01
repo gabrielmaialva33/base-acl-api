@@ -1,6 +1,6 @@
 import { inject } from '@adonisjs/core'
 import app from '@adonisjs/core/services/app'
-import GetUserService from '#modules/user/services/get-user/get-user.service'
+import GetUserService from '#modules/user/services/get-user/get_user_service'
 
 type SyncRolesRequest = {
   userId: number

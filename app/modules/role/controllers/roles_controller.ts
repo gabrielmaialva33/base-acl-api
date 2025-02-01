@@ -2,8 +2,8 @@ import { inject } from '@adonisjs/core'
 import { HttpContext } from '@adonisjs/core/http'
 import app from '@adonisjs/core/services/app'
 
-import ListRolesService from '#modules/role/services/list-roles/list-roles.service'
-import SyncRolesService from '#modules/role/services/attach-roles/sync-roles.service'
+import ListRolesService from '#modules/role/services/list-roles/list_roles_service'
+import SyncRolesService from '#modules/role/services/attach-roles/sync_roles_service'
 
 import { attachRoleValidator } from '#modules/role/validation/roles_validator'
 
