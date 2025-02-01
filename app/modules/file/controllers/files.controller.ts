@@ -1,7 +1,7 @@
 import { HttpContext } from '@adonisjs/core/http'
 
 import app from '@adonisjs/core/services/app'
-import UploadFileService from '#modules/file/services/upload-file/upload-file.service'
+import UploadFileService from '#modules/file/services/upload-file/upload_file_service'
 
 export default class FilesController {
   async upload({ request, response }: HttpContext) {
