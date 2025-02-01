@@ -19,6 +19,7 @@
     "test": "node ace test unit",
     "test:e2e": "node ace test",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
     "docker": "node ace migration:run && node ace db:seed && node bin/server.js"
