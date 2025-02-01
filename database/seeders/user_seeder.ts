@@ -5,7 +5,9 @@ import { UserFactory } from '#database/factories/user_factory'
 
 export default class extends BaseSeeder {
   async run() {
-    const users = await UserFactory.createMany(20)
+    const users = await UserFactory.merge({
+      password: '123456',
+    }).createMany(20)
     await User.createMany(users)
   }
 }
