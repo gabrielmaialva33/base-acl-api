@@ -16,7 +16,8 @@
     "start": "node bin/server.js",
     "build": "node ace build",
     "dev": "node ace serve --hmr",
-    "test": "node ace test",
+    "test": "node ace test unit",
+    "test:e2e": "node ace test",
     "lint": "eslint .",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
@@ -60,6 +61,7 @@
     "pino-pretty": "^13.0.0",
     "prettier": "^3.4.2",
     "prettier-edgejs": "^0.2.34",
+    "ts-mockito": "^2.6.1",
     "ts-node-maintained": "^10.9.5",
     "typescript": "~5.7.3"
   },
