@@ -19,7 +19,7 @@
     "test": "node ace test unit",
     "test:e2e": "node ace test",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint:fix": "eslint \"{app,providers,config,tests,start}/**/*.ts\" --fix --ignore-pattern pnpm-lock.yaml",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
     "docker": "node ace migration:run && node ace db:seed && node bin/server.js"
