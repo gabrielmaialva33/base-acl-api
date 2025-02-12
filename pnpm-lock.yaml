@@ -112,8 +112,8 @@ importers:
         specifier: ^3.4.2
         version: 3.4.2
       prettier-edgejs:
-        specifier: ^0.2.34
-        version: 0.2.34
+        specifier: ^0.2.35
+        version: 0.2.35
       ts-mockito:
         specifier: ^2.6.1
         version: 2.6.1
@@ -1674,8 +1674,8 @@ packages:
   ecdsa-sig-formatter@1.0.11:
     resolution: {integrity: sha512-nagl3RYrbNv6kQkeJIpt6NJZy8twLB/2vtz6yN9Z4vRKHN4/QZJIEbqohALSgwKdnksuY3k5Addp5lg8sVoVcQ==}
 
-  edgejs-parser@0.2.13:
-    resolution: {integrity: sha512-v4S/ZVmnJu0E1Cf9VezH+XP23ueVE+cZ0aZa/g+an//taIovQsWUskw0EfEFYQnXmCwq5KkX6CvDyVyNaBDzfw==}
+  edgejs-parser@0.2.14:
+    resolution: {integrity: sha512-Qlx1U4bm+3mXwijEGIZBf5RdJpxQUB8AQ8yoSRAatQoHzTX+IW8L3RwKMV99Zw+9LDZI+rMGjBq9xLHUQNMAPw==}
 
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
@@ -2809,8 +2809,8 @@ packages:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
 
-  prettier-edgejs@0.2.34:
-    resolution: {integrity: sha512-rIQklQGc3bvFpfJIBZ3lwslSBEFGkoOg+BYeJT5l3P0k+ZWdHsDE05yEeyUG8qgt8ACW48KAOX3xKp3/zoQWTg==}
+  prettier-edgejs@0.2.35:
+    resolution: {integrity: sha512-wF3bX29xF+OuDAJ/OiRED0NAoCKF1T1mzywhKiETTfPeOqqbYV2j6gd06ze5HfX34Sw+zqFSQjBUTxCTcr5Cqw==}
 
   prettier-linter-helpers@1.0.0:
     resolution: {integrity: sha512-GbK2cP9nraSSUF9N2XwUwqfzlAFlMNYYl+ShE/V+H8a9uNl/oUqB1w2EL54Jh0OlyRSd8RfWYJ3coVS4TROP2w==}
@@ -3696,7 +3696,7 @@ snapshots:
 
   '@adonisjs/prettier-config@1.4.0':
     dependencies:
-      prettier-edgejs: 0.2.34
+      prettier-edgejs: 0.2.35
 
   '@adonisjs/repl@4.1.0':
     dependencies:
@@ -5485,7 +5485,7 @@ snapshots:
     dependencies:
       safe-buffer: 5.2.1
 
-  edgejs-parser@0.2.13:
+  edgejs-parser@0.2.14:
     dependencies:
       chevrotain: 11.0.3
 
@@ -6586,10 +6586,10 @@ snapshots:
 
   prelude-ls@1.2.1: {}
 
-  prettier-edgejs@0.2.34:
+  prettier-edgejs@0.2.35:
     dependencies:
       css: 3.0.0
-      edgejs-parser: 0.2.13
+      edgejs-parser: 0.2.14
       prettier: 3.4.2
       uglify-js: 3.19.3
 
