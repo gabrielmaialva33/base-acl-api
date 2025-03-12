@@ -82,7 +82,7 @@
     "bcrypt": "^5.1.1",
     "jsonwebtoken": "^9.0.2",
     "luxon": "^3.5.0",
-    "pg": "^8.13.1",
+    "pg": "^8.14.0",
     "reflect-metadata": "^0.2.2"
   },
   "hotHook": {
