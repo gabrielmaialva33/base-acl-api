@@ -112,8 +112,8 @@ importers:
         specifier: ^3.4.2
         version: 3.4.2
       prettier-edgejs:
-        specifier: ^0.2.34
-        version: 0.2.34
+        specifier: ^0.2.36
+        version: 0.2.36
       ts-mockito:
         specifier: ^2.6.1
         version: 2.6.1
@@ -571,6 +571,7 @@ packages:
   '@faker-js/faker@9.4.0':
     resolution: {integrity: sha512-85+k0AxaZSTowL0gXp8zYWDIrWclTbRPg/pm/V0dSFZ6W6D4lhcG3uuZl4zLsEKfEvs69xDbLN2cHQudwp95JA==}
     engines: {node: '>=18.0.0', npm: '>=9.0.0'}
+    deprecated: Please update to a newer version
 
   '@formatjs/ecma402-abstract@2.3.2':
     resolution: {integrity: sha512-6sE5nyvDloULiyOMbOTJEEgWL32w+VHkZQs8S02Lnn8Y/O5aQhjOEXwWzvR7SsBE/exxlSpY2EsWZgqHbtLatg==}
@@ -1674,8 +1675,8 @@ packages:
   ecdsa-sig-formatter@1.0.11:
     resolution: {integrity: sha512-nagl3RYrbNv6kQkeJIpt6NJZy8twLB/2vtz6yN9Z4vRKHN4/QZJIEbqohALSgwKdnksuY3k5Addp5lg8sVoVcQ==}
 
-  edgejs-parser@0.2.13:
-    resolution: {integrity: sha512-v4S/ZVmnJu0E1Cf9VezH+XP23ueVE+cZ0aZa/g+an//taIovQsWUskw0EfEFYQnXmCwq5KkX6CvDyVyNaBDzfw==}
+  edgejs-parser@0.2.14:
+    resolution: {integrity: sha512-Qlx1U4bm+3mXwijEGIZBf5RdJpxQUB8AQ8yoSRAatQoHzTX+IW8L3RwKMV99Zw+9LDZI+rMGjBq9xLHUQNMAPw==}
 
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
@@ -2809,12 +2810,16 @@ packages:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
 
-  prettier-edgejs@0.2.34:
-    resolution: {integrity: sha512-rIQklQGc3bvFpfJIBZ3lwslSBEFGkoOg+BYeJT5l3P0k+ZWdHsDE05yEeyUG8qgt8ACW48KAOX3xKp3/zoQWTg==}
+  prettier-edgejs@0.2.36:
+    resolution: {integrity: sha512-MDhy6uLAxFjnHh9o9uL40wLt4dNvPkQRmnA9JRcwQVad+bKcVSCvvGoZigRL1CQzKCSU17WC1maLTKtHCrAPxQ==}
+    deprecated: This package has been renamed to prettier-plugin-edgejs. Please install that instead.
 
   prettier-linter-helpers@1.0.0:
     resolution: {integrity: sha512-GbK2cP9nraSSUF9N2XwUwqfzlAFlMNYYl+ShE/V+H8a9uNl/oUqB1w2EL54Jh0OlyRSd8RfWYJ3coVS4TROP2w==}
     engines: {node: '>=6.0.0'}
+
+  prettier-plugin-edgejs@1.0.0:
+    resolution: {integrity: sha512-MUlHVU3OM8AGznwRlYm0Ah0ckX2NCx0A+VoA2Dgl4bce4aGkaPT9JDZN88no6xLrUNbKsukkjk4KMfREPXf47A==}
 
   prettier@3.4.2:
     resolution: {integrity: sha512-e9MewbtFo+Fevyuxn/4rrcDAaq0IYxPGLvObpQjiZBMAzB9IGmzlnG9RZy3FFas+eBMu2vA0CszMeduow5dIuQ==}
@@ -3696,7 +3701,7 @@ snapshots:
 
   '@adonisjs/prettier-config@1.4.0':
     dependencies:
-      prettier-edgejs: 0.2.34
+      prettier-edgejs: 0.2.36
 
   '@adonisjs/repl@4.1.0':
     dependencies:
@@ -5485,7 +5490,7 @@ snapshots:
     dependencies:
       safe-buffer: 5.2.1
 
-  edgejs-parser@0.2.13:
+  edgejs-parser@0.2.14:
     dependencies:
       chevrotain: 11.0.3
 
@@ -6586,16 +6591,20 @@ snapshots:
 
   prelude-ls@1.2.1: {}
 
-  prettier-edgejs@0.2.34:
+  prettier-edgejs@0.2.36:
     dependencies:
-      css: 3.0.0
-      edgejs-parser: 0.2.13
-      prettier: 3.4.2
-      uglify-js: 3.19.3
+      prettier-plugin-edgejs: 1.0.0
 
   prettier-linter-helpers@1.0.0:
     dependencies:
       fast-diff: 1.3.0
+
+  prettier-plugin-edgejs@1.0.0:
+    dependencies:
+      css: 3.0.0
+      edgejs-parser: 0.2.14
+      prettier: 3.4.2
+      uglify-js: 3.19.3
 
   prettier@3.4.2: {}
 
