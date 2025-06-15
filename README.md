@@ -69,8 +69,9 @@ graph TB
     end
     
     subgraph "Data Layer"
-        PG[(PostgreSQL<br/>Main Database)]
+        TS[(TimescaleDB<br/>Main Database + Time-series)]
         REDIS[(Redis<br/>Cache & Sessions)]
+        PGREST[PostgREST<br/>Auto-generated REST API]
     end
     
     WEB --> ROUTES
@@ -89,14 +90,17 @@ graph TB
     USER --> VALIDATOR
     FILE --> STORAGE
     
-    USER --> PG
-    ROLE --> PG
-    AUTH --> PG
+    USER --> TS
+    ROLE --> TS
+    AUTH --> TS
     AUTH --> REDIS
     
+    TS --> PGREST
+    
     style ROUTES fill:#4A90E2
-    style PG fill:#336791
+    style TS fill:#336791
     style REDIS fill:#DC382D
+    style PGREST fill:#008080
 ```
 
 ### 🔐 Authentication Flow
@@ -107,7 +111,7 @@ sequenceDiagram
     participant API as API Gateway
     participant AUTH as Auth Module
     participant JWT as JWT Service
-    participant DB as PostgreSQL
+    participant DB as TimescaleDB
     participant REDIS as Redis Cache
     
     C->>API: POST /api/v1/sessions/sign-in
@@ -203,13 +207,15 @@ graph TD
 - **🔐 JWT Authentication**: Secure token-based authentication with refresh tokens
 - **👥 Role-Based Access Control**: Fine-grained permissions with ROOT, ADMIN, and USER roles
 - **📁 Modular Architecture**: Clean separation of concerns with feature modules
-- **🗄️ PostgreSQL Database**: Robust data persistence with migrations
+- **🗄️ TimescaleDB**: PostgreSQL + time-series data capabilities
 - **🚀 RESTful API**: Well-structured endpoints following REST principles
 - **📤 File Uploads**: Secure file handling with multiple storage drivers
 - **🏥 Health Monitoring**: Built-in health check endpoints
 - **🔒 Security First**: Password hashing, CORS, rate limiting ready
 - **📝 Request Validation**: DTOs with runtime validation
 - **🌐 i18n Ready**: Internationalization support built-in
+- **🔗 PostgREST Integration**: Auto-generated REST API for direct database access
+- **📊 Time-series Support**: Built on TimescaleDB for analytics and metrics
 
 ### Database Schema
 
@@ -271,7 +277,9 @@ erDiagram
 - **[Typescript](https://www.typescriptlang.org/)**
 - **[Node.js](https://nodejs.org/)**
 - **[AdonisJS](https://adonisjs.com/)**
-- **[PostgreSQL](https://www.postgresql.org/)**
+- **[TimescaleDB](https://www.timescale.com/)** - PostgreSQL for time-series
+- **[Redis](https://redis.io/)** - In-memory data store
+- **[PostgREST](https://postgrest.org/)** - Auto-generated REST API
 - **[Docker](https://www.docker.com/)**
 
 <br>

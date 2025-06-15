@@ -69,8 +69,9 @@ graph TB
     end
     
     subgraph "Camada de Dados"
-        PG[(PostgreSQL<br/>Banco Principal)]
+        TS[(TimescaleDB<br/>Banco Principal + Séries Temporais)]
         REDIS[(Redis<br/>Cache & Sessões)]
+        PGREST[PostgREST<br/>API REST Auto-gerada]
     end
     
     WEB --> ROUTES
@@ -89,14 +90,17 @@ graph TB
     USER --> VALIDATOR
     FILE --> STORAGE
     
-    USER --> PG
-    ROLE --> PG
-    AUTH --> PG
+    USER --> TS
+    ROLE --> TS
+    AUTH --> TS
     AUTH --> REDIS
     
+    TS --> PGREST
+    
     style ROUTES fill:#4A90E2
-    style PG fill:#336791
+    style TS fill:#336791
     style REDIS fill:#DC382D
+    style PGREST fill:#008080
 ```
 
 ### 🔐 Fluxo de Autenticação
@@ -107,7 +111,7 @@ sequenceDiagram
     participant API as Gateway API
     participant AUTH as Módulo Auth
     participant JWT as Serviço JWT
-    participant DB as PostgreSQL
+    participant DB as TimescaleDB
     participant REDIS as Cache Redis
     
     C->>API: POST /api/v1/sessions/sign-in
@@ -203,13 +207,15 @@ graph TD
 - **🔐 Autenticação JWT**: Autenticação segura baseada em tokens com refresh tokens
 - **👥 Controle de Acesso Baseado em Papéis**: Permissões refinadas com papéis ROOT, ADMIN e USER
 - **📁 Arquitetura Modular**: Clara separação de responsabilidades com módulos de funcionalidades
-- **🗄️ Banco de Dados PostgreSQL**: Persistência robusta de dados com migrações
+- **🗄️ TimescaleDB**: PostgreSQL + capacidades de séries temporais
 - **🚀 API RESTful**: Endpoints bem estruturados seguindo princípios REST
 - **📤 Upload de Arquivos**: Manipulação segura de arquivos com múltiplos drivers de armazenamento
 - **🏥 Monitoramento de Saúde**: Endpoints integrados para verificação de saúde
 - **🔒 Segurança em Primeiro Lugar**: Hash de senhas, CORS, rate limiting pronto
 - **📝 Validação de Requisições**: DTOs com validação em tempo de execução
 - **🌐 Pronto para i18n**: Suporte a internacionalização integrado
+- **🔗 Integração PostgREST**: API REST auto-gerada para acesso direto ao banco
+- **📊 Suporte a Séries Temporais**: Construído sobre TimescaleDB para análises e métricas
 
 ### Esquema do Banco de Dados
 
@@ -271,7 +277,9 @@ erDiagram
 - **[Typescript](https://www.typescriptlang.org/)**
 - **[Node.js](https://nodejs.org/)**
 - **[AdonisJS](https://adonisjs.com/)**
-- **[PostgreSQL](https://www.postgresql.org/)**
+- **[TimescaleDB](https://www.timescale.com/)** - PostgreSQL para séries temporais
+- **[Redis](https://redis.io/)** - Armazenamento de dados em memória
+- **[PostgREST](https://postgrest.org/)** - API REST auto-gerada
 - **[Docker](https://www.docker.com/)**
 
 <br>
