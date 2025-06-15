@@ -1,0 +1,8 @@
+successfully_deleted: '{resource} eliminado con éxito.'
+successfully_updated: '{resource} actualizado con éxito.'
+successfully_created: '{resource} creado con éxito.'
+successfully_fetched: '{resource} obtenido con éxito.'
+successfully_listed: '{resource} listado con éxito.'
+user_sign_in: 'Usuario autenticado con éxito.'
+user_sign_up: 'Usuario registrado con éxito.'
+sign_out: 'Sesión cerrada con éxito.'
