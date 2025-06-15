@@ -18,18 +18,6 @@ export default class DetectUserLocaleMiddleware {
     }
   }
 
-  /**
-   * This method reads the user language from the "Accept-Language"
-   * header and returns the best matching locale by checking it
-   * against the supported locales.
-   *
-   * Feel free to use different mechanism for finding user language.
-   */
-  protected getRequestLocale(ctx: HttpContext) {
-    const userLanguages = ctx.request.languages()
-    return i18nManager.getSupportedLocaleFor(userLanguages)
-  }
-
   async handle(ctx: HttpContext, next: NextFn) {
     /**
      * Finding user language
@@ -62,6 +50,18 @@ export default class DetectUserLocaleMiddleware {
     }
 
     return next()
+  }
+
+  /**
+   * This method reads the user language from the "Accept-Language"
+   * header and returns the best matching locale by checking it
+   * against the supported locales.
+   *
+   * Feel free to use different mechanism for finding user language.
+   */
+  protected getRequestLocale(ctx: HttpContext) {
+    const userLanguages = ctx.request.languages()
+    return i18nManager.getSupportedLocaleFor(userLanguages)
   }
 }
 
