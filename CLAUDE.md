@@ -46,7 +46,8 @@ npm run docker            # Run migrations, seed, and start server (for Docker c
 
 ## Architecture Overview
 
-This is a modular AdonisJS v6 API with authentication and role-based access control. The codebase follows a clean architecture pattern with clear separation of concerns.
+This is a modular AdonisJS v6 API with authentication and role-based access control. The codebase follows a clean
+architecture pattern with clear separation of concerns.
 
 ### Module Structure
 
