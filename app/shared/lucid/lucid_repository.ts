@@ -13,13 +13,12 @@ import LucidRepositoryInterface, {
 export default class LucidRepository<T extends typeof BaseModel>
   implements LucidRepositoryInterface<T>
 {
+  static ORDER_ASC = 'asc' as const
+  static ORDER_DESC = 'desc' as const
   protected DEFAULT_PAGE = 1
   protected DEFAULT_PER_PAGE = 10
   protected DEFAULT_SORT = 'id'
   protected DEFAULT_DIRECTION: OrderDirection = 'asc'
-
-  static ORDER_ASC = 'asc' as const
-  static ORDER_DESC = 'desc' as const
 
   constructor(protected model: T) {}
 
@@ -82,6 +81,16 @@ export default class LucidRepository<T extends typeof BaseModel>
     return this.model.firstOrCreate(search, payload)
   }
 
+  destroy<K extends ModelKeys<T>>(
+    field: K,
+    value: ModelAttributes<InstanceType<T>>[K]
+  ): ModelQueryBuilderContract<T, InstanceType<T>> {
+    return this.model
+      .query()
+      .where({ [field]: value })
+      .delete()
+  }
+
   /**
    * ------------------------------------------------------
    * Helpers
@@ -102,16 +111,6 @@ export default class LucidRepository<T extends typeof BaseModel>
         `Invalid direction. Must be "${LucidRepository.ORDER_ASC}" or "${LucidRepository.ORDER_DESC}".`
       )
     }
-  }
-
-  destroy<K extends ModelKeys<T>>(
-    field: K,
-    value: ModelAttributes<InstanceType<T>>[K]
-  ): ModelQueryBuilderContract<T, InstanceType<T>> {
-    return this.model
-      .query()
-      .where({ [field]: value })
-      .delete()
   }
 
   /**
