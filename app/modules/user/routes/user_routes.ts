@@ -24,4 +24,4 @@ router
       role_slugs: [IRole.Slugs.USER],
     }),
   ])
-  .prefix('users')
+  .prefix('/api/v1/users')

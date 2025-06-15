@@ -15,4 +15,4 @@ router
       role_slugs: [IRole.Slugs.ROOT, IRole.Slugs.ADMIN],
     }),
   ])
-  .prefix('admin/roles')
+  .prefix('/api/v1/admin/roles')

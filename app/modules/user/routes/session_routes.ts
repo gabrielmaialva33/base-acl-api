@@ -7,4 +7,4 @@ router
     router.post('/sign-in', [SessionsController, 'signIn']).as('session.signIn')
     router.post('/sign-up', [SessionsController, 'signUp']).as('session.signUp')
   })
-  .prefix('sessions')
+  .prefix('/api/v1/sessions')
