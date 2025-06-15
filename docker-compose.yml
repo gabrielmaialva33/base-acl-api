@@ -9,7 +9,8 @@ services:
     ports:
       - '3333:3333'
     depends_on:
-      - postgres
+      - timescaledb
+      - redis
     env_file:
       - .env
     environment:
@@ -23,11 +24,15 @@ services:
       ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET}
       REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET}
 
-      DB_HOST: postgres
+      DB_HOST: timescaledb
       DB_PORT: ${DB_PORT}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
+
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redis}
 
       # Web Clients
       DISCORD_CLIENT_ID: ${DISCORD_CLIENT_ID}
@@ -88,11 +93,11 @@ services:
     networks:
       - app-network
 
-  postgres:
-    image: postgres:latest
-    container_name: base-acl-postgres
+  timescaledb:
+    image: timescale/timescaledb-ha:pg17
+    container_name: base-acl-timescaledb
     healthcheck:
-      test: ['CMD', 'pg_isready', '-q', '-d', '${DB_DATABASE}', '-U', '${DB_USER}']
+      test: [ 'CMD', 'pg_isready', '-q', '-d', '${DB_DATABASE}', '-U', '${DB_USER}' ]
       timeout: 45s
       interval: 10s
       retries: 10
@@ -111,9 +116,39 @@ services:
     networks:
       - app-network
 
+  redis:
+    image: redis:latest
+    container_name: base-acl-redis
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --requirepass ${REDIS_PASSWORD:-redis}
+    volumes:
+      - redis-data:/data
+    networks:
+      - app-network
+
+  postgrest:
+    image: postgrest/postgrest:latest
+    container_name: base-acl-postgrest
+    restart: always
+    ports:
+      - '3000:3000'
+    environment:
+      PGRST_DB_URI: postgres://${DB_USER}:${DB_PASSWORD}@timescaledb:5432/${DB_DATABASE}
+      PGRST_DB_SCHEMA: public
+      PGRST_DB_ANON_ROLE: web_anon
+      PGRST_JWT_SECRET: ${APP_KEY}
+      PGRST_SERVER_PORT: 3000
+    depends_on:
+      - timescaledb
+    networks:
+      - app-network
+
 networks:
   app-network:
     driver: bridge
 
 volumes:
   database:
+  redis-data:
