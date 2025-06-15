@@ -47,12 +47,12 @@ graph TB
         MOB[Mobile Apps]
         API[External APIs]
     end
-    
+
     subgraph "API Gateway - v1"
         ROUTES["/api/v1/*"]
         MW[Middleware Stack]
     end
-    
+
     subgraph "Modules"
         AUTH[Auth Module<br/>JWT, Sessions]
         USER[User Module<br/>CRUD, Profile]
@@ -60,43 +60,43 @@ graph TB
         FILE[File Module<br/>Upload, Storage]
         HEALTH[Health Module<br/>Status, Monitoring]
     end
-    
+
     subgraph "Core Services"
         JWT[JWT Service]
         HASH[Hash Service]
         VALIDATOR[Validator Service]
         STORAGE[Storage Service]
     end
-    
+
     subgraph "Data Layer"
         TS[(TimescaleDB<br/>Main Database + Time-series)]
         REDIS[(Redis<br/>Cache & Sessions)]
         PGREST[PostgREST<br/>Auto-generated REST API]
     end
-    
+
     WEB --> ROUTES
     MOB --> ROUTES
     API --> ROUTES
-    
+
     ROUTES --> MW
     MW --> AUTH
     MW --> USER
     MW --> ROLE
     MW --> FILE
     MW --> HEALTH
-    
+
     AUTH --> JWT
     AUTH --> HASH
     USER --> VALIDATOR
     FILE --> STORAGE
-    
+
     USER --> TS
     ROLE --> TS
     AUTH --> TS
     AUTH --> REDIS
-    
+
     TS --> PGREST
-    
+
     style ROUTES fill:#4A90E2
     style TS fill:#336791
     style REDIS fill:#DC382D
@@ -113,7 +113,7 @@ sequenceDiagram
     participant JWT as JWT Service
     participant DB as TimescaleDB
     participant REDIS as Redis Cache
-    
+
     C->>API: POST /api/v1/sessions/sign-in
     API->>AUTH: Validate credentials
     AUTH->>DB: Find user by email
@@ -123,9 +123,9 @@ sequenceDiagram
     JWT-->>AUTH: Access & Refresh tokens
     AUTH->>REDIS: Store session
     AUTH-->>C: Return tokens + user data
-    
+
     Note over C,API: Subsequent requests
-    
+
     C->>API: GET /api/v1/users (Bearer token)
     API->>AUTH: Validate JWT
     AUTH->>REDIS: Check session
@@ -141,7 +141,7 @@ graph TD
     subgraph "Application Structure"
         APP[app/]
         MODULES[modules/]
-        
+
         subgraph "User Module"
             USER_M[user/]
             USER_CTRL[controllers/]
@@ -151,7 +151,7 @@ graph TD
             USER_VAL[validators/]
             USER_ROUTES[routes/]
         end
-        
+
         subgraph "Role Module"
             ROLE_M[role/]
             ROLE_CTRL[controllers/]
@@ -159,43 +159,43 @@ graph TD
             ROLE_MODEL[models/]
             ROLE_ROUTES[routes/]
         end
-        
+
         subgraph "File Module"
             FILE_M[file/]
             FILE_CTRL[controllers/]
             FILE_SVC[services/]
             FILE_ROUTES[routes/]
         end
-        
+
         subgraph "Health Module"
             HEALTH_M[health/]
             HEALTH_CTRL[controllers/]
             HEALTH_ROUTES[routes/]
         end
     end
-    
+
     APP --> MODULES
     MODULES --> USER_M
     MODULES --> ROLE_M
     MODULES --> FILE_M
     MODULES --> HEALTH_M
-    
+
     USER_M --> USER_CTRL
     USER_M --> USER_SVC
     USER_M --> USER_REPO
     USER_M --> USER_MODEL
     USER_M --> USER_VAL
     USER_M --> USER_ROUTES
-    
+
     ROLE_M --> ROLE_CTRL
     ROLE_M --> ROLE_SVC
     ROLE_M --> ROLE_MODEL
     ROLE_M --> ROLE_ROUTES
-    
+
     FILE_M --> FILE_CTRL
     FILE_M --> FILE_SVC
     FILE_M --> FILE_ROUTES
-    
+
     HEALTH_M --> HEALTH_CTRL
     HEALTH_M --> HEALTH_ROUTES
 ```
@@ -224,7 +224,7 @@ erDiagram
     USERS ||--o{ USER_ROLES : has
     ROLES ||--o{ USER_ROLES : has
     USERS ||--o{ FILES : uploads
-    
+
     USERS {
         bigint id PK
         string first_name
@@ -238,7 +238,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     ROLES {
         bigint id PK
         string name
@@ -247,7 +247,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     USER_ROLES {
         bigint id PK
         bigint user_id FK
@@ -255,7 +255,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     FILES {
         bigint id PK
         bigint owner_id FK
@@ -345,7 +345,7 @@ graph LR
         SIGNIN[POST /api/v1/sessions/sign-in]
         SIGNUP[POST /api/v1/sessions/sign-up]
     end
-    
+
     subgraph "Protected Routes"
         subgraph "User Routes"
             USER_LIST[GET /api/v1/users]
@@ -354,17 +354,17 @@ graph LR
             USER_UPDATE[PUT /api/v1/users/:id]
             USER_DELETE[DELETE /api/v1/users/:id]
         end
-        
+
         subgraph "Admin Routes"
             ROLE_LIST[GET /api/v1/admin/roles]
             ROLE_ATTACH[PUT /api/v1/admin/roles/attach]
         end
-        
+
         subgraph "File Routes"
             FILE_UPLOAD[POST /api/v1/files/upload]
         end
     end
-    
+
     style HOME fill:#90EE90
     style HEALTH fill:#90EE90
     style SIGNIN fill:#90EE90
@@ -376,19 +376,19 @@ graph LR
 ### 📋 Route Details
 
 | Method     | Endpoint                     | Description            | Auth Required | Roles       |
-|------------|------------------------------|------------------------|---------------|-------------|
-| **GET**    | `/`                          | API information        | ❌             | -           |
-| **GET**    | `/api/v1/health`             | Health check           | ❌             | -           |
-| **POST**   | `/api/v1/sessions/sign-in`   | User login             | ❌             | -           |
-| **POST**   | `/api/v1/sessions/sign-up`   | User registration      | ❌             | -           |
-| **GET**    | `/api/v1/users`              | List users (paginated) | ✅             | USER        |
-| **GET**    | `/api/v1/users/:id`          | Get user by ID         | ✅             | USER        |
-| **POST**   | `/api/v1/users`              | Create user            | ✅             | USER        |
-| **PUT**    | `/api/v1/users/:id`          | Update user            | ✅             | USER        |
-| **DELETE** | `/api/v1/users/:id`          | Delete user            | ✅             | USER        |
-| **GET**    | `/api/v1/admin/roles`        | List roles             | ✅             | ROOT, ADMIN |
-| **PUT**    | `/api/v1/admin/roles/attach` | Attach role to user    | ✅             | ROOT, ADMIN |
-| **POST**   | `/api/v1/files/upload`       | Upload file            | ✅             | USER        |
+| ---------- | ---------------------------- | ---------------------- | ------------- | ----------- |
+| **GET**    | `/`                          | API information        | ❌            | -           |
+| **GET**    | `/api/v1/health`             | Health check           | ❌            | -           |
+| **POST**   | `/api/v1/sessions/sign-in`   | User login             | ❌            | -           |
+| **POST**   | `/api/v1/sessions/sign-up`   | User registration      | ❌            | -           |
+| **GET**    | `/api/v1/users`              | List users (paginated) | ✅            | USER        |
+| **GET**    | `/api/v1/users/:id`          | Get user by ID         | ✅            | USER        |
+| **POST**   | `/api/v1/users`              | Create user            | ✅            | USER        |
+| **PUT**    | `/api/v1/users/:id`          | Update user            | ✅            | USER        |
+| **DELETE** | `/api/v1/users/:id`          | Delete user            | ✅            | USER        |
+| **GET**    | `/api/v1/admin/roles`        | List roles             | ✅            | ROOT, ADMIN |
+| **PUT**    | `/api/v1/admin/roles/attach` | Attach role to user    | ✅            | ROOT, ADMIN |
+| **POST**   | `/api/v1/files/upload`       | Upload file            | ✅            | USER        |
 
 ### 🔄 Request/Response Flow
 
@@ -401,15 +401,15 @@ sequenceDiagram
     participant Service
     participant Repository
     participant Database
-    
+
     Client->>Router: HTTP Request
     Router->>Middleware: Route Match
-    
+
     alt Protected Route
         Middleware->>Middleware: Auth Check
         Middleware->>Middleware: ACL Check
     end
-    
+
     Middleware->>Controller: Request Validated
     Controller->>Service: Business Logic
     Service->>Repository: Data Access
@@ -430,7 +430,6 @@ Insomnia: [Download](https://raw.githubusercontent.com/gabrielmaialva33/base-acl
 This project is under the **MIT** license. [MIT](./LICENSE) ❤️
 
 Liked? Leave a little star to help the project ⭐
-
 
 <br>
 
