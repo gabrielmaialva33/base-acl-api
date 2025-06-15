@@ -92,7 +92,7 @@ services:
     image: postgres:latest
     container_name: base-acl-postgres
     healthcheck:
-      test: [ 'CMD', 'pg_isready', '-q', '-d', '${DB_DATABASE}', '-U', '${DB_USER}' ]
+      test: ['CMD', 'pg_isready', '-q', '-d', '${DB_DATABASE}', '-U', '${DB_USER}']
       timeout: 45s
       interval: 10s
       retries: 10
