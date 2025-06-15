@@ -4,7 +4,7 @@ services:
     image: timescale/timescaledb-ha:pg17
     container_name: base-acl-timescaledb
     healthcheck:
-      test: [ 'CMD', 'pg_isready', '-q', '-d', '${DB_DATABASE}', '-U', '${DB_USER}' ]
+      test: ['CMD', 'pg_isready', '-q', '-d', '${DB_DATABASE}', '-U', '${DB_USER}']
       timeout: 45s
       interval: 10s
       retries: 10
