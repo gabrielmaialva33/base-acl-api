@@ -112,7 +112,7 @@ test.group('Roles admin', (group) => {
 
     response.assertStatus(403)
     response.assertBodyContains({
-      message: 'Access denied',
+      message: 'Permission denied',
     })
   })
 
