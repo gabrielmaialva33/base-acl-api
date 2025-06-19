@@ -1,10 +1,10 @@
 import { test } from '@japa/runner'
 import testUtils from '@adonisjs/core/services/test_utils'
 import app from '@adonisjs/core/services/app'
-import hash from '@adonisjs/core/services/hash'
 import SignInService from '#modules/user/services/sign-in/sign_in_service'
 import User from '#modules/user/models/user'
 import Role from '#modules/role/models/role'
+import IRole from '#modules/role/interfaces/role_interface'
 import db from '@adonisjs/lucid/services/db'
 
 test.group('SignInService', (group) => {
@@ -15,10 +15,10 @@ test.group('SignInService', (group) => {
 
     // Create the role first so afterCreate hook can attach it
     await Role.firstOrCreate(
-      { slug: 'user' },
+      { slug: IRole.Slugs.USER },
       {
         name: 'User',
-        slug: 'user',
+        slug: IRole.Slugs.USER,
         description: 'Regular user role',
       }
     )
@@ -87,18 +87,18 @@ test.group('SignInService', (group) => {
     const password = 'password123'
 
     // Create roles first
-    const userRole = await Role.firstOrCreate(
-      { slug: 'user' },
+    await Role.firstOrCreate(
+      { slug: IRole.Slugs.USER },
       {
         name: 'User',
-        slug: 'user',
+        slug: IRole.Slugs.USER,
         description: 'Regular user role',
       }
     )
 
     const adminRole = await Role.create({
       name: 'Admin',
-      slug: 'admin',
+      slug: IRole.Slugs.ADMIN,
       description: 'Administrator role',
     })
 
@@ -131,10 +131,10 @@ test.group('SignInService', (group) => {
 
     // Ensure user role exists for afterCreate hook
     await Role.firstOrCreate(
-      { slug: 'user' },
+      { slug: IRole.Slugs.USER },
       {
         name: 'User',
-        slug: 'user',
+        slug: IRole.Slugs.USER,
         description: 'Regular user role',
       }
     )
