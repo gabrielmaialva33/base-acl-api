@@ -3,7 +3,7 @@ import app from '@adonisjs/core/services/app'
 import type { NextFn } from '@adonisjs/core/types/http'
 
 import IRole from '#modules/role/interfaces/role_interface'
-import UnauthorizedException from '#exceptions/unauthorized_exception'
+import ForbiddenException from '#exceptions/forbidden_exception'
 import GetUserService from '#modules/user/services/get-user/get_user_service'
 
 export default class AclMiddleware {
@@ -23,6 +23,6 @@ export default class AclMiddleware {
       if (hasNecessaryRole) return next()
     }
 
-    throw new UnauthorizedException(i18n.t('errors.permission_denied'))
+    throw new ForbiddenException(i18n.t('errors.permission_denied'))
   }
 }
