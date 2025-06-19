@@ -14,12 +14,13 @@ export const createUserValidator = vine.compile(
     username: vine
       .string()
       .trim()
+      .minLength(3)
       .unique(async (db, value) => {
         const user = await db.from('users').where('username', value).first()
         return !user
       })
       .optional(),
-    password: vine.string().confirmed({ confirmationField: 'password_confirmation' }).trim(),
+    password: vine.string().minLength(6).confirmed({ confirmationField: 'password_confirmation' }),
   })
 )
 
@@ -52,7 +53,7 @@ export const editUserValidator = vine.withMetaData<{ userId: number }>().compile
       .optional(),
     password: vine
       .string()
-      .trim()
+      .minLength(6)
       .confirmed({ confirmationField: 'password_confirmation' })
       .optional()
       .requiredIfAnyExists(['password']),
@@ -62,6 +63,6 @@ export const editUserValidator = vine.withMetaData<{ userId: number }>().compile
 export const signInValidator = vine.compile(
   vine.object({
     uid: vine.string().trim(),
-    password: vine.string().trim(),
+    password: vine.string(),
   })
 )

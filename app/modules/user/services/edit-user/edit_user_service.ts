@@ -19,7 +19,10 @@ export default class EditUserService {
         })
       )
 
-    await user.merge(payload).save()
+    // Remove email and username from payload to prevent updates
+    const { email, username, ...updateData } = payload as any
+
+    await user.merge(updateData).save()
 
     return user
   }

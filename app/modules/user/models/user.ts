@@ -8,6 +8,7 @@ import {
   beforeFetch,
   beforeFind,
   beforePaginate,
+  beforeSave,
   column,
   manyToMany,
 } from '@adonisjs/lucid/orm'
@@ -42,7 +43,7 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare id: number
 
   @column()
-  declare fullName: string
+  declare full_name: string
 
   @column()
   declare email: string
@@ -54,13 +55,13 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare password: string
 
   @column({ serializeAs: null })
-  declare isDeleted: boolean
+  declare is_deleted: boolean
 
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  declare created_at: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
+  declare updated_at: DateTime | null
 
   /**
    * ------------------------------------------------------
@@ -100,6 +101,13 @@ export default class User extends compose(BaseModel, AuthFinder) {
     }
   }
 
+  @beforeSave()
+  static async hashPassword(user: User) {
+    if (user.$dirty.password && !(await hash.isValidHash(user.password))) {
+      user.password = await hash.make(user.password)
+    }
+  }
+
   @afterCreate()
   static async setDefaultRole(user: User) {
     const role = await Role.findBy('slug', IRole.Slugs.USER)
@@ -113,4 +121,30 @@ export default class User extends compose(BaseModel, AuthFinder) {
    * Query Scopes
    * ------------------------------------------------------
    */
+  static includeRoles(query: model.ModelQueryBuilderContract<typeof User>) {
+    query.preload('roles')
+  }
+
+  /**
+   * Override verifyCredentials to bypass soft delete hooks for authentication
+   */
+  static async verifyCredentials(uid: string, password: string) {
+    const user = await this.query()
+      .where((query) => {
+        query.where('email', uid).orWhere('username', uid)
+      })
+      .where('is_deleted', false)
+      .first()
+
+    if (!user) {
+      throw new Error('Invalid user credentials')
+    }
+
+    const isValidPassword = await hash.verify(user.password, password)
+    if (!isValidPassword) {
+      throw new Error('Invalid user credentials')
+    }
+
+    return user
+  }
 }

@@ -17,6 +17,7 @@ export default class SignInService {
 
   async run({ uid, password }: SignInRequest) {
     const user = await this.usersRepository.verifyCredentials(uid, password)
+    await user.load('roles')
 
     const auth = await this.jwtAuthTokensService.run({ userId: user.id })
     const userJson = user.toJSON()

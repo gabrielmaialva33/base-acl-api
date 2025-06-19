@@ -19,6 +19,6 @@ export default class DeleteUserService {
         })
       )
 
-    await user.merge({ isDeleted: true }).save()
+    await user.merge({ is_deleted: true }).save()
   }
 }
