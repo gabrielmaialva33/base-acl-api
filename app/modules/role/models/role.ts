@@ -26,10 +26,10 @@ export default class Role extends BaseModel {
   declare slug: IRole.Slugs
 
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  declare created_at: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime
+  declare updated_at: DateTime
 
   /**
    * ------------------------------------------------------

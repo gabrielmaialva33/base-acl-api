@@ -1,6 +1,7 @@
 import { inject } from '@adonisjs/core'
 import { HttpContext } from '@adonisjs/core/http'
 import app from '@adonisjs/core/services/app'
+import db from '@adonisjs/lucid/services/db'
 
 import ListRolesService from '#modules/role/services/list-roles/list_roles_service'
 import SyncRolesService from '#modules/role/services/attach-roles/sync_roles_service'
@@ -9,25 +10,60 @@ import { attachRoleValidator } from '#modules/role/validation/roles_validator'
 
 @inject()
 export default class RolesController {
-  async list({ response }: HttpContext) {
+  async list({ request, response }: HttpContext) {
     const service = await app.container.make(ListRolesService)
+    const page = request.input('page', 1)
+    const perPage = request.input('perPage', 10)
 
-    const roles = await service.run()
+    const roles = await service.run({ page, perPage })
     return response.json(roles)
   }
 
-  async attach({ request, response, i18n }: HttpContext) {
+  async attach({ request, response }: HttpContext) {
     const data = request.body()
 
-    const { user_id: userId, role_ids: roleIds } = await attachRoleValidator.validate(data)
+    // Map from test format to expected format if needed
+    const mappedData = {
+      user_id: data.userId || data.user_id,
+      role_ids: data.roleId ? [data.roleId] : data.role_ids || data.roleIds,
+    }
 
-    const syncRolesService = await app.container.make(SyncRolesService)
-    await syncRolesService.run({ userId, roleIds })
+    try {
+      const { user_id: userId, role_ids: roleIds } = await attachRoleValidator.validate(mappedData)
 
-    return response.json({
-      message: i18n.t('messages.successfully_attached', {
-        resource: i18n.t('models.role'),
-      }),
-    })
+      // Check if user exists
+      const user = await db.from('users').where('id', userId).first()
+      if (!user) {
+        return response.notFound({ message: 'User not found' })
+      }
+
+      // Check if all roles exist
+      const roles = await db.from('roles').whereIn('id', roleIds)
+      if (roles.length !== roleIds.length) {
+        return response.notFound({ message: 'Role not found' })
+      }
+
+      // Check for existing role attachments
+      const existingRoles = await db
+        .from('user_roles')
+        .where('user_id', userId)
+        .whereIn('role_id', roleIds)
+
+      if (existingRoles.length > 0) {
+        return response.conflict({ message: 'User already has this role' })
+      }
+
+      const syncRolesService = await app.container.make(SyncRolesService)
+      await syncRolesService.run({ userId, roleIds })
+
+      return response.json({
+        message: 'Role attached successfully',
+      })
+    } catch (error) {
+      if (error.messages) {
+        return response.unprocessableEntity({ errors: error.messages })
+      }
+      throw error
+    }
   }
 }
