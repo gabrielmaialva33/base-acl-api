@@ -102,8 +102,8 @@ export default class User extends compose(BaseModel, AuthFinder) {
   }
 
   @beforeSave()
-  static async hashPassword(user: User) {
-    if (user.$dirty.password && !(await hash.isValidHash(user.password))) {
+  static async hashUserPassword(user: User) {
+    if (user.$dirty.password && !hash.isValidHash(user.password)) {
       user.password = await hash.make(user.password)
     }
   }
@@ -123,28 +123,5 @@ export default class User extends compose(BaseModel, AuthFinder) {
    */
   static includeRoles(query: model.ModelQueryBuilderContract<typeof User>) {
     query.preload('roles')
-  }
-
-  /**
-   * Override verifyCredentials to bypass soft delete hooks for authentication
-   */
-  static async verifyCredentials(uid: string, password: string) {
-    const user = await this.query()
-      .where((query) => {
-        query.where('email', uid).orWhere('username', uid)
-      })
-      .where('is_deleted', false)
-      .first()
-
-    if (!user) {
-      throw new Error('Invalid user credentials')
-    }
-
-    const isValidPassword = await hash.verify(user.password, password)
-    if (!isValidPassword) {
-      throw new Error('Invalid user credentials')
-    }
-
-    return user
   }
 }
