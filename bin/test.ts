@@ -37,6 +37,9 @@ new Ignitor(APP_ROOT, { importer: IMPORTER })
   .tap((app) => {
     app.booting(async () => {
       await import('#start/env')
+      // Importing the BaseModel and SnakeCaseNamingStrategy classes from the Lucid ORM
+      const { BaseModel, SnakeCaseNamingStrategy } = await import('@adonisjs/lucid/orm')
+      BaseModel.namingStrategy = new SnakeCaseNamingStrategy()
     })
     app.listen('SIGTERM', () => app.terminate())
     app.listenIf(app.managedByPm2, 'SIGINT', () => app.terminate())
