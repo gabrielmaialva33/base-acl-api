@@ -9,6 +9,7 @@ namespace IRole {
     ADMIN = 'admin',
     USER = 'user',
     GUEST = 'guest',
+    EDITOR = 'editor',
   }
 }
 
