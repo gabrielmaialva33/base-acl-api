@@ -58,7 +58,7 @@ test.group('Roles admin', (group) => {
     })
   })
 
-  test('should list roles with root permission', async ({ client }) => {
+  test('should list roles with root permission', async ({ client, assert }) => {
     const rootRole = await Role.firstOrCreate(
       { slug: IRole.Slugs.ROOT },
       {
@@ -83,7 +83,7 @@ test.group('Roles admin', (group) => {
     const response = await client.get('/api/v1/admin/roles').loginAs(rootUser)
 
     response.assertStatus(200)
-    response.assert.properties(response.body(), ['data', 'meta'])
+    assert.properties(response.body(), ['data', 'meta'])
   })
 
   test('should deny access for regular users', async ({ client }) => {
@@ -127,10 +127,10 @@ test.group('Roles admin', (group) => {
     )
 
     const editorRole = await Role.firstOrCreate(
-      { slug: 'editor' },
+      { slug: IRole.Slugs.EDITOR },
       {
         name: 'Editor',
-        slug: 'editor',
+        slug: IRole.Slugs.EDITOR,
         description: 'Editor role',
       }
     )

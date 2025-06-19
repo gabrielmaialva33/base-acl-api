@@ -2,6 +2,7 @@ import { test } from '@japa/runner'
 import testUtils from '@adonisjs/core/services/test_utils'
 import User from '#modules/user/models/user'
 import Role from '#modules/role/models/role'
+import IRole from '#modules/role/interfaces/role_interface'
 import File from '#modules/file/models/file'
 import db from '@adonisjs/lucid/services/db'
 import { cuid } from '@adonisjs/core/helpers'
@@ -13,10 +14,10 @@ test.group('Files upload', (group) => {
 
   test('should upload a file with authentication', async ({ client, assert }) => {
     const userRole = await Role.firstOrCreate(
-      { slug: 'user' },
+      { slug: IRole.Slugs.USER },
       {
         name: 'User',
-        slug: 'user',
+        slug: IRole.Slugs.USER,
         description: 'Regular user role',
       }
     )
@@ -60,10 +61,10 @@ test.group('Files upload', (group) => {
 
   test('should upload an image file', async ({ client, assert }) => {
     const userRole = await Role.firstOrCreate(
-      { slug: 'user' },
+      { slug: IRole.Slugs.USER },
       {
         name: 'User',
-        slug: 'user',
+        slug: IRole.Slugs.USER,
         description: 'Regular user role',
       }
     )
@@ -110,10 +111,10 @@ test.group('Files upload', (group) => {
 
   test('should validate file is required', async ({ client }) => {
     const userRole = await Role.firstOrCreate(
-      { slug: 'user' },
+      { slug: IRole.Slugs.USER },
       {
         name: 'User',
-        slug: 'user',
+        slug: IRole.Slugs.USER,
         description: 'Regular user role',
       }
     )
@@ -145,10 +146,10 @@ test.group('Files upload', (group) => {
 
   test('should validate file size', async ({ client }) => {
     const userRole = await Role.firstOrCreate(
-      { slug: 'user' },
+      { slug: IRole.Slugs.USER },
       {
         name: 'User',
-        slug: 'user',
+        slug: IRole.Slugs.USER,
         description: 'Regular user role',
       }
     )
@@ -191,10 +192,10 @@ test.group('Files upload', (group) => {
 
   test('should validate file extensions', async ({ client }) => {
     const userRole = await Role.firstOrCreate(
-      { slug: 'user' },
+      { slug: IRole.Slugs.USER },
       {
         name: 'User',
-        slug: 'user',
+        slug: IRole.Slugs.USER,
         description: 'Regular user role',
       }
     )
@@ -236,10 +237,10 @@ test.group('Files upload', (group) => {
 
   test('should handle multiple file uploads', async ({ client, assert }) => {
     const userRole = await Role.firstOrCreate(
-      { slug: 'user' },
+      { slug: IRole.Slugs.USER },
       {
         name: 'User',
-        slug: 'user',
+        slug: IRole.Slugs.USER,
         description: 'Regular user role',
       }
     )
@@ -292,10 +293,10 @@ test.group('Files upload', (group) => {
 
   test('should categorize files correctly', async ({ client, assert }) => {
     const userRole = await Role.firstOrCreate(
-      { slug: 'user' },
+      { slug: IRole.Slugs.USER },
       {
         name: 'User',
-        slug: 'user',
+        slug: IRole.Slugs.USER,
         description: 'Regular user role',
       }
     )

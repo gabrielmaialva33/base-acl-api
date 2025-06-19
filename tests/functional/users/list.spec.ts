@@ -2,6 +2,7 @@ import { test } from '@japa/runner'
 import testUtils from '@adonisjs/core/services/test_utils'
 import User from '#modules/user/models/user'
 import Role from '#modules/role/models/role'
+import IRole from '#modules/role/interfaces/role_interface'
 import db from '@adonisjs/lucid/services/db'
 
 test.group('Users list', (group) => {
@@ -9,10 +10,10 @@ test.group('Users list', (group) => {
 
   test('should list users with authentication', async ({ client }) => {
     const userRole = await Role.firstOrCreate(
-      { slug: 'user' },
+      { slug: IRole.Slugs.USER },
       {
         name: 'User',
-        slug: 'user',
+        slug: IRole.Slugs.USER,
         description: 'Regular user role',
       }
     )
@@ -47,12 +48,12 @@ test.group('Users list', (group) => {
     response.assertStatus(401)
   })
 
-  test('should paginate results', async ({ client }) => {
+  test('should paginate results', async ({ client, assert }) => {
     const userRole = await Role.firstOrCreate(
-      { slug: 'user' },
+      { slug: IRole.Slugs.USER },
       {
         name: 'User',
-        slug: 'user',
+        slug: IRole.Slugs.USER,
         description: 'Regular user role',
       }
     )
@@ -91,15 +92,15 @@ test.group('Users list', (group) => {
     })
 
     const data = response.body().data
-    response.assert.lengthOf(data, 6) // 16 total - 10 on first page = 6 on second page
+    assert.lengthOf(data, 6) // 16 total - 10 on first page = 6 on second page
   })
 
-  test('should filter users by search query', async ({ client }) => {
+  test('should filter users by search query', async ({ client, assert }) => {
     const userRole = await Role.firstOrCreate(
-      { slug: 'user' },
+      { slug: IRole.Slugs.USER },
       {
         name: 'User',
-        slug: 'user',
+        slug: IRole.Slugs.USER,
         description: 'Regular user role',
       }
     )
@@ -134,7 +135,7 @@ test.group('Users list', (group) => {
 
     response.assertStatus(200)
     const data = response.body().data
-    response.assert.lengthOf(data, 1)
+    assert.lengthOf(data, 1)
     response.assertBodyContains({
       data: [
         {
@@ -147,10 +148,10 @@ test.group('Users list', (group) => {
 
   test('should sort users by different fields', async ({ client }) => {
     const userRole = await Role.firstOrCreate(
-      { slug: 'user' },
+      { slug: IRole.Slugs.USER },
       {
         name: 'User',
-        slug: 'user',
+        slug: IRole.Slugs.USER,
         description: 'Regular user role',
       }
     )
@@ -195,19 +196,19 @@ test.group('Users list', (group) => {
 
   test('should include user roles in response', async ({ client }) => {
     const userRole = await Role.firstOrCreate(
-      { slug: 'user' },
+      { slug: IRole.Slugs.USER },
       {
         name: 'User',
-        slug: 'user',
+        slug: IRole.Slugs.USER,
         description: 'Regular user role',
       }
     )
 
     const adminRole = await Role.firstOrCreate(
-      { slug: 'admin' },
+      { slug: IRole.Slugs.ADMIN },
       {
         name: 'Admin',
-        slug: 'admin',
+        slug: IRole.Slugs.ADMIN,
         description: 'Administrator role',
       }
     )
@@ -239,10 +240,10 @@ test.group('Users list', (group) => {
           id: user.id,
           roles: [
             {
-              slug: 'user',
+              slug: IRole.Slugs.USER,
             },
             {
-              slug: 'admin',
+              slug: IRole.Slugs.ADMIN,
             },
           ],
         },

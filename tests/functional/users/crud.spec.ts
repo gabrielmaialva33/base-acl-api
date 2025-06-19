@@ -2,6 +2,7 @@ import { test } from '@japa/runner'
 import testUtils from '@adonisjs/core/services/test_utils'
 import User from '#modules/user/models/user'
 import Role from '#modules/role/models/role'
+import IRole from '#modules/role/interfaces/role_interface'
 import db from '@adonisjs/lucid/services/db'
 
 test.group('Users CRUD', (group) => {
@@ -9,10 +10,10 @@ test.group('Users CRUD', (group) => {
 
   test('should get user by id', async ({ client }) => {
     const userRole = await Role.firstOrCreate(
-      { slug: 'user' },
+      { slug: IRole.Slugs.USER },
       {
         name: 'User',
-        slug: 'user',
+        slug: IRole.Slugs.USER,
         description: 'Regular user role',
       }
     )
@@ -49,10 +50,10 @@ test.group('Users CRUD', (group) => {
 
   test('should return 404 for non-existent user', async ({ client }) => {
     const userRole = await Role.firstOrCreate(
-      { slug: 'user' },
+      { slug: IRole.Slugs.USER },
       {
         name: 'User',
-        slug: 'user',
+        slug: IRole.Slugs.USER,
         description: 'Regular user role',
       }
     )
@@ -79,10 +80,10 @@ test.group('Users CRUD', (group) => {
 
   test('should create new user', async ({ client, assert }) => {
     const userRole = await Role.firstOrCreate(
-      { slug: 'user' },
+      { slug: IRole.Slugs.USER },
       {
         name: 'User',
-        slug: 'user',
+        slug: IRole.Slugs.USER,
         description: 'Regular user role',
       }
     )
@@ -122,10 +123,10 @@ test.group('Users CRUD', (group) => {
 
   test('should validate user creation data', async ({ client }) => {
     const userRole = await Role.firstOrCreate(
-      { slug: 'user' },
+      { slug: IRole.Slugs.USER },
       {
         name: 'User',
-        slug: 'user',
+        slug: IRole.Slugs.USER,
         description: 'Regular user role',
       }
     )
@@ -173,10 +174,10 @@ test.group('Users CRUD', (group) => {
 
   test('should update user', async ({ client, assert }) => {
     const userRole = await Role.firstOrCreate(
-      { slug: 'user' },
+      { slug: IRole.Slugs.USER },
       {
         name: 'User',
-        slug: 'user',
+        slug: IRole.Slugs.USER,
         description: 'Regular user role',
       }
     )
@@ -223,10 +224,10 @@ test.group('Users CRUD', (group) => {
 
   test('should not update email or username', async ({ client, assert }) => {
     const userRole = await Role.firstOrCreate(
-      { slug: 'user' },
+      { slug: IRole.Slugs.USER },
       {
         name: 'User',
-        slug: 'user',
+        slug: IRole.Slugs.USER,
         description: 'Regular user role',
       }
     )
@@ -272,10 +273,10 @@ test.group('Users CRUD', (group) => {
 
   test('should delete user (soft delete)', async ({ client, assert }) => {
     const userRole = await Role.firstOrCreate(
-      { slug: 'user' },
+      { slug: IRole.Slugs.USER },
       {
         name: 'User',
-        slug: 'user',
+        slug: IRole.Slugs.USER,
         description: 'Regular user role',
       }
     )

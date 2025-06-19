@@ -2,6 +2,7 @@ import { test } from '@japa/runner'
 import testUtils from '@adonisjs/core/services/test_utils'
 import User from '#modules/user/models/user'
 import Role from '#modules/role/models/role'
+import IRole from '#modules/role/interfaces/role_interface'
 import db from '@adonisjs/lucid/services/db'
 
 test.group('Sessions sign up', (group) => {
@@ -163,10 +164,10 @@ test.group('Sessions sign up', (group) => {
   test('should assign default user role', async ({ client, assert }) => {
     // Create the 'user' role first
     await Role.firstOrCreate(
-      { slug: 'user' },
+      { slug: IRole.Slugs.USER },
       {
         name: 'User',
-        slug: 'user',
+        slug: IRole.Slugs.USER,
         description: 'Regular user role',
       }
     )
