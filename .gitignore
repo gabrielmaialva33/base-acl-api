@@ -26,3 +26,6 @@ yarn-error.log
 
 # Claude Code
 .claude
+
+# AdonisJS specific
+storage/uploads/*
