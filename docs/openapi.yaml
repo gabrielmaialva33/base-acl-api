@@ -1,0 +1,783 @@
+openapi: 3.1.0
+info:
+  title: Base ACL API
+  version: 1.0.0
+  description: |
+    ## Welcome to Base ACL API
+
+    A robust authentication and access control API built with AdonisJS v6. This API provides comprehensive user management, role-based access control, and file management capabilities.
+
+    ### Key Features
+
+    - **JWT Authentication**: Secure token-based authentication with refresh tokens
+    - **Role-Based Access Control**: Fine-grained permissions with multiple user roles
+    - **User Management**: Complete CRUD operations for user accounts
+    - **File Management**: Secure file upload with automatic categorization
+    - **Health Monitoring**: Built-in health check endpoints
+
+    ## Authentication
+
+    The API uses JWT Bearer authentication. To access protected endpoints:
+
+    1. **Login**: POST to `/api/v1/sessions/sign-in` with your credentials
+    2. **Get Token**: Extract the `access_token` from the response
+    3. **Use Token**: Include `Authorization: Bearer <token>` in all requests
+
+    ### Token Management
+
+    - **Access Token Lifetime**: 1 hour
+    - **Refresh Token Lifetime**: 3 days
+    - **Token Format**: JWT Bearer token
+
+    ## API Conventions
+
+    ### Request Format
+    - **Content-Type**: `application/json` for all requests (except file uploads)
+    - **Pagination**: Use `?page=1&perPage=10` query parameters
+    - **Sorting**: Use `?sortBy=field&order=asc` or `?sortBy=field&order=desc`
+    - **Searching**: Use `?search=term` for text search
+
+    ### Response Format
+    - **Success**: HTTP 2xx with JSON body
+    - **Errors**: HTTP 4xx/5xx with standardized error format
+    - **Timestamps**: ISO 8601 format
+    - **Database Fields**: snake_case naming convention
+
+    ### Common Headers
+    ```
+    Authorization: Bearer <token>
+    Content-Type: application/json
+    Accept: application/json
+    ```
+
+  contact:
+    name: API Support
+    email: support@example.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:3333
+    description: Local development server
+  - url: https://api.production.com
+    description: Production server
+
+security:
+  - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT authentication token
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        full_name:
+          type: string
+          example: 'John Doe'
+        email:
+          type: string
+          format: email
+          example: 'john@example.com'
+        username:
+          type: string
+          example: 'johndoe'
+        created_at:
+          type: string
+          format: date-time
+          example: '2024-01-01T00:00:00.000Z'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2024-01-01T00:00:00.000Z'
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+
+    Role:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: 'User'
+        description:
+          type: string
+          example: 'Regular user role'
+        slug:
+          type: string
+          enum: [root, admin, user, guest]
+          example: 'user'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    AuthResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+          format: email
+        username:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+        auth:
+          type: object
+          properties:
+            access_token:
+              type: string
+              example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+            refresh_token:
+              type: string
+              example: 'refresh_token_string'
+
+    Error:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'Validation error'
+              field:
+                type: string
+                example: 'email'
+              rule:
+                type: string
+                example: 'email'
+
+    Pagination:
+      type: object
+      properties:
+        meta:
+          type: object
+          properties:
+            total:
+              type: integer
+              example: 100
+            per_page:
+              type: integer
+              example: 10
+            current_page:
+              type: integer
+              example: 1
+            last_page:
+              type: integer
+              example: 10
+            first_page:
+              type: integer
+              example: 1
+            first_page_url:
+              type: string
+              example: '/?page=1'
+            last_page_url:
+              type: string
+              example: '/?page=10'
+            next_page_url:
+              type: string
+              example: '/?page=2'
+            previous_page_url:
+              type: string
+              example: null
+
+    FileUploadResponse:
+      type: object
+      properties:
+        url:
+          type: string
+          example: 'https://storage.example.com/files/abc123.pdf'
+        clientName:
+          type: string
+          example: 'document.pdf'
+        fileCategory:
+          type: string
+          enum: [image, document, video, audio, file]
+          example: 'document'
+        fileType:
+          type: string
+          example: 'application/pdf'
+        size:
+          type: integer
+          example: 12345
+        extname:
+          type: string
+          example: 'pdf'
+
+  parameters:
+    pathId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Resource ID
+
+    pageParam:
+      name: page
+      in: query
+      schema:
+        type: integer
+        default: 1
+        minimum: 1
+      description: Page number for pagination
+
+    perPageParam:
+      name: perPage
+      in: query
+      schema:
+        type: integer
+        default: 10
+        minimum: 1
+        maximum: 100
+      description: Number of items per page
+
+    sortByParam:
+      name: sortBy
+      in: query
+      schema:
+        type: string
+        default: id
+      description: Field to sort by
+
+    orderParam:
+      name: order
+      in: query
+      schema:
+        type: string
+        enum: [asc, desc]
+        default: asc
+      description: Sort order
+
+    searchParam:
+      name: search
+      in: query
+      schema:
+        type: string
+      description: Search term for filtering results
+
+  responses:
+    UnauthorizedError:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            errors:
+              - message: 'Unauthorized'
+
+    ForbiddenError:
+      description: Insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            errors:
+              - message: 'Forbidden'
+
+    NotFoundError:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            errors:
+              - message: 'Resource not found'
+
+    ValidationError:
+      description: Validation failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+tags:
+  - name: Health
+    description: System health monitoring endpoints
+  - name: Authentication
+    description: User authentication and session management
+  - name: Users
+    description: User management operations
+  - name: Roles
+    description: Role management operations (admin only)
+  - name: Files
+    description: File upload and management
+
+paths:
+  /:
+    get:
+      operationId: getApiInfo
+      summary: Get API information
+      description: Returns basic information about the API
+      tags:
+        - Health
+      security: []
+      responses:
+        '200':
+          description: API information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: 'base-acl-api'
+                  description:
+                    type: string
+                    example: 'Base ACL API built with AdonisJS'
+                  version:
+                    type: string
+                    example: '0.0.0'
+                  author:
+                    type: string
+                    example: 'Gabriel Maia'
+                  contributors:
+                    type: array
+                    items:
+                      type: string
+
+  /api/v1/health:
+    get:
+      operationId: healthCheck
+      summary: Health check
+      description: Check the health status of the API and its services
+      tags:
+        - Health
+      security: []
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  healthy:
+                    type: boolean
+                    example: true
+                  services:
+                    type: object
+                    properties:
+                      database:
+                        type: object
+                        properties:
+                          healthy:
+                            type: boolean
+                            example: true
+        '503':
+          description: Service unhealthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  healthy:
+                    type: boolean
+                    example: false
+                  services:
+                    type: object
+
+  /api/v1/sessions/sign-in:
+    post:
+      operationId: signIn
+      summary: User login
+      description: Authenticate a user and receive JWT tokens
+      tags:
+        - Authentication
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - uid
+                - password
+              properties:
+                uid:
+                  type: string
+                  description: Email or username
+                  example: 'john@example.com'
+                password:
+                  type: string
+                  format: password
+                  minLength: 6
+                  example: 'password123'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                errors:
+                  - message: 'Invalid credentials'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /api/v1/sessions/sign-up:
+    post:
+      operationId: signUp
+      summary: User registration
+      description: Create a new user account
+      tags:
+        - Authentication
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - full_name
+                - email
+                - password
+                - password_confirmation
+              properties:
+                full_name:
+                  type: string
+                  example: 'John Doe'
+                email:
+                  type: string
+                  format: email
+                  example: 'john@example.com'
+                username:
+                  type: string
+                  example: 'johndoe'
+                  description: Optional username
+                password:
+                  type: string
+                  format: password
+                  minLength: 6
+                  example: 'password123'
+                password_confirmation:
+                  type: string
+                  format: password
+                  example: 'password123'
+      responses:
+        '201':
+          description: Registration successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /api/v1/users:
+    get:
+      operationId: listUsers
+      summary: List users
+      description: Get a paginated list of users with optional search and sorting
+      tags:
+        - Users
+      parameters:
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam'
+        - $ref: '#/components/parameters/sortByParam'
+        - $ref: '#/components/parameters/orderParam'
+        - $ref: '#/components/parameters/searchParam'
+      responses:
+        '200':
+          description: User list retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Pagination'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+    post:
+      operationId: createUser
+      summary: Create user
+      description: Create a new user account (requires USER role)
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - full_name
+                - email
+                - password
+                - password_confirmation
+              properties:
+                full_name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                username:
+                  type: string
+                password:
+                  type: string
+                  format: password
+                  minLength: 6
+                password_confirmation:
+                  type: string
+                  format: password
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /api/v1/users/{id}:
+    get:
+      operationId: getUserById
+      summary: Get user by ID
+      description: Retrieve a specific user's details
+      tags:
+        - Users
+      parameters:
+        - $ref: '#/components/parameters/pathId'
+      responses:
+        '200':
+          description: User details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+    put:
+      operationId: updateUser
+      summary: Update user
+      description: Update user details (email and username cannot be changed)
+      tags:
+        - Users
+      parameters:
+        - $ref: '#/components/parameters/pathId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                full_name:
+                  type: string
+                password:
+                  type: string
+                  format: password
+                  minLength: 6
+                password_confirmation:
+                  type: string
+                  format: password
+                  description: Required if password is provided
+      responses:
+        '200':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+    delete:
+      operationId: deleteUser
+      summary: Delete user
+      description: Soft delete a user (marks as deleted)
+      tags:
+        - Users
+      parameters:
+        - $ref: '#/components/parameters/pathId'
+      responses:
+        '204':
+          description: User deleted successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /api/v1/admin/roles:
+    get:
+      operationId: listRoles
+      summary: List roles
+      description: Get a paginated list of roles (requires ADMIN or ROOT role)
+      tags:
+        - Roles
+      parameters:
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam'
+      responses:
+        '200':
+          description: Role list retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Pagination'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Role'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+
+  /api/v1/admin/roles/attach:
+    put:
+      operationId: attachRoles
+      summary: Attach roles to user
+      description: Assign roles to a user (requires ADMIN or ROOT role)
+      tags:
+        - Roles
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user_id
+                - role_ids
+              properties:
+                user_id:
+                  type: integer
+                  example: 1
+                role_ids:
+                  type: array
+                  items:
+                    type: integer
+                  example: [1, 2, 3]
+      responses:
+        '200':
+          description: Roles attached successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Role attached successfully'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /api/v1/files/upload:
+    post:
+      operationId: uploadFile
+      summary: Upload file
+      description: |
+        Upload a file to the server. Files are automatically categorized based on their type.
+
+        **File constraints:**
+        - Maximum size: 5MB
+        - Allowed extensions: jpeg, jpg, png, pdf, doc, docx, txt, csv, xls, xlsx, mp3, mp4, zip
+
+        **Categories:**
+        - `image`: jpeg, jpg, png
+        - `document`: pdf, doc, docx, txt
+        - `video`: mp4
+        - `audio`: mp3
+        - `file`: csv, xls, xlsx, zip, and others
+      tags:
+        - Files
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: File to upload
+      responses:
+        '201':
+          description: File uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileUploadResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '422':
+          description: File validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                errors:
+                  - message: 'File size should be less than 5MB'
+                    field: 'file'
+                    rule: 'size'
