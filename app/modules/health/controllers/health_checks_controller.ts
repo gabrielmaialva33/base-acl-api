@@ -5,10 +5,22 @@ export default class HealthChecksController {
   async handle({ response }: HttpContext) {
     const report = await healthChecks.run()
 
-    if (report.isHealthy) {
-      return response.ok(report)
+    // Transform the report to match expected format
+    const healthResponse = {
+      healthy: report.isHealthy,
+      services: {
+        database: {
+          healthy: report.checks.some(
+            (check) => check.name.includes('Database') && check.status === 'ok'
+          ),
+        },
+      },
     }
 
-    return response.serviceUnavailable(report)
+    if (report.isHealthy) {
+      return response.ok(healthResponse)
+    }
+
+    return response.serviceUnavailable(healthResponse)
   }
 }
