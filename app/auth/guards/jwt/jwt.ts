@@ -198,10 +198,21 @@ export class JwtGuard<UserProvider extends JwtUserProviderContract<unknown>>
   async authenticateAsClient(
     user: UserProvider[typeof symbols.PROVIDER_REAL_USER]
   ): Promise<AuthClientResponse> {
-    const token: any = await this.generate(user)
+    const providerUser = await this.#userProvider.createUserForGuard(user)
+    // @ts-ignore
+    const token = jwt.sign(
+      this.#options.content!(providerUser),
+      this.#options.secret,
+      this.#options.expiresIn
+        ? {
+            expiresIn: this.#options.expiresIn,
+          }
+        : {}
+    )
+
     return {
       headers: {
-        authorization: `Bearer ${this.#options.useCookies ? token : token.token}`,
+        authorization: `Bearer ${token}`,
       },
     }
   }
