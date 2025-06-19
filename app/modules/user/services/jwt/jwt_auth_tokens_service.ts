@@ -6,7 +6,7 @@ import JwtService from '#shared/jwt/jwt_service'
 
 export interface JwtContent extends BaseJwtContent {}
 
-type GenerateAuthTokensResponse = {
+export type GenerateAuthTokensResponse = {
   access_token: string
   refresh_token: string
 }
