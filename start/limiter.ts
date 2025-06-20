@@ -38,7 +38,12 @@ export const authThrottle = limiter.define('auth', (ctx) => {
     .blockFor('30 minutes')
     .usingKey(`auth_${ctx.request.ip()}_${uid}`)
     .limitExceeded((error) => {
-      error.setMessage('Too many authentication attempts. Please try again later.')
+      const i18n = ctx.i18n
+      if (i18n) {
+        error.setMessage(i18n.t('errors.too_many_auth_attempts'))
+      } else {
+        error.setMessage('Too many authentication attempts. Please try again later.')
+      }
     })
 })
 
@@ -71,9 +76,34 @@ export const apiThrottle = limiter.define('api', async (ctx) => {
  * - 10 uploads per hour for authenticated users
  * - Blocks for 1 hour after exhausting attempts
  */
-export const uploadThrottle = limiter.define('upload', (ctx) => {
-  if (!ctx.auth.user) {
-    throw new Error('Authentication required for uploads')
+export const uploadThrottle = limiter.define('upload', async (ctx) => {
+  try {
+    await ctx.auth.check()
+    if (!ctx.auth.user) {
+      return limiter
+        .allowRequests(0)
+        .every('1 minute')
+        .limitExceeded((error) => {
+          const i18n = ctx.i18n
+          if (i18n) {
+            error.setMessage(i18n.t('errors.authentication_required'))
+          } else {
+            error.setMessage('Authentication required for uploads')
+          }
+        })
+    }
+  } catch {
+    return limiter
+      .allowRequests(0)
+      .every('1 minute')
+      .limitExceeded((error) => {
+        const i18n = ctx.i18n
+        if (i18n) {
+          error.setMessage(i18n.t('errors.authentication_required'))
+        } else {
+          error.setMessage('Authentication required for uploads')
+        }
+      })
   }
 
   return limiter
@@ -82,7 +112,12 @@ export const uploadThrottle = limiter.define('upload', (ctx) => {
     .blockFor('1 hour')
     .usingKey(`upload_user_${ctx.auth.user.id}`)
     .limitExceeded((error) => {
-      error.setMessage('Upload limit exceeded. Please try again in an hour.')
+      const i18n = ctx.i18n
+      if (i18n) {
+        error.setMessage(i18n.t('errors.upload_limit_exceeded'))
+      } else {
+        error.setMessage('Upload limit exceeded. Please try again in an hour.')
+      }
     })
 })
 
@@ -91,9 +126,34 @@ export const uploadThrottle = limiter.define('upload', (ctx) => {
  * - 200 requests per minute
  * - Only for authenticated admin/root users
  */
-export const adminThrottle = limiter.define('admin', (ctx) => {
-  if (!ctx.auth.user) {
-    throw new Error('Authentication required')
+export const adminThrottle = limiter.define('admin', async (ctx) => {
+  try {
+    await ctx.auth.check()
+    if (!ctx.auth.user) {
+      return limiter
+        .allowRequests(0)
+        .every('1 minute')
+        .limitExceeded((error) => {
+          const i18n = ctx.i18n
+          if (i18n) {
+            error.setMessage(i18n.t('errors.authentication_required'))
+          } else {
+            error.setMessage('Authentication required')
+          }
+        })
+    }
+  } catch {
+    return limiter
+      .allowRequests(0)
+      .every('1 minute')
+      .limitExceeded((error) => {
+        const i18n = ctx.i18n
+        if (i18n) {
+          error.setMessage(i18n.t('errors.authentication_required'))
+        } else {
+          error.setMessage('Authentication required')
+        }
+      })
   }
 
   return limiter.allowRequests(200).every('1 minute').usingKey(`admin_user_${ctx.auth.user.id}`)
