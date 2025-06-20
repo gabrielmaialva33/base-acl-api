@@ -1,14 +1,17 @@
 import type { HttpContext } from '@adonisjs/core/http'
+import app from '@adonisjs/core/services/app'
+
 import ListPermissionsService from '#modules/permission/services/list-permissions/list_permissions_service'
 import CreatePermissionService from '#modules/permission/services/create-permission/create_permission_service'
 import SyncRolePermissionsService from '#modules/permission/services/sync-permissions/sync_role_permissions_service'
 import SyncUserPermissionsService from '#modules/permission/services/sync-permissions/sync_user_permissions_service'
 import CheckUserPermissionService from '#modules/permission/services/check-permission/check_user_permission_service'
+
 import {
   createPermissionValidator,
   syncRolePermissionsValidator,
   syncUserPermissionsValidator,
-} from '#modules/permission/validators'
+} from '#modules/permission/validators/permission_validators'
 
 export default class PermissionsController {
   /**
@@ -17,7 +20,7 @@ export default class PermissionsController {
   async list({ request }: HttpContext) {
     const { page = 1, perPage = 10, resource, action } = request.qs()
 
-    const service = await ListPermissionsService.resolve()
+    const service = await app.container.make(ListPermissionsService)
     return await service.handle(page, perPage, resource, action)
   }
 
@@ -27,7 +30,7 @@ export default class PermissionsController {
   async create({ request, response }: HttpContext) {
     const data = await request.validateUsing(createPermissionValidator)
 
-    const service = await CreatePermissionService.resolve()
+    const service = await app.container.make(CreatePermissionService)
     const permission = await service.handle(data)
 
     return response.status(201).json(permission)
@@ -39,7 +42,7 @@ export default class PermissionsController {
   async syncRolePermissions({ request, response }: HttpContext) {
     const { role_id, permission_ids } = await request.validateUsing(syncRolePermissionsValidator)
 
-    const service = await SyncRolePermissionsService.resolve()
+    const service = await app.container.make(SyncRolePermissionsService)
     await service.handle(role_id, permission_ids)
 
     return response.json({ message: 'Permissions synced successfully' })
@@ -51,7 +54,7 @@ export default class PermissionsController {
   async attachRolePermissions({ request, response }: HttpContext) {
     const { role_id, permission_ids } = await request.validateUsing(syncRolePermissionsValidator)
 
-    const service = await SyncRolePermissionsService.resolve()
+    const service = await app.container.make(SyncRolePermissionsService)
     await service.attachPermissions(role_id, permission_ids)
 
     return response.json({ message: 'Permissions attached successfully' })
@@ -63,7 +66,7 @@ export default class PermissionsController {
   async detachRolePermissions({ request, response }: HttpContext) {
     const { role_id, permission_ids } = await request.validateUsing(syncRolePermissionsValidator)
 
-    const service = await SyncRolePermissionsService.resolve()
+    const service = await app.container.make(SyncRolePermissionsService)
     await service.detachPermissions(role_id, permission_ids)
 
     return response.json({ message: 'Permissions detached successfully' })
@@ -75,7 +78,7 @@ export default class PermissionsController {
   async syncUserPermissions({ request, response }: HttpContext) {
     const data = await request.validateUsing(syncUserPermissionsValidator)
 
-    const service = await SyncUserPermissionsService.resolve()
+    const service = await app.container.make(SyncUserPermissionsService)
     await service.handle(data.user_id, data.permissions)
 
     return response.json({ message: 'User permissions synced successfully' })
@@ -87,7 +90,7 @@ export default class PermissionsController {
   async getUserPermissions({ params }: HttpContext) {
     const userId = params.id
 
-    const service = await CheckUserPermissionService.resolve()
+    const service = await app.container.make(CheckUserPermissionService)
     const permissions = await service.getUserPermissions(userId)
 
     return { permissions }
@@ -100,7 +103,7 @@ export default class PermissionsController {
     const userId = params.id
     const { permissions, require_all = false } = request.only(['permissions', 'require_all'])
 
-    const service = await CheckUserPermissionService.resolve()
+    const service = await app.container.make(CheckUserPermissionService)
     const hasPermission = await service.handle(userId, permissions, require_all)
 
     return { has_permission: hasPermission }

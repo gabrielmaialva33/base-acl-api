@@ -1,12 +1,9 @@
 import { inject } from '@adonisjs/core'
 import Role from '#modules/role/models/role'
-import PermissionRepository from '#modules/permission/repositories/permission_repository'
 import NotFoundException from '#exceptions/not_found_exception'
 
 @inject()
 export default class SyncRolePermissionsService {
-  constructor(private permissionRepository: PermissionRepository) {}
-
   async handle(roleId: number, permissionIds: number[]): Promise<void> {
     const role = await Role.find(roleId)
     if (!role) {

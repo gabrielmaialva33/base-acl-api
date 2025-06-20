@@ -18,9 +18,7 @@ export default class PermissionRepository
     return await Permission.query().where('resource', resource).where('action', action).first()
   }
 
-  async syncPermissions(
-    permissions: Array<{ name: string; resource: string; action: string; description?: string }>
-  ): Promise<void> {
+  async syncPermissions(permissions: IPermission.SyncPermissionData[]): Promise<void> {
     for (const permissionData of permissions) {
       await Permission.firstOrCreate(
         {

@@ -1,13 +1,9 @@
 import { inject } from '@adonisjs/core'
 import { DateTime } from 'luxon'
 import User from '#modules/user/models/user'
-import Permission from '#modules/permission/models/permission'
-import PermissionRepository from '#modules/permission/repositories/permission_repository'
 
 @inject()
 export default class CheckUserPermissionService {
-  constructor(private permissionRepository: PermissionRepository) {}
-
   async handle(
     userId: number,
     permissionNames: string | string[],

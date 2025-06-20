@@ -11,10 +11,8 @@ export default class CreateDefaultPermissionsService {
     await this.permissionRepository.syncPermissions(defaultPermissions)
   }
 
-  private getDefaultPermissions(): IPermission.PermissionData[] {
-    const resources = Object.values(IPermission.Resources)
-    const actions = Object.values(IPermission.Actions)
-    const permissions: IPermission.PermissionData[] = []
+  private getDefaultPermissions(): IPermission.SyncPermissionData[] {
+    const permissions: IPermission.SyncPermissionData[] = []
 
     // Default permissions for each resource
     const resourceActions: Record<string, string[]> = {

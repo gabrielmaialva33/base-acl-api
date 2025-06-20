@@ -2,7 +2,6 @@ import { inject } from '@adonisjs/core'
 import Permission from '#modules/permission/models/permission'
 import PermissionRepository from '#modules/permission/repositories/permission_repository'
 import IPermission from '#modules/permission/interfaces/permission_interface'
-import NotFoundException from '#exceptions/not_found_exception'
 
 @inject()
 export default class CreatePermissionService {

@@ -1,7 +1,6 @@
 import { inject } from '@adonisjs/core'
 import { DateTime } from 'luxon'
 import User from '#modules/user/models/user'
-import PermissionRepository from '#modules/permission/repositories/permission_repository'
 import NotFoundException from '#exceptions/not_found_exception'
 
 interface UserPermissionData {
@@ -12,8 +11,6 @@ interface UserPermissionData {
 
 @inject()
 export default class SyncUserPermissionsService {
-  constructor(private permissionRepository: PermissionRepository) {}
-
   async handle(userId: number, permissions: UserPermissionData[]): Promise<void> {
     const user = await User.find(userId)
     if (!user) {
