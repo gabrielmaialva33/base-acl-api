@@ -22,11 +22,6 @@ test.group('Sessions sign in', (group) => {
       password: password,
     })
 
-    if (response.status() !== 200) {
-      console.log('Response status:', response.status())
-      console.log('Response body:', response.body())
-    }
-
     response.assertStatus(200)
     response.assertBodyContains({
       auth: {

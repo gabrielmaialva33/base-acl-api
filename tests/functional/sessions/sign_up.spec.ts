@@ -4,9 +4,18 @@ import User from '#modules/user/models/user'
 import Role from '#modules/role/models/role'
 import IRole from '#modules/role/interfaces/role_interface'
 import db from '@adonisjs/lucid/services/db'
+import mail from '@adonisjs/mail/services/main'
 
 test.group('Sessions sign up', (group) => {
-  group.each.setup(() => testUtils.db().withGlobalTransaction())
+  group.each.setup(() => {
+    mail.restore()
+    mail.fake()
+    return testUtils.db().withGlobalTransaction()
+  })
+
+  group.each.teardown(() => {
+    mail.restore()
+  })
 
   test('should create a new user with valid data', async ({ client, assert }) => {
     const userData = {
