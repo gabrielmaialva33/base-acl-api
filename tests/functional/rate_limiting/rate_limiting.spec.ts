@@ -18,7 +18,7 @@ test.group('Rate Limiting', (group) => {
 
   test('should rate limit authentication attempts', async ({ client, assert }) => {
     // Create a user
-    const user = await User.create({
+    await User.create({
       full_name: 'Test User',
       email: 'test@example.com',
       password: 'password123',
@@ -61,7 +61,7 @@ test.group('Rate Limiting', (group) => {
     client,
     assert,
   }) => {
-    // Create a user with role
+    // Create a user with a role
     const userRole = await Role.firstOrCreate(
       { slug: IRole.Slugs.USER },
       {
@@ -89,12 +89,12 @@ test.group('Rate Limiting', (group) => {
       guestResponses.push(response)
     }
 
-    // First 20 should succeed
+    // The first 20 should succeed
     for (let i = 0; i < 20; i++) {
       assert.equal(guestResponses[i].status(), 200)
     }
 
-    // 21st should be rate limited
+    // 21st should be rate-limited
     assert.equal(guestResponses[20].status(), 429)
 
     // Clear limiter for authenticated test
@@ -107,7 +107,7 @@ test.group('Rate Limiting', (group) => {
       authResponses.push(response)
     }
 
-    // First 60 should succeed
+    // The first 60 should succeed
     for (let i = 0; i < 60; i++) {
       assert.equal(authResponses[i].status(), 200)
     }
@@ -139,8 +139,8 @@ test.group('Rate Limiting', (group) => {
     assert.isAbove(Number(retryAfter), 1700) // Allow some variance
   })
 
-  test('should apply upload rate limit', async ({ client, assert }) => {
-    // Create user with upload permission
+  test('should apply upload rate limit', async ({ client }) => {
+    // Create a user with upload permission
     const userRole = await Role.firstOrCreate(
       { slug: IRole.Slugs.USER },
       {
@@ -162,9 +162,10 @@ test.group('Rate Limiting', (group) => {
     })
 
     // Create file upload permission
-    const Permission = (await import('#modules/permission/models/permission')).default
-    const IPermission = (await import('#modules/permission/interfaces/permission_interface'))
-      .default
+    const PermissionModule = await import('#modules/permission/models/permission')
+    const Permission = PermissionModule.default
+    const IPermissionModule = await import('#modules/permission/interfaces/permission_interface')
+    const IPermission = IPermissionModule.default
 
     const uploadPermission = await Permission.firstOrCreate(
       {
@@ -182,7 +183,8 @@ test.group('Rate Limiting', (group) => {
 
     // Create test files for upload attempts
     const { join } = await import('node:path')
-    const app = (await import('@adonisjs/core/services/app')).default
+    const appModule = await import('@adonisjs/core/services/app')
+    const app = appModule.default
     const fs = await import('node:fs')
 
     const testFiles = []
