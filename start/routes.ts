@@ -14,6 +14,7 @@ import '#modules/health/routes/index'
 import '#modules/role/routes/index'
 import '#modules/user/routes/index'
 import '#modules/file/routes/index'
+import '#modules/permission/routes/index'
 
 router.get('/', async () => {
   const packageJsonPath = join(process.cwd(), 'package.json')
