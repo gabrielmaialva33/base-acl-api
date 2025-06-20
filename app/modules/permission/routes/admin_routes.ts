@@ -1,5 +1,6 @@
 import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
+import { adminThrottle } from '#start/limiter'
 import IPermission from '#modules/permission/interfaces/permission_interface'
 
 const PermissionsController = () => import('#modules/permission/controllers/permissions_controller')
@@ -81,5 +82,5 @@ router
         })
       )
   })
-  .use(middleware.auth())
+  .use([middleware.auth(), adminThrottle])
   .prefix('/api/v1/admin')

@@ -4,7 +4,9 @@ import Permission from '#modules/permission/models/permission'
 namespace IPermission {
   export interface Repository extends LucidRepositoryInterface<typeof Permission> {
     findByName(name: string): Promise<Permission | null>
+
     findByResourceAction(resource: string, action: string): Promise<Permission | null>
+
     syncPermissions(permissions: SyncPermissionData[]): Promise<void>
   }
 
