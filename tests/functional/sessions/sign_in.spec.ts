@@ -3,7 +3,6 @@ import testUtils from '@adonisjs/core/services/test_utils'
 import User from '#modules/user/models/user'
 import Role from '#modules/role/models/role'
 import IRole from '#modules/role/interfaces/role_interface'
-import db from '@adonisjs/lucid/services/db'
 
 test.group('Sessions sign in', (group) => {
   group.each.setup(() => testUtils.db().withGlobalTransaction())
@@ -112,16 +111,16 @@ test.group('Sessions sign in', (group) => {
       password: password,
     })
 
-    const role = await Role.create({
-      name: 'Admin',
-      slug: IRole.Slugs.ADMIN,
-      description: 'Administrator role',
-    })
+    const role = await Role.firstOrCreate(
+      { slug: IRole.Slugs.ADMIN },
+      {
+        name: 'Admin',
+        slug: IRole.Slugs.ADMIN,
+        description: 'Administrator role',
+      }
+    )
 
-    await db.table('user_roles').insert({
-      user_id: user.id,
-      role_id: role.id,
-    })
+    await user.related('roles').sync([role.id])
 
     const response = await client.post('/api/v1/sessions/sign-in').json({
       uid: 'john@example.com',
