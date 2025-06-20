@@ -15,6 +15,15 @@ export default class extends BaseSchema {
 
       table.boolean('is_deleted').defaultTo(false)
 
+      table.jsonb('metadata').defaultTo(
+        JSON.stringify({
+          email_verified: false,
+          email_verification_token: null,
+          email_verification_sent_at: null,
+          email_verified_at: null,
+        })
+      )
+
       table.timestamp('created_at').notNullable()
       table.timestamp('updated_at').nullable()
     })
