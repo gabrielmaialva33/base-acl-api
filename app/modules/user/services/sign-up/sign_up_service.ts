@@ -5,12 +5,14 @@ import JwtAuthTokensService from '#modules/user/services/jwt/jwt_auth_tokens_ser
 import UsersRepository from '#modules/user/repositories/users_repository'
 import IUser from '#modules/user/interfaces/user_interface'
 import AuthEventService from '#modules/user/services/auth_event_service'
+import SendVerificationEmailService from '#modules/user/services/email-verification/send_verification_email_service'
 
 @inject()
 export default class SignUpService {
   constructor(
     private usersRepository: UsersRepository,
-    private jwtAuthTokensService: JwtAuthTokensService
+    private jwtAuthTokensService: JwtAuthTokensService,
+    private sendVerificationEmailService: SendVerificationEmailService
   ) {}
 
   async run(payload: IUser.CreatePayload) {
@@ -18,6 +20,9 @@ export default class SignUpService {
 
     const user = await this.usersRepository.create(payload)
     await user.load('roles')
+
+    // Send verification email
+    await this.sendVerificationEmailService.handle(user)
 
     const auth = await this.jwtAuthTokensService.run({ userId: user.id })
 
