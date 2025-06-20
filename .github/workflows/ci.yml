@@ -12,6 +12,31 @@ jobs:
   ci:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: timescale/timescaledb:latest-pg16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: db_testing
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -37,16 +62,41 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Copy test environment file
+        run: cp .env.test .env
+
       - name: Build project
         run: pnpm run build
+
+      - name: Run database migrations
+        run: node ace migration:run --force
+        env:
+          NODE_ENV: test
 
       - name: Run lint
         run: pnpm run lint
 
       - name: Run unit tests
         run: pnpm run test
+        env:
+          NODE_ENV: test
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_DATABASE: db_testing
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
 
       - name: Run functional tests
         run: pnpm run test:e2e
         env:
+          NODE_ENV: test
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_DATABASE: db_testing
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
