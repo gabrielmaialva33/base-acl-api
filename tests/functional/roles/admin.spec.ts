@@ -34,10 +34,7 @@ test.group('Roles admin', (group) => {
       password: 'password123',
     })
 
-    await db.table('user_roles').insert({
-      user_id: adminUser.id,
-      role_id: adminRole.id,
-    })
+    await adminUser.related('roles').sync([adminRole.id])
 
     const response = await client.get('/api/v1/admin/roles').loginAs(adminUser)
 
@@ -75,10 +72,7 @@ test.group('Roles admin', (group) => {
       password: 'password123',
     })
 
-    await db.table('user_roles').insert({
-      user_id: rootUser.id,
-      role_id: rootRole.id,
-    })
+    await rootUser.related('roles').sync([rootRole.id])
 
     const response = await client.get('/api/v1/admin/roles').loginAs(rootUser)
 
@@ -103,10 +97,7 @@ test.group('Roles admin', (group) => {
       password: 'password123',
     })
 
-    await db.table('user_roles').insert({
-      user_id: regularUser.id,
-      role_id: userRole.id,
-    })
+    await regularUser.related('roles').sync([userRole.id])
 
     const response = await client.get('/api/v1/admin/roles').loginAs(regularUser)
 
@@ -142,10 +133,7 @@ test.group('Roles admin', (group) => {
       password: 'password123',
     })
 
-    await db.table('user_roles').insert({
-      user_id: adminUser.id,
-      role_id: adminRole.id,
-    })
+    await adminUser.related('roles').sync([adminRole.id])
 
     const targetUser = await User.create({
       full_name: 'Target User',
@@ -192,10 +180,7 @@ test.group('Roles admin', (group) => {
       password: 'password123',
     })
 
-    await db.table('user_roles').insert({
-      user_id: adminUser.id,
-      role_id: adminRole.id,
-    })
+    await adminUser.related('roles').sync([adminRole.id])
 
     const response = await client.put('/api/v1/admin/roles/attach').json({}).loginAs(adminUser)
 
@@ -240,10 +225,7 @@ test.group('Roles admin', (group) => {
       password: 'password123',
     })
 
-    await db.table('user_roles').insert({
-      user_id: adminUser.id,
-      role_id: adminRole.id,
-    })
+    await adminUser.related('roles').sync([adminRole.id])
 
     const response = await client
       .put('/api/v1/admin/roles/attach')
@@ -276,10 +258,7 @@ test.group('Roles admin', (group) => {
       password: 'password123',
     })
 
-    await db.table('user_roles').insert({
-      user_id: adminUser.id,
-      role_id: adminRole.id,
-    })
+    await adminUser.related('roles').sync([adminRole.id])
 
     const targetUser = await User.create({
       full_name: 'Target User',
@@ -328,10 +307,7 @@ test.group('Roles admin', (group) => {
       password: 'password123',
     })
 
-    await db.table('user_roles').insert({
-      user_id: adminUser.id,
-      role_id: adminRole.id,
-    })
+    await adminUser.related('roles').sync([adminRole.id])
 
     const targetUser = await User.create({
       full_name: 'Target User',
@@ -341,10 +317,7 @@ test.group('Roles admin', (group) => {
     })
 
     // First attachment
-    await db.table('user_roles').insert({
-      user_id: targetUser.id,
-      role_id: userRole.id,
-    })
+    await targetUser.related('roles').sync([userRole.id])
 
     // Try to attach same role again
     const response = await client
