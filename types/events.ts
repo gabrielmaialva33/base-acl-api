@@ -1,10 +1,10 @@
 import type {
   LoginAttemptedEventData,
-  LoginSucceededEventData,
   LoginFailedEventData,
+  LoginSucceededEventData,
   LogoutEventData,
-  UserRegisteredEventData,
   TokenRefreshedEventData,
+  UserRegisteredEventData,
 } from '#modules/user/events/auth_events'
 
 declare module '@adonisjs/core/types' {
