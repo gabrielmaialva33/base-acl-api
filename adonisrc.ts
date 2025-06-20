@@ -37,7 +37,6 @@ export default defineConfig({
     () => import('@adonisjs/lucid/database_provider'),
     () => import('@adonisjs/auth/auth_provider'),
     () => import('@adonisjs/i18n/i18n_provider'),
-    () => import('#providers/app_provider'),
     () => import('@adonisjs/ally/ally_provider'),
     () => import('@adonisjs/drive/drive_provider'),
     () => import('@adonisjs/redis/redis_provider'),
@@ -45,6 +44,8 @@ export default defineConfig({
     () => import('@adonisjs/session/session_provider'),
     () => import('@adonisjs/shield/shield_provider'),
     () => import('@adonisjs/limiter/limiter_provider'),
+    () => import('#providers/app_provider'),
+    () => import('#providers/auth_events_provider'),
   ],
 
   /*
