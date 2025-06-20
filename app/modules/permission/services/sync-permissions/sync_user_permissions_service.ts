@@ -1,4 +1,5 @@
 import { inject } from '@adonisjs/core'
+import { HttpContext } from '@adonisjs/core/http'
 import { DateTime } from 'luxon'
 import User from '#modules/user/models/user'
 import NotFoundException from '#exceptions/not_found_exception'
@@ -12,9 +13,14 @@ interface UserPermissionData {
 @inject()
 export default class SyncUserPermissionsService {
   async handle(userId: number, permissions: UserPermissionData[]): Promise<void> {
+    const { i18n } = HttpContext.getOrFail()
     const user = await User.find(userId)
     if (!user) {
-      throw new NotFoundException('User not found')
+      throw new NotFoundException(
+        i18n.t('errors.not_found', {
+          resource: i18n.t('models.user'),
+        })
+      )
     }
 
     // Prepare data for sync
@@ -37,9 +43,14 @@ export default class SyncUserPermissionsService {
     granted: boolean = true,
     expiresAt?: string | null
   ): Promise<void> {
+    const { i18n } = HttpContext.getOrFail()
     const user = await User.find(userId)
     if (!user) {
-      throw new NotFoundException('User not found')
+      throw new NotFoundException(
+        i18n.t('errors.not_found', {
+          resource: i18n.t('models.user'),
+        })
+      )
     }
 
     const pivotData = {
@@ -68,9 +79,14 @@ export default class SyncUserPermissionsService {
   }
 
   async revokePermission(userId: number, permissionId: number): Promise<void> {
+    const { i18n } = HttpContext.getOrFail()
     const user = await User.find(userId)
     if (!user) {
-      throw new NotFoundException('User not found')
+      throw new NotFoundException(
+        i18n.t('errors.not_found', {
+          resource: i18n.t('models.user'),
+        })
+      )
     }
 
     await user.related('permissions').detach([permissionId])
