@@ -1,5 +1,6 @@
 import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
+import { apiThrottle } from '#start/limiter'
 import IPermission from '#modules/permission/interfaces/permission_interface'
 
 const UsersController = () => import('#modules/user/controllers/users_controller')
@@ -53,5 +54,5 @@ router
       )
       .as('user.delete')
   })
-  .use(middleware.auth())
+  .use([middleware.auth(), apiThrottle])
   .prefix('/api/v1/users')
