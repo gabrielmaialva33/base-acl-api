@@ -40,10 +40,12 @@ export default class PermissionsController {
    * Sync permissions for a role
    */
   async syncRolePermissions({ request, response }: HttpContext) {
-    const { role_id, permission_ids } = await request.validateUsing(syncRolePermissionsValidator)
+    const { role_id: roleId, permission_ids: permissionIds } = await request.validateUsing(
+      syncRolePermissionsValidator
+    )
 
     const service = await app.container.make(SyncRolePermissionsService)
-    await service.handle(role_id, permission_ids)
+    await service.handle(roleId, permissionIds)
 
     return response.json({ message: 'Permissions synced successfully' })
   }
@@ -52,10 +54,12 @@ export default class PermissionsController {
    * Attach permissions to a role (without removing existing ones)
    */
   async attachRolePermissions({ request, response }: HttpContext) {
-    const { role_id, permission_ids } = await request.validateUsing(syncRolePermissionsValidator)
+    const { role_id: roleId, permission_ids: permissionIds } = await request.validateUsing(
+      syncRolePermissionsValidator
+    )
 
     const service = await app.container.make(SyncRolePermissionsService)
-    await service.attachPermissions(role_id, permission_ids)
+    await service.attachPermissions(roleId, permissionIds)
 
     return response.json({ message: 'Permissions attached successfully' })
   }
@@ -64,10 +68,12 @@ export default class PermissionsController {
    * Detach permissions from a role
    */
   async detachRolePermissions({ request, response }: HttpContext) {
-    const { role_id, permission_ids } = await request.validateUsing(syncRolePermissionsValidator)
+    const { role_id: roleId, permission_ids: permissionIds } = await request.validateUsing(
+      syncRolePermissionsValidator
+    )
 
     const service = await app.container.make(SyncRolePermissionsService)
-    await service.detachPermissions(role_id, permission_ids)
+    await service.detachPermissions(roleId, permissionIds)
 
     return response.json({ message: 'Permissions detached successfully' })
   }
@@ -101,10 +107,13 @@ export default class PermissionsController {
    */
   async checkUserPermissions({ request, params }: HttpContext) {
     const userId = params.id
-    const { permissions, require_all = false } = request.only(['permissions', 'require_all'])
+    const { permissions, require_all: requireAll = false } = request.only([
+      'permissions',
+      'require_all',
+    ])
 
     const service = await app.container.make(CheckUserPermissionService)
-    const hasPermission = await service.handle(userId, permissions, require_all)
+    const hasPermission = await service.handle(userId, permissions, requireAll)
 
     return { has_permission: hasPermission }
   }
