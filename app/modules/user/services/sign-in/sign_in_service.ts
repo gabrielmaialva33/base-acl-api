@@ -36,7 +36,7 @@ export default class SignInService {
       const auth = await this.jwtAuthTokensService.run({ userId: user.id })
       const userJson = user.toJSON()
 
-      // Check if user is admin
+      // Check if the user is admin
       const isAdmin = user.roles.some((role) => role.name === 'ADMIN' || role.name === 'ROOT')
 
       // Emit login succeeded event
