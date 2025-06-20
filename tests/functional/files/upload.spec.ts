@@ -1,15 +1,17 @@
+import { join } from 'node:path'
+
 import { test } from '@japa/runner'
 import testUtils from '@adonisjs/core/services/test_utils'
+import { cuid } from '@adonisjs/core/helpers'
+import db from '@adonisjs/lucid/services/db'
+import app from '@adonisjs/core/services/app'
+
 import User from '#modules/user/models/user'
 import Role from '#modules/role/models/role'
 import Permission from '#modules/permission/models/permission'
+import File from '#modules/file/models/file'
 import IRole from '#modules/role/interfaces/role_interface'
 import IPermission from '#modules/permission/interfaces/permission_interface'
-import File from '#modules/file/models/file'
-import db from '@adonisjs/lucid/services/db'
-import { cuid } from '@adonisjs/core/helpers'
-import { join } from 'node:path'
-import app from '@adonisjs/core/services/app'
 
 test.group('Files upload', (group) => {
   group.each.setup(() => testUtils.db().withGlobalTransaction())
