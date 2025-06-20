@@ -33,7 +33,7 @@ export default class HttpExceptionHandler extends ExceptionHandler {
             message: message,
             code: 'E_TOO_MANY_REQUESTS',
             status: error.status,
-            retryAfter: headers['Retry-After'] || null,
+            retry_after: headers['Retry-After'] || null,
           },
         ],
       })
