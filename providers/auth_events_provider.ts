@@ -108,8 +108,6 @@ export default class AuthEventsProvider {
         timestamp: data.timestamp,
       })
     })
-
-    console.log('✅ Authentication event listeners registered')
   }
 
   /**
