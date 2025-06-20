@@ -7,3 +7,6 @@ too_many_auth_attempts: 'Muitas tentativas de autenticação. Por favor, tente n
 upload_limit_exceeded: 'Limite de upload excedido. Por favor, tente novamente em uma hora.'
 invalid_sort_key: 'Chave de ordenação inválida: {key}. Deve ser uma das seguintes: {available}'
 invalid_sort_direction: 'Direção inválida. Deve ser "{asc}" ou "{desc}".'
+invalid_verification_token: 'Token de verificação inválido'
+email_already_verified: 'E-mail já verificado'
+verification_token_expired: 'Token de verificação expirou. Por favor, solicite um novo.'

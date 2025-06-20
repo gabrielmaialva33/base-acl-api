@@ -7,3 +7,6 @@ too_many_auth_attempts: 'Too many authentication attempts. Please try again late
 upload_limit_exceeded: 'Upload limit exceeded. Please try again in an hour.'
 invalid_sort_key: 'Invalid sort key: {key}. Must be one of: {available}'
 invalid_sort_direction: 'Invalid direction. Must be "{asc}" or "{desc}".'
+invalid_verification_token: 'Invalid verification token'
+email_already_verified: 'Email already verified'
+verification_token_expired: 'Verification token has expired. Please request a new one.'
