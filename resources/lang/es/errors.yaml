@@ -1,5 +1,6 @@
 not_found: '{resource} no encontrado'
 permission_denied: 'Permiso denegado'
+insufficient_permissions: 'Permisos insuficientes. Requerido: {permissions}'
 invalid_credentials: 'Credenciales inválidas'
 already_exists: '{resource} ya existe'
 validation_failed: 'Error de validación'

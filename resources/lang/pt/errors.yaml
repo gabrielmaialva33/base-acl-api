@@ -1,2 +1,3 @@
 not_found: '{resource} não encontrado(a)'
 permission_denied: 'Permissão negada'
+insufficient_permissions: 'Permissões insuficientes. Requerido: {permissions}'
