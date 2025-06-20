@@ -10,7 +10,9 @@ import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
 import router from '@adonisjs/core/services/router'
+
 import { throttle } from '#start/limiter'
+
 import '#modules/health/routes/index'
 import '#modules/role/routes/index'
 import '#modules/user/routes/index'
