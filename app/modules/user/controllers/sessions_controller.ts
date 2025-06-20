@@ -7,12 +7,13 @@ import SignInService from '#modules/user/services/sign-in/sign_in_service'
 import SignUpService from '#modules/user/services/sign-up/sign_up_service'
 
 export default class SessionsController {
-  async signIn({ request, response }: HttpContext) {
+  async signIn(ctx: HttpContext) {
+    const { request, response } = ctx
     const { uid, password } = await request.validateUsing(signInValidator)
 
     try {
       const service = await app.container.make(SignInService)
-      const payload = await service.run({ uid, password })
+      const payload = await service.run({ uid, password, ctx })
       return response.json(payload)
     } catch (error) {
       return response.badRequest({

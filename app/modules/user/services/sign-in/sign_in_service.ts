@@ -1,14 +1,17 @@
 import { inject } from '@adonisjs/core'
+import type { HttpContext } from '@adonisjs/core/http'
 
 import JwtAuthTokensService, {
   GenerateAuthTokensResponse,
 } from '#modules/user/services/jwt/jwt_auth_tokens_service'
 import UsersRepository from '#modules/user/repositories/users_repository'
 import User from '#modules/user/models/user'
+import AuthEventService from '#modules/user/services/auth_event_service'
 
 type SignInRequest = {
   uid: string
   password: string
+  ctx: HttpContext
 }
 
 type SignInResponse = User & {
@@ -22,13 +25,28 @@ export default class SignInService {
     private jwtAuthTokensService: JwtAuthTokensService
   ) {}
 
-  async run({ uid, password }: SignInRequest): Promise<SignInResponse> {
-    const user = await this.usersRepository.verifyCredentials(uid, password)
-    await user.load('roles')
+  async run({ uid, password, ctx }: SignInRequest): Promise<SignInResponse> {
+    // Emit login attempted event
+    AuthEventService.emitLoginAttempted(uid, ctx)
 
-    const auth = await this.jwtAuthTokensService.run({ userId: user.id })
-    const userJson = user.toJSON()
+    try {
+      const user = await this.usersRepository.verifyCredentials(uid, password)
+      await user.load('roles')
 
-    return { ...userJson, auth } as SignInResponse
+      const auth = await this.jwtAuthTokensService.run({ userId: user.id })
+      const userJson = user.toJSON()
+
+      // Check if user is admin
+      const isAdmin = user.roles.some((role) => role.name === 'ADMIN' || role.name === 'ROOT')
+
+      // Emit login succeeded event
+      AuthEventService.emitLoginSucceeded(user, 'password', isAdmin, ctx)
+
+      return { ...userJson, auth } as SignInResponse
+    } catch (error) {
+      // Emit login failed event
+      AuthEventService.emitLoginFailed(uid, error.message || 'Invalid credentials', ctx)
+      throw error
+    }
   }
 }
