@@ -1,17 +1,19 @@
 import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
-import IRole from '#modules/role/interfaces/role_interface'
+import IPermission from '#modules/permission/interfaces/permission_interface'
 
 const FilesController = () => import('#modules/file/controllers/files.controller')
 
 router
   .group(() => {
-    router.post('/upload', [FilesController, 'upload']).as('files.upload')
+    router
+      .post('/upload', [FilesController, 'upload'])
+      .use(
+        middleware.permission({
+          permissions: `${IPermission.Resources.FILES}.${IPermission.Actions.CREATE}`,
+        })
+      )
+      .as('files.upload')
   })
-  .use([
-    middleware.auth(),
-    middleware.acl({
-      role_slugs: [IRole.Slugs.USER],
-    }),
-  ])
+  .use(middleware.auth())
   .prefix('/api/v1/files')
