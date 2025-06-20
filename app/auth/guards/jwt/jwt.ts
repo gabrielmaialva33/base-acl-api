@@ -111,7 +111,8 @@ export class JwtGuard<UserProvider extends JwtUserProviderContract<unknown>>
        */
       const authHeader = this.#ctx.request.header('authorization')
       if (!authHeader) {
-        throw new errors.E_UNAUTHORIZED_ACCESS('Unauthorized access', {
+        const message = this.#ctx.i18n?.t('errors.unauthorized_access') || 'Unauthorized access'
+        throw new errors.E_UNAUTHORIZED_ACCESS(message, {
           guardDriverName: this.driverName,
         })
       }
@@ -121,7 +122,8 @@ export class JwtGuard<UserProvider extends JwtUserProviderContract<unknown>>
        */
       ;[, token] = authHeader!.split('Bearer ')
       if (!token) {
-        throw new errors.E_UNAUTHORIZED_ACCESS('Unauthorized access', {
+        const message = this.#ctx.i18n?.t('errors.unauthorized_access') || 'Unauthorized access'
+        throw new errors.E_UNAUTHORIZED_ACCESS(message, {
           guardDriverName: this.driverName,
         })
       }
@@ -135,13 +137,15 @@ export class JwtGuard<UserProvider extends JwtUserProviderContract<unknown>>
     try {
       payload = jwt.verify(token, this.#options.secret)
     } catch (error) {
-      throw new errors.E_UNAUTHORIZED_ACCESS('Unauthorized access', {
+      const message = this.#ctx.i18n?.t('errors.unauthorized_access') || 'Unauthorized access'
+      throw new errors.E_UNAUTHORIZED_ACCESS(message, {
         guardDriverName: this.driverName,
       })
     }
 
     if (typeof payload !== 'object' || !('userId' in payload)) {
-      throw new errors.E_UNAUTHORIZED_ACCESS('Unauthorized access', {
+      const message = this.#ctx.i18n?.t('errors.unauthorized_access') || 'Unauthorized access'
+      throw new errors.E_UNAUTHORIZED_ACCESS(message, {
         guardDriverName: this.driverName,
       })
     }
@@ -151,7 +155,8 @@ export class JwtGuard<UserProvider extends JwtUserProviderContract<unknown>>
      */
     const providerUser = await this.#userProvider.findById(payload.userId)
     if (!providerUser) {
-      throw new errors.E_UNAUTHORIZED_ACCESS('Unauthorized access', {
+      const message = this.#ctx.i18n?.t('errors.unauthorized_access') || 'Unauthorized access'
+      throw new errors.E_UNAUTHORIZED_ACCESS(message, {
         guardDriverName: this.driverName,
       })
     }
@@ -178,7 +183,8 @@ export class JwtGuard<UserProvider extends JwtUserProviderContract<unknown>>
    */
   getUserOrFail(): UserProvider[typeof symbols.PROVIDER_REAL_USER] {
     if (!this.user) {
-      throw new errors.E_UNAUTHORIZED_ACCESS('Unauthorized access', {
+      const message = this.#ctx.i18n?.t('errors.unauthorized_access') || 'Unauthorized access'
+      throw new errors.E_UNAUTHORIZED_ACCESS(message, {
         guardDriverName: this.driverName,
       })
     }
