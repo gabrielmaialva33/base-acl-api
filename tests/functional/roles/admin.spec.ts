@@ -157,8 +157,8 @@ test.group('Roles admin', (group) => {
     const response = await client
       .put('/api/v1/admin/roles/attach')
       .json({
-        userId: targetUser.id,
-        roleId: editorRole.id,
+        user_id: targetUser.id,
+        role_ids: [editorRole.id],
       })
       .loginAs(adminUser)
 
@@ -248,8 +248,8 @@ test.group('Roles admin', (group) => {
     const response = await client
       .put('/api/v1/admin/roles/attach')
       .json({
-        userId: 999999,
-        roleId: userRole.id,
+        user_id: 999999,
+        role_ids: [userRole.id],
       })
       .loginAs(adminUser)
 
@@ -291,8 +291,8 @@ test.group('Roles admin', (group) => {
     const response = await client
       .put('/api/v1/admin/roles/attach')
       .json({
-        userId: targetUser.id,
-        roleId: 999999,
+        user_id: targetUser.id,
+        role_ids: [999999],
       })
       .loginAs(adminUser)
 
@@ -350,8 +350,8 @@ test.group('Roles admin', (group) => {
     const response = await client
       .put('/api/v1/admin/roles/attach')
       .json({
-        userId: targetUser.id,
-        roleId: userRole.id,
+        user_id: targetUser.id,
+        role_ids: [userRole.id],
       })
       .loginAs(adminUser)
 

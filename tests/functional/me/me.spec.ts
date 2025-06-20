@@ -3,9 +3,11 @@ import User from '#modules/user/models/user'
 import Role from '#modules/role/models/role'
 import Permission from '#modules/permission/models/permission'
 import testUtils from '@adonisjs/core/services/test_utils'
+import IRole from '#modules/role/interfaces/role_interface'
+import IPermission from '#modules/permission/interfaces/permission_interface'
 
 test.group('Me endpoints', (group) => {
-  group.each.setup(() => testUtils.db().truncate())
+  group.each.setup(() => testUtils.db().withGlobalTransaction())
 
   test('GET /me should return current user profile', async ({ client, assert }) => {
     // Create user with role
@@ -16,7 +18,14 @@ test.group('Me endpoints', (group) => {
       password: 'password123',
     })
 
-    const role = await Role.findByOrFail('name', 'USER')
+    const role = await Role.firstOrCreate(
+      { slug: IRole.Slugs.USER },
+      {
+        name: 'User',
+        slug: IRole.Slugs.USER,
+        description: 'Regular user',
+      }
+    )
     await user.related('roles').attach([role.id])
 
     const response = await client.get('/api/v1/me').loginAs(user)
@@ -25,7 +34,7 @@ test.group('Me endpoints', (group) => {
     assert.equal(response.body().email, 'test@example.com')
     assert.equal(response.body().username, 'testuser')
     assert.isArray(response.body().roles)
-    assert.equal(response.body().roles[0].name, 'USER')
+    assert.equal(response.body().roles[0].name, 'User')
   })
 
   test('GET /me/permissions should return user permissions', async ({ client, assert }) => {
@@ -37,11 +46,29 @@ test.group('Me endpoints', (group) => {
       password: 'password123',
     })
 
-    const role = await Role.findByOrFail('name', 'USER')
+    const role = await Role.firstOrCreate(
+      { slug: IRole.Slugs.USER },
+      {
+        name: 'User',
+        slug: IRole.Slugs.USER,
+        description: 'Regular user',
+      }
+    )
     await user.related('roles').attach([role.id])
 
     // Add direct permission
-    const permission = await Permission.findByOrFail('name', 'users.read')
+    const permission = await Permission.firstOrCreate(
+      {
+        resource: IPermission.Resources.USERS,
+        action: IPermission.Actions.READ,
+      },
+      {
+        name: 'users.read',
+        resource: IPermission.Resources.USERS,
+        action: IPermission.Actions.READ,
+        description: 'Read users',
+      }
+    )
     await user.related('permissions').attach({
       [permission.id]: {
         granted: true,
@@ -69,8 +96,22 @@ test.group('Me endpoints', (group) => {
       password: 'password123',
     })
 
-    const userRole = await Role.findByOrFail('name', 'USER')
-    const editorRole = await Role.findByOrFail('name', 'EDITOR')
+    const userRole = await Role.firstOrCreate(
+      { slug: IRole.Slugs.USER },
+      {
+        name: 'User',
+        slug: IRole.Slugs.USER,
+        description: 'Regular user',
+      }
+    )
+    const editorRole = await Role.firstOrCreate(
+      { slug: IRole.Slugs.EDITOR },
+      {
+        name: 'Editor',
+        slug: IRole.Slugs.EDITOR,
+        description: 'Content editor',
+      }
+    )
 
     await user.related('roles').attach([userRole.id, editorRole.id])
 
@@ -81,7 +122,7 @@ test.group('Me endpoints', (group) => {
     assert.isArray(response.body().roles)
 
     const roleNames = response.body().roles.map((r: any) => r.name)
-    assert.includeMembers(roleNames, ['USER', 'EDITOR'])
+    assert.includeMembers(roleNames, ['User', 'Editor'])
   })
 
   test('should require authentication for all /me endpoints', async ({ client }) => {

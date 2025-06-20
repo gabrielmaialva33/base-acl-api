@@ -218,7 +218,7 @@ test.group('Users list', (group) => {
 
     const response = await client
       .get('/api/v1/users')
-      .qs({ sortBy: 'full_name', order: 'asc' })
+      .qs({ sort_by: 'full_name', order: 'asc' })
       .loginAs(authUser)
 
     response.assertStatus(200)
