@@ -1,26 +1,31 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import app from '@adonisjs/core/services/app'
 import type { NextFn } from '@adonisjs/core/types/http'
 
 import IRole from '#modules/role/interfaces/role_interface'
 import ForbiddenException from '#exceptions/forbidden_exception'
-import GetUserService from '#modules/user/services/get-user/get_user_service'
 
 export default class AclMiddleware {
-  async handle(
-    { loggedUserId, i18n }: HttpContext,
-    next: NextFn,
-    opts: { role_slugs: IRole.Slugs[] }
-  ) {
-    const service = await app.container.make(GetUserService)
-    const user = await service.run(loggedUserId)
+  async handle({ auth, i18n }: HttpContext, next: NextFn, opts: { role_slugs: IRole.Slugs[] }) {
+    // Get authenticated user
+    const user = auth.user
 
-    if (user) {
-      await user.load('roles')
-      const hasNecessaryRole = user.roles.some((role: { slug: IRole.Slugs }) =>
-        opts.role_slugs.includes(role.slug)
-      )
-      if (hasNecessaryRole) return next()
+    if (!user) {
+      throw new ForbiddenException(i18n.t('errors.permission_denied'))
+    }
+
+    // Load roles if not already loaded
+    if (!user.$preloaded?.roles) {
+      await user.load((loader) => {
+        loader.load('roles')
+      })
+    }
+
+    const hasNecessaryRole = user.roles.some((role: { slug: IRole.Slugs }) =>
+      opts.role_slugs.includes(role.slug)
+    )
+
+    if (hasNecessaryRole) {
+      return next()
     }
 
     throw new ForbiddenException(i18n.t('errors.permission_denied'))
