@@ -12,6 +12,7 @@ test.group('SignInService', (group) => {
 
   test('should sign in user with valid credentials', async ({ assert }) => {
     const password = 'password123'
+    const ctx = await testUtils.createHttpContext()
 
     // Create the role first so afterCreate hook can attach it
     await Role.firstOrCreate(
@@ -37,6 +38,7 @@ test.group('SignInService', (group) => {
     const result = await service.run({
       uid: 'john@example.com',
       password: password,
+      ctx: ctx,
     })
 
     assert.exists(result.auth)
@@ -50,18 +52,21 @@ test.group('SignInService', (group) => {
   })
 
   test('should throw exception for non-existent user', async ({ assert }) => {
+    const ctx = await testUtils.createHttpContext()
     const service = await app.container.make(SignInService)
 
     await assert.rejects(async () => {
       await service.run({
         uid: 'nonexistent@example.com',
         password: 'password123',
+        ctx: ctx,
       })
     }, 'Invalid user credentials')
   })
 
   test('should throw exception for invalid password', async ({ assert }) => {
     const password = 'password123'
+    const ctx = await testUtils.createHttpContext()
 
     const user = await User.create({
       full_name: 'John Doe',
@@ -79,12 +84,14 @@ test.group('SignInService', (group) => {
       await service.run({
         uid: 'john@example.com',
         password: 'wrongpassword',
+        ctx: ctx,
       })
     }, 'Invalid user credentials')
   })
 
   test('should include roles in user data', async ({ assert }) => {
     const password = 'password123'
+    const ctx = await testUtils.createHttpContext()
 
     // Create roles first
     await Role.firstOrCreate(
@@ -122,6 +129,7 @@ test.group('SignInService', (group) => {
     const result = await service.run({
       uid: 'john@example.com',
       password: password,
+      ctx: ctx,
     })
 
     assert.exists(result.auth)
@@ -131,6 +139,7 @@ test.group('SignInService', (group) => {
 
   test('should handle user without roles', async ({ assert }) => {
     const password = 'password123'
+    const ctx = await testUtils.createHttpContext()
 
     // Ensure user role exists for afterCreate hook
     await Role.firstOrCreate(
@@ -153,6 +162,7 @@ test.group('SignInService', (group) => {
     const result = await service.run({
       uid: 'john@example.com',
       password: password,
+      ctx: ctx,
     })
 
     assert.exists(result.auth)
@@ -163,6 +173,7 @@ test.group('SignInService', (group) => {
 
   test('should handle soft deleted users', async ({ assert }) => {
     const password = 'password123'
+    const ctx = await testUtils.createHttpContext()
 
     const user = await User.create({
       full_name: 'John Doe',
@@ -180,6 +191,7 @@ test.group('SignInService', (group) => {
       await service.run({
         uid: 'john@example.com',
         password: password,
+        ctx: ctx,
       })
     }, 'Invalid user credentials')
   })
