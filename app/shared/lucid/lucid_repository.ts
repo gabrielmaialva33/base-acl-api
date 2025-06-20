@@ -1,6 +1,8 @@
 import stringHelpers from '@adonisjs/core/helpers/string'
+import { HttpContext } from '@adonisjs/core/http'
 import { BaseModel } from '@adonisjs/lucid/orm'
 import { ModelAttributes, ModelQueryBuilderContract } from '@adonisjs/lucid/types/model'
+import ValidationException from '#exceptions/validation_exception'
 
 import LucidRepositoryInterface, {
   DefaultOptions,
@@ -101,15 +103,34 @@ export default class LucidRepository<T extends typeof BaseModel>
     const modelKeysToSnakeCase = modelKeys.map((key) => stringHelpers.snakeCase(key))
     const allKeys = modelKeys.concat(modelKeysToSnakeCase)
 
-    if (!allKeys.includes(sort))
-      throw new Error(`Invalid sort key: ${sort}. Must be one of: ${allKeys.join(', ')}`)
+    if (!allKeys.includes(sort)) {
+      let message = `Invalid sort key: ${sort}. Must be one of: ${allKeys.join(', ')}`
+      try {
+        const { i18n } = HttpContext.getOrFail()
+        message = i18n.t('errors.invalid_sort_key', {
+          key: sort,
+          available: allKeys.join(', '),
+        })
+      } catch {
+        // HttpContext not available, use default message
+      }
+      throw new ValidationException(message)
+    }
   }
 
   protected validateDirection(direction: string): void {
     if (direction !== LucidRepository.ORDER_ASC && direction !== LucidRepository.ORDER_DESC) {
-      throw new Error(
-        `Invalid direction. Must be "${LucidRepository.ORDER_ASC}" or "${LucidRepository.ORDER_DESC}".`
-      )
+      let message = `Invalid direction. Must be "${LucidRepository.ORDER_ASC}" or "${LucidRepository.ORDER_DESC}".`
+      try {
+        const { i18n } = HttpContext.getOrFail()
+        message = i18n.t('errors.invalid_sort_direction', {
+          asc: LucidRepository.ORDER_ASC,
+          desc: LucidRepository.ORDER_DESC,
+        })
+      } catch {
+        // HttpContext not available, use default message
+      }
+      throw new ValidationException(message)
     }
   }
 
