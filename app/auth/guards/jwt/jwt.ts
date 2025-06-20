@@ -8,6 +8,29 @@ import { JwtGuardOptions, JwtUserProviderContract } from '#auth/guards/jwt/types
 export class JwtGuard<UserProvider extends JwtUserProviderContract<unknown>>
   implements GuardContract<UserProvider[typeof symbols.PROVIDER_REAL_USER]>
 {
+  /**
+   * A list of events and their types emitted by
+   * the guard.
+   */
+  declare [symbols.GUARD_KNOWN_EVENTS]: {}
+  /**
+   * A unique name for the guard driver
+   */
+  driverName: 'jwt' = 'jwt'
+  /**
+   * A flag to know if the authentication was an attempt
+   * during the current HTTP request
+   */
+  authenticationAttempted: boolean = false
+  /**
+   * A boolean to know if the current request has
+   * been authenticated
+   */
+  isAuthenticated: boolean = false
+  /**
+   * Reference to the currently authenticated user
+   */
+  user?: UserProvider[typeof symbols.PROVIDER_REAL_USER]
   #ctx: HttpContext
   #userProvider: UserProvider
   #options: JwtGuardOptions<UserProvider[typeof symbols.PROVIDER_REAL_USER]>
@@ -22,34 +45,6 @@ export class JwtGuard<UserProvider extends JwtUserProviderContract<unknown>>
     this.#options = option
     if (!this.#options.content) this.#options.content = (user) => ({ userId: user.getId() })
   }
-
-  /**
-   * A list of events and their types emitted by
-   * the guard.
-   */
-  declare [symbols.GUARD_KNOWN_EVENTS]: {}
-
-  /**
-   * A unique name for the guard driver
-   */
-  driverName: 'jwt' = 'jwt'
-
-  /**
-   * A flag to know if the authentication was an attempt
-   * during the current HTTP request
-   */
-  authenticationAttempted: boolean = false
-
-  /**
-   * A boolean to know if the current request has
-   * been authenticated
-   */
-  isAuthenticated: boolean = false
-
-  /**
-   * Reference to the currently authenticated user
-   */
-  user?: UserProvider[typeof symbols.PROVIDER_REAL_USER]
 
   /**
    * Generate a JWT token for a given user.
