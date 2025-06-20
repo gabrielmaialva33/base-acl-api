@@ -1,15 +1,17 @@
 import emitter from '@adonisjs/core/services/emitter'
 import type { HttpContext } from '@adonisjs/core/http'
+
 import {
   extractRequestMetadata,
   type LoginAttemptedEventData,
-  type LoginSucceededEventData,
   type LoginFailedEventData,
+  type LoginSucceededEventData,
   type LogoutEventData,
-  type UserRegisteredEventData,
   type TokenRefreshedEventData,
+  type UserRegisteredEventData,
 } from '#modules/user/events/auth_events'
 import type User from '#modules/user/models/user'
+import { DateTime } from 'luxon'
 
 export default class AuthEventService {
   /**
@@ -18,7 +20,7 @@ export default class AuthEventService {
   static emitLoginAttempted(email: string, ctx: HttpContext) {
     const eventData: LoginAttemptedEventData = {
       email,
-      timestamp: new Date(),
+      timestamp: DateTime.now().toJSDate(),
       ...extractRequestMetadata(ctx),
     }
 
