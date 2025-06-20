@@ -20,16 +20,10 @@ export default class RolesController {
   }
 
   async attach({ request, response }: HttpContext) {
-    const data = request.body()
-
-    // Map from test format to expected format if needed
-    const mappedData = {
-      user_id: data.userId || data.user_id,
-      role_ids: data.roleId ? [data.roleId] : data.role_ids || data.roleIds,
-    }
-
     try {
-      const { user_id: userId, role_ids: roleIds } = await attachRoleValidator.validate(mappedData)
+      const { user_id: userId, role_ids: roleIds } = await attachRoleValidator.validate(
+        request.all()
+      )
 
       // Check if user exists
       const user = await db.from('users').where('id', userId).first()
