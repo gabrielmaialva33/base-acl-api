@@ -7,4 +7,5 @@ export default [
   { name: 'Admin', slug: IRole.Slugs.ADMIN },
   { name: 'User', slug: IRole.Slugs.USER },
   { name: 'Guest', slug: IRole.Slugs.GUEST },
+  { name: 'Editor', slug: IRole.Slugs.EDITOR },
 ] as ModelAttributes<Role>[]
