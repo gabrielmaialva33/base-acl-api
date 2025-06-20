@@ -25,6 +25,6 @@ export default class SendVerificationEmailService {
     await user.save()
 
     // Send verification email
-    await mail.sendLater(new VerifyEmailNotification(user, token))
+    await mail.send(new VerifyEmailNotification(user, token))
   }
 }
