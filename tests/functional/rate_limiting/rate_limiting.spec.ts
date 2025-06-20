@@ -1,7 +1,6 @@
 import { test } from '@japa/runner'
 import testUtils from '@adonisjs/core/services/test_utils'
 import limiter from '@adonisjs/limiter/services/main'
-import db from '@adonisjs/lucid/services/db'
 
 import User from '#modules/user/models/user'
 import Role from '#modules/role/models/role'
@@ -77,10 +76,7 @@ test.group('Rate Limiting', (group) => {
       password: 'password123',
     })
 
-    await db.table('user_roles').insert({
-      user_id: user.id,
-      role_id: userRole.id,
-    })
+    await user.related('roles').sync([userRole.id])
 
     // Test guest rate limit (should be 20 requests per minute)
     const guestResponses = []
@@ -156,10 +152,7 @@ test.group('Rate Limiting', (group) => {
       password: 'password123',
     })
 
-    await db.table('user_roles').insert({
-      user_id: user.id,
-      role_id: userRole.id,
-    })
+    await user.related('roles').sync([userRole.id])
 
     // Create file upload permission
     const PermissionModule = await import('#modules/permission/models/permission')
@@ -179,7 +172,7 @@ test.group('Rate Limiting', (group) => {
       }
     )
 
-    await userRole.related('permissions').attach([uploadPermission.id])
+    await userRole.related('permissions').sync([uploadPermission.id])
 
     // Create test files for upload attempts
     const { join } = await import('node:path')
@@ -243,10 +236,7 @@ test.group('Rate Limiting', (group) => {
       password: 'password123',
     })
 
-    await db.table('user_roles').insert({
-      user_id: adminUser.id,
-      role_id: adminRole.id,
-    })
+    await adminUser.related('roles').sync([adminRole.id])
 
     // Admin endpoints should allow 200 requests per minute
     const responses = []

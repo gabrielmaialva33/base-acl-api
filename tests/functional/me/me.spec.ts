@@ -113,7 +113,7 @@ test.group('Me endpoints', (group) => {
       }
     )
 
-    await user.related('roles').attach([userRole.id, editorRole.id])
+    await user.related('roles').sync([userRole.id, editorRole.id])
 
     const response = await client.get('/api/v1/me/roles').loginAs(user)
 

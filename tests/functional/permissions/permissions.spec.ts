@@ -44,7 +44,7 @@ test.group('Permissions', (group) => {
       }
     )
 
-    await rootRole.related('permissions').attach([permission.id])
+    await rootRole.related('permissions').sync([permission.id])
 
     // Login as root
     const loginResponse = await client.post('/api/v1/sessions/sign-in').json({
@@ -105,7 +105,7 @@ test.group('Permissions', (group) => {
       }
     )
 
-    await adminRole.related('permissions').attach([listPermission.id])
+    await adminRole.related('permissions').sync([listPermission.id])
 
     // Create some test permissions
     for (let i = 0; i < 5; i++) {
@@ -172,14 +172,17 @@ test.group('Permissions', (group) => {
       }
     )
 
-    await rootRole.related('permissions').attach([updatePermission.id])
+    await rootRole.related('permissions').sync([updatePermission.id])
 
     // Create test role and permissions
-    const testRole = await Role.create({
-      name: 'Editor',
-      slug: IRole.Slugs.EDITOR,
-      description: 'Test editor role',
-    })
+    const testRole = await Role.firstOrCreate(
+      { slug: IRole.Slugs.EDITOR },
+      {
+        name: 'Editor',
+        slug: IRole.Slugs.EDITOR,
+        description: 'Test editor role',
+      }
+    )
 
     const perm1 = await Permission.firstOrCreate(
       {
@@ -288,7 +291,7 @@ test.group('Permissions', (group) => {
 
     await userRole
       .related('permissions')
-      .attach([readPermission.id, updatePermission.id, listPermission.id])
+      .sync([readPermission.id, updatePermission.id, listPermission.id])
 
     // Login
     const loginResponse = await client.post('/api/v1/sessions/sign-in').json({
