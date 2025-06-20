@@ -1,0 +1,304 @@
+### Base ACL API HTTP Requests
+### Base URL: http://localhost:3333
+###
+### Authentication: Most endpoints require JWT Bearer token
+### Include header: Authorization: Bearer <token>
+###
+### API Conventions:
+### - Content-Type: application/json (except file uploads)
+### - Timestamps: ISO 8601 format
+### - Database fields: snake_case naming
+### - Pagination: ?page=1&perPage=10
+### - Sorting: ?sortBy=field&order=asc|desc
+### - Search: ?search=term
+
+### Variables (replace with actual values)
+@baseUrl = http://localhost:3333
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+@userId = 1
+@roleId = 1
+
+###############################################################################
+### HEALTH ENDPOINTS
+###############################################################################
+
+### Get API Information
+GET {{baseUrl}}/
+Accept: application/json
+
+### Health Check
+GET {{baseUrl}}/api/v1/health
+Accept: application/json
+
+###############################################################################
+### AUTHENTICATION ENDPOINTS
+###############################################################################
+
+### Sign In (Login)
+# Returns access_token and refresh_token
+POST {{baseUrl}}/api/v1/sessions/sign-in
+Content-Type: application/json
+
+{
+  "uid": "john@example.com",
+  "password": "password123"
+}
+
+### Sign In with Username
+POST {{baseUrl}}/api/v1/sessions/sign-in
+Content-Type: application/json
+
+{
+  "uid": "johndoe",
+  "password": "password123"
+}
+
+### Sign Up (Register)
+# Creates new user account and returns tokens
+POST {{baseUrl}}/api/v1/sessions/sign-up
+Content-Type: application/json
+
+{
+  "full_name": "John Doe",
+  "email": "john@example.com",
+  "username": "johndoe",
+  "password": "password123",
+  "password_confirmation": "password123"
+}
+
+### Sign Up (Minimal - without username)
+POST {{baseUrl}}/api/v1/sessions/sign-up
+Content-Type: application/json
+
+{
+  "full_name": "Jane Smith",
+  "email": "jane@example.com",
+  "password": "password123",
+  "password_confirmation": "password123"
+}
+
+###############################################################################
+### USER MANAGEMENT ENDPOINTS (Requires Authentication)
+###############################################################################
+
+### List Users
+# Paginated list with search and sorting
+GET {{baseUrl}}/api/v1/users
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### List Users with Pagination
+GET {{baseUrl}}/api/v1/users?page=1&perPage=20
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### List Users with Sorting
+GET {{baseUrl}}/api/v1/users?sortBy=created_at&order=desc
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Search Users
+GET {{baseUrl}}/api/v1/users?search=john
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Get User by ID
+GET {{baseUrl}}/api/v1/users/{{userId}}
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Create User (Requires USER role)
+POST {{baseUrl}}/api/v1/users
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "full_name": "New User",
+  "email": "newuser@example.com",
+  "username": "newuser",
+  "password": "password123",
+  "password_confirmation": "password123"
+}
+
+### Update User
+# Note: email and username cannot be changed
+PUT {{baseUrl}}/api/v1/users/{{userId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "full_name": "John Updated Doe"
+}
+
+### Update User Password
+PUT {{baseUrl}}/api/v1/users/{{userId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "password": "newpassword123",
+  "password_confirmation": "newpassword123"
+}
+
+### Delete User (Soft Delete)
+DELETE {{baseUrl}}/api/v1/users/{{userId}}
+Authorization: Bearer {{token}}
+
+###############################################################################
+### ROLE MANAGEMENT ENDPOINTS (Requires ADMIN or ROOT role)
+###############################################################################
+
+### List Roles
+GET {{baseUrl}}/api/v1/admin/roles
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### List Roles with Pagination
+GET {{baseUrl}}/api/v1/admin/roles?page=1&perPage=10
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Attach Roles to User
+PUT {{baseUrl}}/api/v1/admin/roles/attach
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "user_id": 1,
+  "role_ids": [1, 2, 3]
+}
+
+### Attach Single Role to User
+PUT {{baseUrl}}/api/v1/admin/roles/attach
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "user_id": 2,
+  "role_ids": [2]
+}
+
+###############################################################################
+### FILE MANAGEMENT ENDPOINTS (Requires Authentication)
+###############################################################################
+
+### Upload File
+# Maximum size: 5MB
+# Allowed extensions: jpeg, jpg, png, pdf, doc, docx, txt, csv, xls, xlsx, mp3, mp4, zip
+# File is automatically categorized: image, document, video, audio, file
+POST {{baseUrl}}/api/v1/files/upload
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="document.pdf"
+Content-Type: application/pdf
+
+< ./document.pdf
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Upload Image
+POST {{baseUrl}}/api/v1/files/upload
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="photo.jpg"
+Content-Type: image/jpeg
+
+< ./photo.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+###############################################################################
+### EXAMPLE RESPONSES
+###############################################################################
+
+### Success Response - User Object
+# {
+#   "id": 1,
+#   "full_name": "John Doe",
+#   "email": "john@example.com",
+#   "username": "johndoe",
+#   "created_at": "2024-01-01T00:00:00.000Z",
+#   "updated_at": "2024-01-01T00:00:00.000Z",
+#   "roles": [
+#     {
+#       "id": 1,
+#       "name": "User",
+#       "description": "Regular user role",
+#       "slug": "user",
+#       "created_at": "2024-01-01T00:00:00.000Z",
+#       "updated_at": "2024-01-01T00:00:00.000Z"
+#     }
+#   ]
+# }
+
+### Success Response - Auth Response
+# {
+#   "id": 1,
+#   "full_name": "John Doe",
+#   "email": "john@example.com",
+#   "username": "johndoe",
+#   "created_at": "2024-01-01T00:00:00.000Z",
+#   "updated_at": "2024-01-01T00:00:00.000Z",
+#   "roles": [...],
+#   "auth": {
+#     "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+#     "refresh_token": "refresh_token_string"
+#   }
+# }
+
+### Success Response - Paginated List
+# {
+#   "meta": {
+#     "total": 100,
+#     "per_page": 10,
+#     "current_page": 1,
+#     "last_page": 10,
+#     "first_page": 1,
+#     "first_page_url": "/?page=1",
+#     "last_page_url": "/?page=10",
+#     "next_page_url": "/?page=2",
+#     "previous_page_url": null
+#   },
+#   "data": [...]
+# }
+
+### Success Response - File Upload
+# {
+#   "url": "https://storage.example.com/files/abc123.pdf",
+#   "clientName": "document.pdf",
+#   "fileCategory": "document",
+#   "fileType": "application/pdf",
+#   "size": 12345,
+#   "extname": "pdf"
+# }
+
+### Error Response - Validation Error
+# {
+#   "errors": [
+#     {
+#       "message": "The email field must be a valid email",
+#       "field": "email",
+#       "rule": "email"
+#     }
+#   ]
+# }
+
+### Error Response - Unauthorized
+# {
+#   "errors": [
+#     {
+#       "message": "Unauthorized"
+#     }
+#   ]
+# }
+
+### Error Response - Not Found
+# {
+#   "errors": [
+#     {
+#       "message": "Resource not found"
+#     }
+#   ]
+# }
