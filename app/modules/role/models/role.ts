@@ -4,6 +4,7 @@ import IRole from '#modules/role/interfaces/role_interface'
 import type { ManyToMany } from '@adonisjs/lucid/types/relations'
 
 import User from '#modules/user/models/user'
+import Permission from '#modules/permission/models/permission'
 
 export default class Role extends BaseModel {
   static table = 'roles'
@@ -40,6 +41,12 @@ export default class Role extends BaseModel {
     pivotTable: 'user_roles',
   })
   declare users: ManyToMany<typeof User>
+
+  @manyToMany(() => Permission, {
+    pivotTable: 'role_permissions',
+    pivotTimestamps: true,
+  })
+  declare permissions: ManyToMany<typeof Permission>
 
   /**
    * ------------------------------------------------------
