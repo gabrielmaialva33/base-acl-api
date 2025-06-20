@@ -11,6 +11,18 @@ namespace IRole {
     GUEST = 'guest',
     EDITOR = 'editor',
   }
+
+  export interface RoleHierarchy {
+    [key: string]: string[]
+  }
+
+  export const ROLE_HIERARCHY: RoleHierarchy = {
+    [Slugs.ROOT]: [Slugs.ADMIN, Slugs.USER, Slugs.GUEST, Slugs.EDITOR],
+    [Slugs.ADMIN]: [Slugs.USER, Slugs.GUEST, Slugs.EDITOR],
+    [Slugs.EDITOR]: [Slugs.USER],
+    [Slugs.USER]: [Slugs.GUEST],
+    [Slugs.GUEST]: [],
+  }
 }
 
 export default IRole
