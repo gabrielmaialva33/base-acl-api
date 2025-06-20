@@ -165,7 +165,11 @@ Content-Type: application/json
 
 {
   "user_id": 1,
-  "role_ids": [1, 2, 3]
+  "role_ids": [
+    1,
+    2,
+    3
+  ]
 }
 
 ### Attach Single Role to User
@@ -175,7 +179,9 @@ Content-Type: application/json
 
 {
   "user_id": 2,
-  "role_ids": [2]
+  "role_ids": [
+    2
+  ]
 }
 
 ###############################################################################
