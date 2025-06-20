@@ -2,7 +2,9 @@ import { test } from '@japa/runner'
 import testUtils from '@adonisjs/core/services/test_utils'
 import User from '#modules/user/models/user'
 import Role from '#modules/role/models/role'
+import Permission from '#modules/permission/models/permission'
 import IRole from '#modules/role/interfaces/role_interface'
+import IPermission from '#modules/permission/interfaces/permission_interface'
 import File from '#modules/file/models/file'
 import db from '@adonisjs/lucid/services/db'
 import { cuid } from '@adonisjs/core/helpers'
@@ -11,6 +13,26 @@ import app from '@adonisjs/core/services/app'
 
 test.group('Files upload', (group) => {
   group.each.setup(() => testUtils.db().withGlobalTransaction())
+
+  // Helper function to create and assign permissions to a role
+  async function assignPermissions(role: Role, actions: string[]) {
+    const permissions = await Promise.all(
+      actions.map((action) =>
+        Permission.firstOrCreate(
+          {
+            resource: IPermission.Resources.FILES,
+            action: action,
+          },
+          {
+            name: `files.${action}`,
+            resource: IPermission.Resources.FILES,
+            action: action,
+          }
+        )
+      )
+    )
+    await role.related('permissions').sync(permissions.map((p) => p.id))
+  }
 
   test('should upload a file with authentication', async ({ client, assert }) => {
     const userRole = await Role.firstOrCreate(
@@ -33,6 +55,9 @@ test.group('Files upload', (group) => {
       user_id: user.id,
       role_id: userRole.id,
     })
+
+    // Assign create permission to user role
+    await assignPermissions(userRole, [IPermission.Actions.CREATE])
 
     // Create a test file
     const testFilePath = join(app.tmpPath(), `test.txt`)
@@ -80,6 +105,9 @@ test.group('Files upload', (group) => {
       user_id: user.id,
       role_id: userRole.id,
     })
+
+    // Assign create permission to user role
+    await assignPermissions(userRole, [IPermission.Actions.CREATE])
 
     // Create a test image file (1x1 PNG)
     const testFilePath = join(app.tmpPath(), `test.png`)
@@ -131,6 +159,9 @@ test.group('Files upload', (group) => {
       role_id: userRole.id,
     })
 
+    // Assign create permission to user role
+    await assignPermissions(userRole, [IPermission.Actions.CREATE])
+
     const response = await client.post('/api/v1/files/upload').loginAs(user)
 
     response.assertStatus(422)
@@ -165,6 +196,9 @@ test.group('Files upload', (group) => {
       user_id: user.id,
       role_id: userRole.id,
     })
+
+    // Assign create permission to user role
+    await assignPermissions(userRole, [IPermission.Actions.CREATE])
 
     // Create a large test file (11MB - exceeds 10MB limit)
     const testFilePath = join(app.tmpPath(), `test-${cuid()}.txt`)
@@ -212,6 +246,9 @@ test.group('Files upload', (group) => {
       role_id: userRole.id,
     })
 
+    // Assign create permission to user role
+    await assignPermissions(userRole, [IPermission.Actions.CREATE])
+
     // Create a test file with disallowed extension
     const testFilePath = join(app.tmpPath(), `test-${cuid()}.exe`)
     await import('node:fs').then((fs) => fs.promises.writeFile(testFilePath, 'malicious content'))
@@ -256,6 +293,9 @@ test.group('Files upload', (group) => {
       user_id: user.id,
       role_id: userRole.id,
     })
+
+    // Assign create permission to user role
+    await assignPermissions(userRole, [IPermission.Actions.CREATE])
 
     // Create test files
     const testFile1Path = join(app.tmpPath(), `test1-${cuid()}.txt`)
@@ -312,6 +352,9 @@ test.group('Files upload', (group) => {
       user_id: user.id,
       role_id: userRole.id,
     })
+
+    // Assign create permission to user role
+    await assignPermissions(userRole, [IPermission.Actions.CREATE])
 
     const testFiles = [
       { name: `image.jpg`, category: 'image' },

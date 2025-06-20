@@ -2,11 +2,33 @@ import { test } from '@japa/runner'
 import testUtils from '@adonisjs/core/services/test_utils'
 import User from '#modules/user/models/user'
 import Role from '#modules/role/models/role'
+import Permission from '#modules/permission/models/permission'
 import IRole from '#modules/role/interfaces/role_interface'
+import IPermission from '#modules/permission/interfaces/permission_interface'
 import db from '@adonisjs/lucid/services/db'
 
 test.group('Users CRUD', (group) => {
   group.each.setup(() => testUtils.db().withGlobalTransaction())
+
+  // Helper function to create and assign permissions to a role
+  async function assignPermissions(role: Role, actions: string[]) {
+    const permissions = await Promise.all(
+      actions.map((action) =>
+        Permission.firstOrCreate(
+          {
+            resource: IPermission.Resources.USERS,
+            action: action,
+          },
+          {
+            name: `users.${action}`,
+            resource: IPermission.Resources.USERS,
+            action: action,
+          }
+        )
+      )
+    )
+    await role.related('permissions').sync(permissions.map((p) => p.id))
+  }
 
   test('should get user by id', async ({ client }) => {
     const userRole = await Role.firstOrCreate(
@@ -29,6 +51,9 @@ test.group('Users CRUD', (group) => {
       user_id: authUser.id,
       role_id: userRole.id,
     })
+
+    // Assign read permission to user role
+    await assignPermissions(userRole, [IPermission.Actions.READ])
 
     const targetUser = await User.create({
       full_name: 'Target User',
@@ -70,6 +95,9 @@ test.group('Users CRUD', (group) => {
       role_id: userRole.id,
     })
 
+    // Assign read permission to user role
+    await assignPermissions(userRole, [IPermission.Actions.READ])
+
     const response = await client.get('/api/v1/users/999999').loginAs(authUser)
 
     response.assertStatus(404)
@@ -99,6 +127,9 @@ test.group('Users CRUD', (group) => {
       user_id: authUser.id,
       role_id: userRole.id,
     })
+
+    // Assign create permission to user role
+    await assignPermissions(userRole, [IPermission.Actions.CREATE])
 
     const newUserData = {
       full_name: 'New User',
@@ -142,6 +173,9 @@ test.group('Users CRUD', (group) => {
       user_id: authUser.id,
       role_id: userRole.id,
     })
+
+    // Assign create permission to user role
+    await assignPermissions(userRole, [IPermission.Actions.CREATE])
 
     const response = await client
       .post('/api/v1/users')
@@ -194,6 +228,9 @@ test.group('Users CRUD', (group) => {
       role_id: userRole.id,
     })
 
+    // Assign update permission to user role
+    await assignPermissions(userRole, [IPermission.Actions.UPDATE])
+
     const targetUser = await User.create({
       full_name: 'Old Name',
       email: 'olduser@example.com',
@@ -244,6 +281,9 @@ test.group('Users CRUD', (group) => {
       role_id: userRole.id,
     })
 
+    // Assign update permission to user role
+    await assignPermissions(userRole, [IPermission.Actions.UPDATE])
+
     const originalEmail = 'original@example.com'
     const originalUsername = 'originaluser'
 
@@ -292,6 +332,9 @@ test.group('Users CRUD', (group) => {
       user_id: authUser.id,
       role_id: userRole.id,
     })
+
+    // Assign delete permission to user role
+    await assignPermissions(userRole, [IPermission.Actions.DELETE])
 
     const targetUser = await User.create({
       full_name: 'Delete Me',

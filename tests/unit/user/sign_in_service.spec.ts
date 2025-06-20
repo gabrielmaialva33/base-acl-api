@@ -96,11 +96,14 @@ test.group('SignInService', (group) => {
       }
     )
 
-    const adminRole = await Role.create({
-      name: 'Admin',
-      slug: IRole.Slugs.ADMIN,
-      description: 'Administrator role',
-    })
+    const adminRole = await Role.firstOrCreate(
+      { slug: IRole.Slugs.ADMIN },
+      {
+        name: 'Admin',
+        slug: IRole.Slugs.ADMIN,
+        description: 'Administrator role',
+      }
+    )
 
     const user = await User.create({
       full_name: 'John Doe',

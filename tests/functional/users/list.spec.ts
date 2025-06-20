@@ -2,11 +2,33 @@ import { test } from '@japa/runner'
 import testUtils from '@adonisjs/core/services/test_utils'
 import User from '#modules/user/models/user'
 import Role from '#modules/role/models/role'
+import Permission from '#modules/permission/models/permission'
 import IRole from '#modules/role/interfaces/role_interface'
+import IPermission from '#modules/permission/interfaces/permission_interface'
 import db from '@adonisjs/lucid/services/db'
 
 test.group('Users list', (group) => {
   group.each.setup(() => testUtils.db().withGlobalTransaction())
+
+  // Helper function to create and assign permissions to a role
+  async function assignPermissions(role: Role, actions: string[]) {
+    const permissions = await Promise.all(
+      actions.map((action) =>
+        Permission.firstOrCreate(
+          {
+            resource: IPermission.Resources.USERS,
+            action: action,
+          },
+          {
+            name: `users.${action}`,
+            resource: IPermission.Resources.USERS,
+            action: action,
+          }
+        )
+      )
+    )
+    await role.related('permissions').sync(permissions.map((p) => p.id))
+  }
 
   test('should list users with authentication', async ({ client }) => {
     const userRole = await Role.firstOrCreate(
@@ -29,6 +51,9 @@ test.group('Users list', (group) => {
       user_id: user.id,
       role_id: userRole.id,
     })
+
+    // Assign list permission to user role
+    await assignPermissions(userRole, [IPermission.Actions.LIST])
 
     const response = await client.get('/api/v1/users').loginAs(user)
 
@@ -69,6 +94,9 @@ test.group('Users list', (group) => {
       user_id: authUser.id,
       role_id: userRole.id,
     })
+
+    // Assign list permission to user role
+    await assignPermissions(userRole, [IPermission.Actions.LIST])
 
     // Create 15 additional users
     for (let i = 1; i <= 15; i++) {
@@ -116,6 +144,9 @@ test.group('Users list', (group) => {
       user_id: authUser.id,
       role_id: userRole.id,
     })
+
+    // Assign list permission to user role
+    await assignPermissions(userRole, [IPermission.Actions.LIST])
 
     await User.create({
       full_name: 'Jane Smith',
@@ -167,6 +198,9 @@ test.group('Users list', (group) => {
       user_id: authUser.id,
       role_id: userRole.id,
     })
+
+    // Assign list permission to user role
+    await assignPermissions(userRole, [IPermission.Actions.LIST])
 
     await User.create({
       full_name: 'Charlie Brown',
@@ -230,6 +264,9 @@ test.group('Users list', (group) => {
         role_id: adminRole.id,
       },
     ])
+
+    // Assign list permission to user role (admin inherits this too)
+    await assignPermissions(userRole, [IPermission.Actions.LIST])
 
     const response = await client.get('/api/v1/users').loginAs(user)
 

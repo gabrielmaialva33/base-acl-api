@@ -1,11 +1,12 @@
 import { test } from '@japa/runner'
 import testUtils from '@adonisjs/core/services/test_utils'
+
 import User from '#modules/user/models/user'
 import Role from '#modules/role/models/role'
 import Permission from '#modules/permission/models/permission'
+
 import IRole from '#modules/role/interfaces/role_interface'
 import IPermission from '#modules/permission/interfaces/permission_interface'
-import db from '@adonisjs/lucid/services/db'
 
 test.group('Permissions', (group) => {
   group.each.setup(() => testUtils.db().withGlobalTransaction())
@@ -30,12 +31,18 @@ test.group('Permissions', (group) => {
     await rootUser.related('roles').attach([rootRole.id])
 
     // Create permissions.create permission
-    const permission = await Permission.create({
-      name: 'permissions.create',
-      resource: IPermission.Resources.PERMISSIONS,
-      action: IPermission.Actions.CREATE,
-      description: 'Create permissions',
-    })
+    const permission = await Permission.firstOrCreate(
+      {
+        resource: IPermission.Resources.PERMISSIONS,
+        action: IPermission.Actions.CREATE,
+      },
+      {
+        name: 'permissions.create',
+        resource: IPermission.Resources.PERMISSIONS,
+        action: IPermission.Actions.CREATE,
+        description: 'Create permissions',
+      }
+    )
 
     await rootRole.related('permissions').attach([permission.id])
 
@@ -86,21 +93,32 @@ test.group('Permissions', (group) => {
     await adminUser.related('roles').attach([adminRole.id])
 
     // Create permissions
-    const listPermission = await Permission.create({
-      name: 'permissions.list',
-      resource: IPermission.Resources.PERMISSIONS,
-      action: IPermission.Actions.LIST,
-    })
+    const listPermission = await Permission.firstOrCreate(
+      {
+        resource: IPermission.Resources.PERMISSIONS,
+        action: IPermission.Actions.LIST,
+      },
+      {
+        name: 'permissions.list',
+        resource: IPermission.Resources.PERMISSIONS,
+        action: IPermission.Actions.LIST,
+      }
+    )
 
     await adminRole.related('permissions').attach([listPermission.id])
 
     // Create some test permissions
     for (let i = 0; i < 5; i++) {
-      await Permission.create({
-        name: `test.permission.${i}`,
-        resource: 'test',
-        action: `action${i}`,
-      })
+      await Permission.firstOrCreate(
+        {
+          name: `test.permission.${i}`,
+        },
+        {
+          name: `test.permission.${i}`,
+          resource: 'test',
+          action: `action${i}`,
+        }
+      )
     }
 
     // Login
@@ -142,32 +160,48 @@ test.group('Permissions', (group) => {
     await rootUser.related('roles').attach([rootRole.id])
 
     // Create permissions
-    const listPermission = await Permission.create({
-      name: 'permissions.list',
-      resource: IPermission.Resources.PERMISSIONS,
-      action: IPermission.Actions.LIST,
-    })
+    const updatePermission = await Permission.firstOrCreate(
+      {
+        resource: IPermission.Resources.PERMISSIONS,
+        action: IPermission.Actions.UPDATE,
+      },
+      {
+        name: 'permissions.update',
+        resource: IPermission.Resources.PERMISSIONS,
+        action: IPermission.Actions.UPDATE,
+      }
+    )
 
-    await rootRole.related('permissions').attach([listPermission.id])
+    await rootRole.related('permissions').attach([updatePermission.id])
 
     // Create test role and permissions
     const testRole = await Role.create({
-      name: 'Test Role',
-      slug: 'test-role',
-      description: 'Test role',
+      name: 'Editor',
+      slug: IRole.Slugs.EDITOR,
+      description: 'Test editor role',
     })
 
-    const perm1 = await Permission.create({
-      name: 'test.perm1',
-      resource: 'test',
-      action: 'perm1',
-    })
+    const perm1 = await Permission.firstOrCreate(
+      {
+        name: 'test.perm1',
+      },
+      {
+        name: 'test.perm1',
+        resource: 'test',
+        action: 'perm1',
+      }
+    )
 
-    const perm2 = await Permission.create({
-      name: 'test.perm2',
-      resource: 'test',
-      action: 'perm2',
-    })
+    const perm2 = await Permission.firstOrCreate(
+      {
+        name: 'test.perm2',
+      },
+      {
+        name: 'test.perm2',
+        resource: 'test',
+        action: 'perm2',
+      }
+    )
 
     // Login
     const loginResponse = await client.post('/api/v1/sessions/sign-in').json({
@@ -196,7 +230,7 @@ test.group('Permissions', (group) => {
     assert.equal(testRole.permissions.length, 2)
   })
 
-  test('should check user permissions', async ({ client, assert }) => {
+  test('should check user permissions', async ({ client }) => {
     // Create user with specific permissions
     const user = await User.create({
       full_name: 'Test User',
@@ -216,23 +250,41 @@ test.group('Permissions', (group) => {
     await user.related('roles').attach([userRole.id])
 
     // Create permissions
-    const readPermission = await Permission.create({
-      name: 'users.read',
-      resource: IPermission.Resources.USERS,
-      action: IPermission.Actions.READ,
-    })
+    const readPermission = await Permission.firstOrCreate(
+      {
+        resource: IPermission.Resources.USERS,
+        action: IPermission.Actions.READ,
+      },
+      {
+        name: 'users.read',
+        resource: IPermission.Resources.USERS,
+        action: IPermission.Actions.READ,
+      }
+    )
 
-    const updatePermission = await Permission.create({
-      name: 'users.update',
-      resource: IPermission.Resources.USERS,
-      action: IPermission.Actions.UPDATE,
-    })
+    const updatePermission = await Permission.firstOrCreate(
+      {
+        resource: IPermission.Resources.USERS,
+        action: IPermission.Actions.UPDATE,
+      },
+      {
+        name: 'users.update',
+        resource: IPermission.Resources.USERS,
+        action: IPermission.Actions.UPDATE,
+      }
+    )
 
-    const listPermission = await Permission.create({
-      name: 'permissions.list',
-      resource: IPermission.Resources.PERMISSIONS,
-      action: IPermission.Actions.LIST,
-    })
+    const listPermission = await Permission.firstOrCreate(
+      {
+        resource: IPermission.Resources.PERMISSIONS,
+        action: IPermission.Actions.LIST,
+      },
+      {
+        name: 'permissions.list',
+        resource: IPermission.Resources.PERMISSIONS,
+        action: IPermission.Actions.LIST,
+      }
+    )
 
     await userRole
       .related('permissions')
@@ -307,11 +359,7 @@ test.group('Permissions', (group) => {
 
     response.assertStatus(403)
     response.assertBodyContains({
-      errors: [
-        {
-          message: response.body().errors[0].message, // Will contain the insufficient permissions message
-        },
-      ],
+      message: 'Insufficient permissions. Required: permissions.list',
     })
   })
 })
