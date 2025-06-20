@@ -14,9 +14,9 @@ import { createUserValidator, editUserValidator } from '#modules/user/validators
 export default class UsersController {
   async paginate({ request, response }: HttpContext) {
     const page = request.input('page', 1)
-    const perPage = request.input('perPage', 10) || request.input('per_page', 10)
-    const sortBy = request.input('sortBy', 'id') || request.input('sort_by', 'id')
-    const direction = request.input('order', 'asc') || request.input('direction', 'asc')
+    const perPage = request.input('per_page', 10)
+    const sortBy = request.input('sort_by', 'id')
+    const direction = request.input('order', 'asc')
     const search = request.input('search', undefined)
 
     const service = await app.container.make(PaginateUserService)
@@ -41,17 +41,7 @@ export default class UsersController {
   }
 
   async create({ request, response }: HttpContext) {
-    const data = request.all()
-    // Map camelCase to snake_case for validator
-    const mappedData = {
-      full_name: data.full_name || data.full_name,
-      email: data.email,
-      username: data.username,
-      password: data.password,
-      password_confirmation: data.password_confirmation || data.passwordConfirmation,
-    }
-
-    const payload = await createUserValidator.validate(mappedData)
+    const payload = await createUserValidator.validate(request.all())
 
     const service = await app.container.make(CreateUserService)
 
@@ -61,17 +51,7 @@ export default class UsersController {
 
   async update({ params, request, response }: HttpContext) {
     const userId = +params.id
-    const data = request.all()
-    // Map camelCase to snake_case for validator
-    const mappedData = {
-      full_name: data.full_name || data.full_name,
-      email: data.email,
-      username: data.username,
-      password: data.password,
-      password_confirmation: data.password_confirmation || data.passwordConfirmation,
-    }
-
-    const payload = await editUserValidator.validate(mappedData, { meta: { userId } })
+    const payload = await editUserValidator.validate(request.all(), { meta: { userId } })
 
     const service = await app.container.make(EditUserService)
 
