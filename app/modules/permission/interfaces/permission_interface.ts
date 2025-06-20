@@ -21,6 +21,8 @@ namespace IPermission {
     user_id: number
     permission: string | string[]
     requireAll?: boolean
+    context?: string
+    resource_id?: number
   }
 
   export enum Resources {
@@ -45,11 +47,28 @@ namespace IPermission {
     REVOKE = 'revoke',
   }
 
+  export enum Contexts {
+    OWN = 'own',
+    ANY = 'any',
+    TEAM = 'team',
+    DEPARTMENT = 'department',
+  }
+
   export interface PermissionData {
     name?: string
     description?: string
     resource: string
     action: string
+    context?: string
+  }
+
+  export interface ContextPermissionCheck {
+    userId: number
+    resource: string
+    action: string
+    context: string
+    resourceId?: number
+    ownerId?: number
   }
 }
 
