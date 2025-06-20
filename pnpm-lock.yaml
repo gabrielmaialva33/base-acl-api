@@ -31,6 +31,9 @@ importers:
       '@adonisjs/i18n':
         specifier: ^2.2.0
         version: 2.2.0(@adonisjs/core@6.19.0(@adonisjs/assembler@7.8.2(typescript@5.8.3))(@vinejs/vine@3.0.1)(argon2@0.43.0)(bcrypt@6.0.0))(@vinejs/vine@3.0.1)
+      '@adonisjs/limiter':
+        specifier: ^2.4.0
+        version: 2.4.0(@adonisjs/core@6.19.0(@adonisjs/assembler@7.8.2(typescript@5.8.3))(@vinejs/vine@3.0.1)(argon2@0.43.0)(bcrypt@6.0.0))(@adonisjs/lucid@21.6.1(@adonisjs/assembler@7.8.2(typescript@5.8.3))(@adonisjs/core@6.19.0(@adonisjs/assembler@7.8.2(typescript@5.8.3))(@vinejs/vine@3.0.1)(argon2@0.43.0)(bcrypt@6.0.0))(@vinejs/vine@3.0.1)(luxon@3.6.1)(pg@8.16.2))(@adonisjs/redis@9.2.0(@adonisjs/core@6.19.0(@adonisjs/assembler@7.8.2(typescript@5.8.3))(@vinejs/vine@3.0.1)(argon2@0.43.0)(bcrypt@6.0.0)))
       '@adonisjs/lucid':
         specifier: ^21.6.1
         version: 21.6.1(@adonisjs/assembler@7.8.2(typescript@5.8.3))(@adonisjs/core@6.19.0(@adonisjs/assembler@7.8.2(typescript@5.8.3))(@vinejs/vine@3.0.1)(argon2@0.43.0)(bcrypt@6.0.0))(@vinejs/vine@3.0.1)(luxon@3.6.1)(pg@8.16.2)
@@ -389,6 +392,21 @@ packages:
       '@vinejs/vine':
         optional: true
       edge.js:
+        optional: true
+
+  '@adonisjs/limiter@2.4.0':
+    resolution:
+      {
+        integrity: sha512-W3uhoQ9/dEDs6WQzyBhY0PFedwwkFQbVBaCjMffqJ4TJKsQqAUZdyKCwhvn6lEdqoSmlhTr/HOUh8M4+u7pJGQ==,
+      }
+    peerDependencies:
+      '@adonisjs/core': ^6.12.1
+      '@adonisjs/lucid': ^20.1.0 || ^21.0.0
+      '@adonisjs/redis': ^8.0.1 || ^9.0.0
+    peerDependenciesMeta:
+      '@adonisjs/lucid':
+        optional: true
+      '@adonisjs/redis':
         optional: true
 
   '@adonisjs/logger@6.0.6':
@@ -5481,6 +5499,12 @@ packages:
       }
     engines: { node: '>= 0.8' }
 
+  rate-limiter-flexible@7.1.1:
+    resolution:
+      {
+        integrity: sha512-lsYRcqRSJrKBNt6pMzBJTiCJP5KnwsGWdObMZxd19JFUJRntM+yuHs4/2bs6NZweSLgpsDcykvzyQaumoslWQg==,
+      }
+
   raw-body@3.0.0:
     resolution:
       {
@@ -6861,6 +6885,14 @@ snapshots:
       yaml: 2.8.0
     optionalDependencies:
       '@vinejs/vine': 3.0.1
+
+  '@adonisjs/limiter@2.4.0(@adonisjs/core@6.19.0(@adonisjs/assembler@7.8.2(typescript@5.8.3))(@vinejs/vine@3.0.1)(argon2@0.43.0)(bcrypt@6.0.0))(@adonisjs/lucid@21.6.1(@adonisjs/assembler@7.8.2(typescript@5.8.3))(@adonisjs/core@6.19.0(@adonisjs/assembler@7.8.2(typescript@5.8.3))(@vinejs/vine@3.0.1)(argon2@0.43.0)(bcrypt@6.0.0))(@vinejs/vine@3.0.1)(luxon@3.6.1)(pg@8.16.2))(@adonisjs/redis@9.2.0(@adonisjs/core@6.19.0(@adonisjs/assembler@7.8.2(typescript@5.8.3))(@vinejs/vine@3.0.1)(argon2@0.43.0)(bcrypt@6.0.0)))':
+    dependencies:
+      '@adonisjs/core': 6.19.0(@adonisjs/assembler@7.8.2(typescript@5.8.3))(@vinejs/vine@3.0.1)(argon2@0.43.0)(bcrypt@6.0.0)
+      rate-limiter-flexible: 7.1.1
+    optionalDependencies:
+      '@adonisjs/lucid': 21.6.1(@adonisjs/assembler@7.8.2(typescript@5.8.3))(@adonisjs/core@6.19.0(@adonisjs/assembler@7.8.2(typescript@5.8.3))(@vinejs/vine@3.0.1)(argon2@0.43.0)(bcrypt@6.0.0))(@vinejs/vine@3.0.1)(luxon@3.6.1)(pg@8.16.2)
+      '@adonisjs/redis': 9.2.0(@adonisjs/core@6.19.0(@adonisjs/assembler@7.8.2(typescript@5.8.3))(@vinejs/vine@3.0.1)(argon2@0.43.0)(bcrypt@6.0.0))
 
   '@adonisjs/logger@6.0.6':
     dependencies:
@@ -10318,6 +10350,8 @@ snapshots:
   quick-format-unescaped@4.0.4: {}
 
   random-bytes@1.0.0: {}
+
+  rate-limiter-flexible@7.1.1: {}
 
   raw-body@3.0.0:
     dependencies:
