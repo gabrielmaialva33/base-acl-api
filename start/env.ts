@@ -22,6 +22,7 @@ export default await Env.create(new URL('../', import.meta.url), {
   APP_KEY: Env.schema.string(),
   HOST: Env.schema.string({ format: 'host' }),
   LOG_LEVEL: Env.schema.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']),
+  APP_URL: Env.schema.string.optional(),
 
   /*
   |----------------------------------------------------------
@@ -111,4 +112,16 @@ export default await Env.create(new URL('../', import.meta.url), {
   // GCS
   GCS_KEY: Env.schema.string(),
   GCS_BUCKET: Env.schema.string(),
+
+  /*
+  |----------------------------------------------------------
+  | Variables for configuring the mail package
+  |----------------------------------------------------------
+  */
+  SMTP_HOST: Env.schema.string(),
+  SMTP_PORT: Env.schema.string(),
+  SMTP_USER: Env.schema.string(),
+  SMTP_PASS: Env.schema.string(),
+  SMTP_FROM_ADDRESS: Env.schema.string.optional(),
+  SMTP_FROM_NAME: Env.schema.string.optional(),
 })
