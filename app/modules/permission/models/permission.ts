@@ -28,6 +28,9 @@ export default class Permission extends BaseModel {
   @column()
   declare action: string
 
+  @column()
+  declare context: string
+
   @column.dateTime({ autoCreate: true })
   declare created_at: DateTime
 
@@ -60,7 +63,8 @@ export default class Permission extends BaseModel {
   @beforeCreate()
   static async generateName(permission: Permission) {
     if (!permission.name) {
-      permission.name = `${permission.resource}.${permission.action}`
+      const context = permission.context || 'any'
+      permission.name = `${permission.resource}.${permission.action}.${context}`
     }
   }
 
@@ -75,5 +79,18 @@ export default class Permission extends BaseModel {
 
   static byAction = (query: any, action: string) => {
     return query.where('action', action)
+  }
+
+  static byContext = (query: any, context: string) => {
+    return query.where('context', context)
+  }
+
+  static byResourceActionContext = (
+    query: any,
+    resource: string,
+    action: string,
+    context: string = 'any'
+  ) => {
+    return query.where('resource', resource).where('action', action).where('context', context)
   }
 }
