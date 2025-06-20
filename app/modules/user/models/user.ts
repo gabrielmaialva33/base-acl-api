@@ -62,8 +62,8 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare metadata: {
     email_verified: boolean
     email_verification_token: string | null
-    email_verification_sent_at: DateTime | null
-    email_verified_at: DateTime | null
+    email_verification_sent_at: string | null
+    email_verified_at: string | null
   }
 
   @column.dateTime({ autoCreate: true })
