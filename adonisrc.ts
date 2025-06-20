@@ -14,6 +14,7 @@ export default defineConfig({
     () => import('@adonisjs/core/commands'),
     () => import('@adonisjs/lucid/commands'),
     () => import('@adonisjs/cache/commands'),
+    () => import('@adonisjs/mail/commands'),
   ],
 
   /*
@@ -46,6 +47,7 @@ export default defineConfig({
     () => import('@adonisjs/limiter/limiter_provider'),
     () => import('#providers/app_provider'),
     () => import('#providers/auth_events_provider'),
+    () => import('@adonisjs/mail/mail_provider'),
   ],
 
   /*
