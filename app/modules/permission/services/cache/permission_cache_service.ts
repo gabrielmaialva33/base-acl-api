@@ -7,12 +7,6 @@ import Role from '#modules/role/models/role'
 @inject()
 export default class PermissionCacheService {
   private readonly CACHE_PREFIX = 'acl:permissions'
-  private readonly USER_PERMISSIONS_KEY = (userId: number) => `${this.CACHE_PREFIX}:user:${userId}`
-  private readonly ROLE_PERMISSIONS_KEY = (roleId: number) => `${this.CACHE_PREFIX}:role:${roleId}`
-  private readonly USER_ROLES_KEY = (userId: number) => `${this.CACHE_PREFIX}:user_roles:${userId}`
-  private readonly PERMISSION_KEY = (resource: string, action: string, context: string = 'any') =>
-    `${this.CACHE_PREFIX}:permission:${resource}:${action}:${context}`
-
   private readonly DEFAULT_TTL = 3600 // 1 hour in seconds
   private readonly ROLE_TTL = 7200 // 2 hours in seconds
 
@@ -299,4 +293,13 @@ export default class PermissionCacheService {
       await redis.del(...keys)
     }
   }
+
+  private readonly USER_PERMISSIONS_KEY = (userId: number) => `${this.CACHE_PREFIX}:user:${userId}`
+
+  private readonly ROLE_PERMISSIONS_KEY = (roleId: number) => `${this.CACHE_PREFIX}:role:${roleId}`
+
+  private readonly USER_ROLES_KEY = (userId: number) => `${this.CACHE_PREFIX}:user_roles:${userId}`
+
+  private readonly PERMISSION_KEY = (resource: string, action: string, context: string = 'any') =>
+    `${this.CACHE_PREFIX}:permission:${resource}:${action}:${context}`
 }
