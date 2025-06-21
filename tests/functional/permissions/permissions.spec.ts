@@ -331,6 +331,10 @@ test.group('Permissions', (group) => {
   })
 
   test('permission middleware should block unauthorized access', async ({ client }) => {
+    // Clear Redis cache to ensure test isolation
+    const redis = await import('@adonisjs/redis/services/main')
+    await redis.default.flushdb()
+
     // Create user without permissions
     const user = await User.create({
       full_name: 'Limited User',
@@ -349,6 +353,9 @@ test.group('Permissions', (group) => {
 
     await user.related('roles').attach([userRole.id])
 
+    // Ensure the user role has no permissions for this test
+    await userRole.related('permissions').detach()
+
     // Login
     const loginResponse = await client.post('/api/v1/sessions/sign-in').json({
       uid: 'limited@example.com',
@@ -357,7 +364,7 @@ test.group('Permissions', (group) => {
 
     const token = loginResponse.body().auth.access_token
 
-    // Try to access permissions list without permission
+    // Try to access a permissions list without permission
     const response = await client.get('/api/v1/admin/permissions').bearerToken(token)
 
     response.assertStatus(403)
