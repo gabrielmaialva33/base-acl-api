@@ -539,10 +539,10 @@ ROOT
 - `files.delete.team` - Can delete files from team members
 - `reports.read.department` - Can read reports from own department
 
-### 📥 Insomnia Collection
+### 📥 Postman Collection
 
 Get the complete API collection for
-Insomnia: [Download](https://raw.githubusercontent.com/gabrielmaialva33/base-acl-api/master/.github/assets/insomnia/Insomnia.json.zip)
+Postman: [Download](https://raw.githubusercontent.com/gabrielmaialva33/base-acl-api/master/docs/openapi.yaml)
 
 ## :memo: License
 
