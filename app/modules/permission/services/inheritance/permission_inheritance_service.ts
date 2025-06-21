@@ -61,13 +61,6 @@ export default class PermissionInheritanceService {
   }
 
   /**
-   * Get all child roles for a given role
-   */
-  private getChildRoles(roleSlug: string): string[] {
-    return IRole.ROLE_HIERARCHY[roleSlug] || []
-  }
-
-  /**
    * Get all parent roles for a given role
    */
   getParentRoles(roleSlug: string): string[] {
@@ -112,6 +105,13 @@ export default class PermissionInheritanceService {
     }
 
     return true
+  }
+
+  /**
+   * Get all child roles for a given role
+   */
+  private getChildRoles(roleSlug: string): string[] {
+    return IRole.ROLE_HIERARCHY[roleSlug] || []
   }
 
   /**
