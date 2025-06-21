@@ -11,8 +11,10 @@ export default class extends BaseSchema {
       table.string('description', 500).nullable()
       table.string('resource', 100).notNullable()
       table.string('action', 50).notNullable()
+      table.string('context', 50).nullable().defaultTo('any')
 
       table.unique(['resource', 'action'])
+      table.index(['resource', 'action', 'context'], 'idx_permissions_resource_action_context')
 
       table.timestamp('created_at').notNullable().defaultTo(this.now())
       table.timestamp('updated_at').notNullable().defaultTo(this.now())
