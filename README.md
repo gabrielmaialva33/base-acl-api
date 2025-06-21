@@ -441,26 +441,26 @@ graph LR
 
 ### 📋 Route Details
 
-| Method     | Endpoint                               | Description                  | Auth Required | Permission/Role     |
-| ---------- | -------------------------------------- | ---------------------------- | ------------- | ------------------- |
-| **GET**    | `/`                                    | API information              | ❌            | -                   |
-| **GET**    | `/api/v1/health`                       | Health check                 | ❌            | -                   |
-| **POST**   | `/api/v1/sessions/sign-in`             | User login                   | ❌            | -                   |
-| **POST**   | `/api/v1/sessions/sign-up`             | User registration            | ❌            | -                   |
-| **GET**    | `/api/v1/me`                           | Get current user profile     | ✅            | -                   |
-| **GET**    | `/api/v1/me/permissions`               | Get current user permissions | ✅            | -                   |
-| **GET**    | `/api/v1/me/roles`                     | Get current user roles       | ✅            | -                   |
-| **GET**    | `/api/v1/users`                        | List users (paginated)       | ✅            | users.list          |
-| **GET**    | `/api/v1/users/:id`                    | Get user by ID               | ✅            | users.read          |
-| **POST**   | `/api/v1/users`                        | Create user                  | ✅            | users.create        |
-| **PUT**    | `/api/v1/users/:id`                    | Update user                  | ✅            | users.update        |
-| **DELETE** | `/api/v1/users/:id`                    | Delete user                  | ✅            | users.delete        |
-| **GET**    | `/api/v1/admin/roles`                  | List roles                   | ✅            | ROOT, ADMIN         |
-| **PUT**    | `/api/v1/admin/roles/attach`           | Attach role to user          | ✅            | ROOT, ADMIN         |
-| **GET**    | `/api/v1/admin/permissions`            | List permissions             | ✅            | permissions.list    |
-| **POST**   | `/api/v1/admin/permissions`            | Create permission            | ✅            | permissions.create  |
-| **PUT**    | `/api/v1/admin/roles/permissions/sync` | Sync role permissions        | ✅            | permissions.update  |
-| **POST**   | `/api/v1/files/upload`                 | Upload file                  | ✅            | files.create        |
+| Method     | Endpoint                               | Description                  | Auth Required | Permission/Role    |
+| ---------- | -------------------------------------- | ---------------------------- | ------------- | ------------------ |
+| **GET**    | `/`                                    | API information              | ❌            | -                  |
+| **GET**    | `/api/v1/health`                       | Health check                 | ❌            | -                  |
+| **POST**   | `/api/v1/sessions/sign-in`             | User login                   | ❌            | -                  |
+| **POST**   | `/api/v1/sessions/sign-up`             | User registration            | ❌            | -                  |
+| **GET**    | `/api/v1/me`                           | Get current user profile     | ✅            | -                  |
+| **GET**    | `/api/v1/me/permissions`               | Get current user permissions | ✅            | -                  |
+| **GET**    | `/api/v1/me/roles`                     | Get current user roles       | ✅            | -                  |
+| **GET**    | `/api/v1/users`                        | List users (paginated)       | ✅            | users.list         |
+| **GET**    | `/api/v1/users/:id`                    | Get user by ID               | ✅            | users.read         |
+| **POST**   | `/api/v1/users`                        | Create user                  | ✅            | users.create       |
+| **PUT**    | `/api/v1/users/:id`                    | Update user                  | ✅            | users.update       |
+| **DELETE** | `/api/v1/users/:id`                    | Delete user                  | ✅            | users.delete       |
+| **GET**    | `/api/v1/admin/roles`                  | List roles                   | ✅            | ROOT, ADMIN        |
+| **PUT**    | `/api/v1/admin/roles/attach`           | Attach role to user          | ✅            | ROOT, ADMIN        |
+| **GET**    | `/api/v1/admin/permissions`            | List permissions             | ✅            | permissions.list   |
+| **POST**   | `/api/v1/admin/permissions`            | Create permission            | ✅            | permissions.create |
+| **PUT**    | `/api/v1/admin/roles/permissions/sync` | Sync role permissions        | ✅            | permissions.update |
+| **POST**   | `/api/v1/files/upload`                 | Upload file                  | ✅            | files.create       |
 
 ### 🔄 Request/Response Flow
 
@@ -503,17 +503,17 @@ graph TD
         P --> R[Resource]
         P --> A[Action]
         P --> C[Context]
-        
+
         R --> |examples| R1[users]
         R --> |examples| R2[files]
         R --> |examples| R3[permissions]
-        
+
         A --> |examples| A1[create]
         A --> |examples| A2[read]
         A --> |examples| A3[update]
         A --> |examples| A4[delete]
         A --> |examples| A5[list]
-        
+
         C --> |examples| C1[own - Own resources only]
         C --> |examples| C2[any - Any resource]
         C --> |examples| C3[team - Team resources]
