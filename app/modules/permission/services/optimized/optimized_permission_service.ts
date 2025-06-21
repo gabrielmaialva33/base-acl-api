@@ -152,7 +152,7 @@ export default class OptimizedPermissionService {
       return (
         permission.resource === resource &&
         permission.action === action &&
-        (permission.context === context || permission.context === 'any' || context === 'any')
+        (permission.context === context || permission.context === 'any')
       )
     })
   }
