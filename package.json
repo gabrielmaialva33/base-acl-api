@@ -86,6 +86,7 @@
     "@aws-sdk/client-s3": "^3.832.0",
     "@aws-sdk/s3-request-presigner": "^3.832.0",
     "@google-cloud/storage": "^7.16.0",
+    "@japa/expect-type": "^2.0.3",
     "@vinejs/vine": "^3.0.1",
     "argon2": "^0.43.0",
     "bcrypt": "^6.0.0",
