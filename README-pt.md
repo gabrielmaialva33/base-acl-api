@@ -56,8 +56,10 @@ graph TB
     subgraph "Módulos"
         AUTH[Módulo Auth<br/>JWT, Sessões]
         USER[Módulo Usuário<br/>CRUD, Perfil]
-        ROLE[Módulo Papel<br/>RBAC, Permissões]
+        ROLE[Módulo Papel<br/>RBAC, Hierarquia]
+        PERM[Módulo Permissão<br/>Contextual, Herança]
         FILE[Módulo Arquivo<br/>Upload, Armazenamento]
+        AUDIT[Módulo Auditoria<br/>Logs, Analytics]
         HEALTH[Módulo Saúde<br/>Status, Monitoramento]
     end
 
@@ -82,18 +84,24 @@ graph TB
     MW --> AUTH
     MW --> USER
     MW --> ROLE
+    MW --> PERM
     MW --> FILE
+    MW --> AUDIT
     MW --> HEALTH
 
     AUTH --> JWT
     AUTH --> HASH
     USER --> VALIDATOR
     FILE --> STORAGE
+    PERM --> REDIS
+    AUDIT --> TS
 
     USER --> TS
     ROLE --> TS
+    PERM --> TS
     AUTH --> TS
     AUTH --> REDIS
+    AUDIT --> TS
 
     TS --> PGREST
 
@@ -205,7 +213,7 @@ graph TD
 ### Funcionalidades Core
 
 - **🔐 Autenticação JWT**: Autenticação segura baseada em tokens com refresh tokens
-- **👥 Controle de Acesso Baseado em Papéis**: Permissões refinadas com papéis ROOT, ADMIN e USER
+- **👥 Controle de Acesso Baseado em Papéis**: Permissões refinadas com papéis ROOT, ADMIN, USER, EDITOR e GUEST
 - **📁 Arquitetura Modular**: Clara separação de responsabilidades com módulos de funcionalidades
 - **🗄️ TimescaleDB**: PostgreSQL + capacidades de séries temporais
 - **🚀 API RESTful**: Endpoints bem estruturados seguindo princípios REST
@@ -217,13 +225,27 @@ graph TD
 - **🔗 Integração PostgREST**: API REST auto-gerada para acesso direto ao banco
 - **📊 Suporte a Séries Temporais**: Construído sobre TimescaleDB para análises e métricas
 
+### Funcionalidades Avançadas de ACL
+
+- **🎯 Permissões Contextuais**: Suporte para contextos `own`, `any`, `team` e `department`
+- **🔄 Herança de Permissões**: Herança automática de permissões através da hierarquia de papéis
+- **📋 Trilha de Auditoria Completa**: Rastreamento de todas as verificações de permissão e tentativas de acesso
+- **⚡ Permissões em Cache Redis**: Verificação de permissões de alta performance com cache inteligente
+- **🏢 Propriedade de Recursos**: Sistema de propriedade integrado com suporte a contextos de equipe e departamento
+- **🔍 Controle Granular de Permissões**: Sistema de permissões baseado em Recurso + Ação + Contexto
+
 ### Esquema do Banco de Dados
 
 ```mermaid
 erDiagram
     USERS ||--o{ USER_ROLES : possui
     ROLES ||--o{ USER_ROLES : possui
+    USERS ||--o{ USER_PERMISSIONS : possui
     USERS ||--o{ FILES : envia
+    ROLES ||--o{ ROLE_PERMISSIONS : possui
+    PERMISSIONS ||--o{ ROLE_PERMISSIONS : possui
+    PERMISSIONS ||--o{ USER_PERMISSIONS : possui
+    USERS ||--o{ AUDIT_LOGS : gera
 
     USERS {
         bigint id PK
@@ -248,12 +270,56 @@ erDiagram
         timestamp updated_at
     }
 
+    PERMISSIONS {
+        bigint id PK
+        string name UK
+        string resource
+        string action
+        string context
+        string description
+        timestamp created_at
+        timestamp updated_at
+    }
+
     USER_ROLES {
         bigint id PK
         bigint user_id FK
         bigint role_id FK
         timestamp created_at
         timestamp updated_at
+    }
+
+    ROLE_PERMISSIONS {
+        bigint id PK
+        bigint role_id FK
+        bigint permission_id FK
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    USER_PERMISSIONS {
+        bigint id PK
+        bigint user_id FK
+        bigint permission_id FK
+        boolean granted
+        timestamp expires_at
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    AUDIT_LOGS {
+        bigint id PK
+        bigint user_id FK
+        string resource
+        string action
+        string context
+        bigint resource_id
+        string result
+        string reason
+        string ip_address
+        string user_agent
+        json metadata
+        timestamp created_at
     }
 
     FILES {
@@ -375,20 +441,26 @@ graph LR
 
 ### 📋 Detalhes das Rotas
 
-| Método     | Endpoint                     | Descrição                  | Auth Obrigatória | Papéis      |
-| ---------- | ---------------------------- | -------------------------- | ---------------- | ----------- |
-| **GET**    | `/`                          | Informações da API         | ❌               | -           |
-| **GET**    | `/api/v1/health`             | Verificação de saúde       | ❌               | -           |
-| **POST**   | `/api/v1/sessions/sign-in`   | Login de usuário           | ❌               | -           |
-| **POST**   | `/api/v1/sessions/sign-up`   | Registro de usuário        | ❌               | -           |
-| **GET**    | `/api/v1/users`              | Listar usuários (paginado) | ✅               | USER        |
-| **GET**    | `/api/v1/users/:id`          | Obter usuário por ID       | ✅               | USER        |
-| **POST**   | `/api/v1/users`              | Criar usuário              | ✅               | USER        |
-| **PUT**    | `/api/v1/users/:id`          | Atualizar usuário          | ✅               | USER        |
-| **DELETE** | `/api/v1/users/:id`          | Deletar usuário            | ✅               | USER        |
-| **GET**    | `/api/v1/admin/roles`        | Listar papéis              | ✅               | ROOT, ADMIN |
-| **PUT**    | `/api/v1/admin/roles/attach` | Atribuir papel ao usuário  | ✅               | ROOT, ADMIN |
-| **POST**   | `/api/v1/files/upload`       | Upload de arquivo          | ✅               | USER        |
+| Método     | Endpoint                               | Descrição                         | Auth Obrigatória | Permissão/Papel     |
+| ---------- | -------------------------------------- | --------------------------------- | ---------------- | ------------------- |
+| **GET**    | `/`                                    | Informações da API                | ❌               | -                   |
+| **GET**    | `/api/v1/health`                       | Verificação de saúde              | ❌               | -                   |
+| **POST**   | `/api/v1/sessions/sign-in`             | Login de usuário                  | ❌               | -                   |
+| **POST**   | `/api/v1/sessions/sign-up`             | Registro de usuário               | ❌               | -                   |
+| **GET**    | `/api/v1/me`                           | Obter perfil do usuário atual     | ✅               | -                   |
+| **GET**    | `/api/v1/me/permissions`               | Obter permissões do usuário atual | ✅               | -                   |
+| **GET**    | `/api/v1/me/roles`                     | Obter papéis do usuário atual     | ✅               | -                   |
+| **GET**    | `/api/v1/users`                        | Listar usuários (paginado)        | ✅               | users.list          |
+| **GET**    | `/api/v1/users/:id`                    | Obter usuário por ID              | ✅               | users.read          |
+| **POST**   | `/api/v1/users`                        | Criar usuário                     | ✅               | users.create        |
+| **PUT**    | `/api/v1/users/:id`                    | Atualizar usuário                 | ✅               | users.update        |
+| **DELETE** | `/api/v1/users/:id`                    | Deletar usuário                   | ✅               | users.delete        |
+| **GET**    | `/api/v1/admin/roles`                  | Listar papéis                     | ✅               | ROOT, ADMIN         |
+| **PUT**    | `/api/v1/admin/roles/attach`           | Atribuir papel ao usuário         | ✅               | ROOT, ADMIN         |
+| **GET**    | `/api/v1/admin/permissions`            | Listar permissões                 | ✅               | permissions.list    |
+| **POST**   | `/api/v1/admin/permissions`            | Criar permissão                   | ✅               | permissions.create  |
+| **PUT**    | `/api/v1/admin/roles/permissions/sync` | Sincronizar permissões do papel   | ✅               | permissions.update  |
+| **POST**   | `/api/v1/files/upload`                 | Upload de arquivo                 | ✅               | files.create        |
 
 ### 🔄 Fluxo de Requisição/Resposta
 
@@ -420,6 +492,53 @@ sequenceDiagram
     Controller-->>Cliente: Resposta HTTP
 ```
 
+### 🔐 Sistema de Permissões
+
+O sistema avançado de permissões suporta controle de acesso contextual:
+
+```mermaid
+graph TD
+    subgraph "Estrutura de Permissão"
+        P[Permissão]
+        P --> R[Recurso]
+        P --> A[Ação]
+        P --> C[Contexto]
+        
+        R --> |exemplos| R1[users]
+        R --> |exemplos| R2[files]
+        R --> |exemplos| R3[permissions]
+        
+        A --> |exemplos| A1[create]
+        A --> |exemplos| A2[read]
+        A --> |exemplos| A3[update]
+        A --> |exemplos| A4[delete]
+        A --> |exemplos| A5[list]
+        
+        C --> |exemplos| C1[own - Apenas recursos próprios]
+        C --> |exemplos| C2[any - Qualquer recurso]
+        C --> |exemplos| C3[team - Recursos da equipe]
+        C --> |exemplos| C4[department - Recursos do departamento]
+    end
+```
+
+#### Hierarquia de Papéis e Herança
+
+```
+ROOT
+├── ADMIN (herda todas as permissões ROOT)
+│   ├── USER (herda permissões básicas ADMIN)
+│   │   └── GUEST (herda permissões limitadas USER)
+│   └── EDITOR (herda permissões de conteúdo ADMIN)
+       └── USER (herda de EDITOR)
+```
+
+#### Exemplos de Contexto
+
+- `users.update.own` - Pode atualizar apenas o próprio perfil
+- `users.update.any` - Pode atualizar qualquer usuário
+- `files.delete.team` - Pode deletar arquivos de membros da equipe
+- `reports.read.department` - Pode ler relatórios do próprio departamento
+
 ### 📥 Coleção Insomnia
 
 Obtenha a coleção completa da API para o
@@ -440,4 +559,3 @@ Gostou? Deixe uma estrela para ajudar o projeto ⭐
 <p align="center">
   &copy; 2017-present <a href="https://github.com/gabrielmaialva33/" target="_blank">Maia</a>
 </p>
-¬

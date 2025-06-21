@@ -56,8 +56,10 @@ graph TB
     subgraph "Modules"
         AUTH[Auth Module<br/>JWT, Sessions]
         USER[User Module<br/>CRUD, Profile]
-        ROLE[Role Module<br/>RBAC, Permissions]
+        ROLE[Role Module<br/>RBAC, Hierarchy]
+        PERM[Permission Module<br/>Context-aware, Inheritance]
         FILE[File Module<br/>Upload, Storage]
+        AUDIT[Audit Module<br/>Logging, Analytics]
         HEALTH[Health Module<br/>Status, Monitoring]
     end
 
@@ -82,18 +84,24 @@ graph TB
     MW --> AUTH
     MW --> USER
     MW --> ROLE
+    MW --> PERM
     MW --> FILE
+    MW --> AUDIT
     MW --> HEALTH
 
     AUTH --> JWT
     AUTH --> HASH
     USER --> VALIDATOR
     FILE --> STORAGE
+    PERM --> REDIS
+    AUDIT --> TS
 
     USER --> TS
     ROLE --> TS
+    PERM --> TS
     AUTH --> TS
     AUTH --> REDIS
+    AUDIT --> TS
 
     TS --> PGREST
 
@@ -205,7 +213,7 @@ graph TD
 ### Core Features
 
 - **🔐 JWT Authentication**: Secure token-based authentication with refresh tokens
-- **👥 Role-Based Access Control**: Fine-grained permissions with ROOT, ADMIN, and USER roles
+- **👥 Role-Based Access Control**: Fine-grained permissions with ROOT, ADMIN, USER, EDITOR, and GUEST roles
 - **📁 Modular Architecture**: Clean separation of concerns with feature modules
 - **🗄️ TimescaleDB**: PostgreSQL + time-series data capabilities
 - **🚀 RESTful API**: Well-structured endpoints following REST principles
@@ -217,13 +225,27 @@ graph TD
 - **🔗 PostgREST Integration**: Auto-generated REST API for direct database access
 - **📊 Time-series Support**: Built on TimescaleDB for analytics and metrics
 
+### Advanced ACL Features
+
+- **🎯 Context-Aware Permissions**: Support for `own`, `any`, `team`, and `department` contexts
+- **🔄 Permission Inheritance**: Automatic permission inheritance through role hierarchy
+- **📋 Comprehensive Audit Trail**: Track all permission checks and access attempts
+- **⚡ Redis-Cached Permissions**: High-performance permission checking with intelligent caching
+- **🏢 Resource Ownership**: Built-in ownership system supporting team and department contexts
+- **🔍 Granular Permission Control**: Resource + Action + Context based permission system
+
 ### Database Schema
 
 ```mermaid
 erDiagram
     USERS ||--o{ USER_ROLES : has
     ROLES ||--o{ USER_ROLES : has
+    USERS ||--o{ USER_PERMISSIONS : has
     USERS ||--o{ FILES : uploads
+    ROLES ||--o{ ROLE_PERMISSIONS : has
+    PERMISSIONS ||--o{ ROLE_PERMISSIONS : has
+    PERMISSIONS ||--o{ USER_PERMISSIONS : has
+    USERS ||--o{ AUDIT_LOGS : generates
 
     USERS {
         bigint id PK
@@ -248,12 +270,56 @@ erDiagram
         timestamp updated_at
     }
 
+    PERMISSIONS {
+        bigint id PK
+        string name UK
+        string resource
+        string action
+        string context
+        string description
+        timestamp created_at
+        timestamp updated_at
+    }
+
     USER_ROLES {
         bigint id PK
         bigint user_id FK
         bigint role_id FK
         timestamp created_at
         timestamp updated_at
+    }
+
+    ROLE_PERMISSIONS {
+        bigint id PK
+        bigint role_id FK
+        bigint permission_id FK
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    USER_PERMISSIONS {
+        bigint id PK
+        bigint user_id FK
+        bigint permission_id FK
+        boolean granted
+        timestamp expires_at
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    AUDIT_LOGS {
+        bigint id PK
+        bigint user_id FK
+        string resource
+        string action
+        string context
+        bigint resource_id
+        string result
+        string reason
+        string ip_address
+        string user_agent
+        json metadata
+        timestamp created_at
     }
 
     FILES {
@@ -375,20 +441,26 @@ graph LR
 
 ### 📋 Route Details
 
-| Method     | Endpoint                     | Description            | Auth Required | Roles       |
-| ---------- | ---------------------------- | ---------------------- | ------------- | ----------- |
-| **GET**    | `/`                          | API information        | ❌            | -           |
-| **GET**    | `/api/v1/health`             | Health check           | ❌            | -           |
-| **POST**   | `/api/v1/sessions/sign-in`   | User login             | ❌            | -           |
-| **POST**   | `/api/v1/sessions/sign-up`   | User registration      | ❌            | -           |
-| **GET**    | `/api/v1/users`              | List users (paginated) | ✅            | USER        |
-| **GET**    | `/api/v1/users/:id`          | Get user by ID         | ✅            | USER        |
-| **POST**   | `/api/v1/users`              | Create user            | ✅            | USER        |
-| **PUT**    | `/api/v1/users/:id`          | Update user            | ✅            | USER        |
-| **DELETE** | `/api/v1/users/:id`          | Delete user            | ✅            | USER        |
-| **GET**    | `/api/v1/admin/roles`        | List roles             | ✅            | ROOT, ADMIN |
-| **PUT**    | `/api/v1/admin/roles/attach` | Attach role to user    | ✅            | ROOT, ADMIN |
-| **POST**   | `/api/v1/files/upload`       | Upload file            | ✅            | USER        |
+| Method     | Endpoint                               | Description                  | Auth Required | Permission/Role     |
+| ---------- | -------------------------------------- | ---------------------------- | ------------- | ------------------- |
+| **GET**    | `/`                                    | API information              | ❌            | -                   |
+| **GET**    | `/api/v1/health`                       | Health check                 | ❌            | -                   |
+| **POST**   | `/api/v1/sessions/sign-in`             | User login                   | ❌            | -                   |
+| **POST**   | `/api/v1/sessions/sign-up`             | User registration            | ❌            | -                   |
+| **GET**    | `/api/v1/me`                           | Get current user profile     | ✅            | -                   |
+| **GET**    | `/api/v1/me/permissions`               | Get current user permissions | ✅            | -                   |
+| **GET**    | `/api/v1/me/roles`                     | Get current user roles       | ✅            | -                   |
+| **GET**    | `/api/v1/users`                        | List users (paginated)       | ✅            | users.list          |
+| **GET**    | `/api/v1/users/:id`                    | Get user by ID               | ✅            | users.read          |
+| **POST**   | `/api/v1/users`                        | Create user                  | ✅            | users.create        |
+| **PUT**    | `/api/v1/users/:id`                    | Update user                  | ✅            | users.update        |
+| **DELETE** | `/api/v1/users/:id`                    | Delete user                  | ✅            | users.delete        |
+| **GET**    | `/api/v1/admin/roles`                  | List roles                   | ✅            | ROOT, ADMIN         |
+| **PUT**    | `/api/v1/admin/roles/attach`           | Attach role to user          | ✅            | ROOT, ADMIN         |
+| **GET**    | `/api/v1/admin/permissions`            | List permissions             | ✅            | permissions.list    |
+| **POST**   | `/api/v1/admin/permissions`            | Create permission            | ✅            | permissions.create  |
+| **PUT**    | `/api/v1/admin/roles/permissions/sync` | Sync role permissions        | ✅            | permissions.update  |
+| **POST**   | `/api/v1/files/upload`                 | Upload file                  | ✅            | files.create        |
 
 ### 🔄 Request/Response Flow
 
@@ -419,6 +491,53 @@ sequenceDiagram
     Service-->>Controller: Response Data
     Controller-->>Client: HTTP Response
 ```
+
+### 🔐 Permission System
+
+The advanced permission system supports context-aware access control:
+
+```mermaid
+graph TD
+    subgraph "Permission Structure"
+        P[Permission]
+        P --> R[Resource]
+        P --> A[Action]
+        P --> C[Context]
+        
+        R --> |examples| R1[users]
+        R --> |examples| R2[files]
+        R --> |examples| R3[permissions]
+        
+        A --> |examples| A1[create]
+        A --> |examples| A2[read]
+        A --> |examples| A3[update]
+        A --> |examples| A4[delete]
+        A --> |examples| A5[list]
+        
+        C --> |examples| C1[own - Own resources only]
+        C --> |examples| C2[any - Any resource]
+        C --> |examples| C3[team - Team resources]
+        C --> |examples| C4[department - Department resources]
+    end
+```
+
+#### Role Hierarchy & Inheritance
+
+```
+ROOT
+├── ADMIN (inherits all ROOT permissions)
+│   ├── USER (inherits basic ADMIN permissions)
+│   │   └── GUEST (inherits limited USER permissions)
+│   └── EDITOR (inherits content ADMIN permissions)
+       └── USER (inherits from EDITOR)
+```
+
+#### Context Examples
+
+- `users.update.own` - Can only update own profile
+- `users.update.any` - Can update any user
+- `files.delete.team` - Can delete files from team members
+- `reports.read.department` - Can read reports from own department
 
 ### 📥 Insomnia Collection
 
