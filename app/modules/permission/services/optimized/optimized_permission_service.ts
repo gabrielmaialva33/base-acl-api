@@ -38,6 +38,99 @@ export default class OptimizedPermissionService {
   }
 
   /**
+   * Batch check permissions for multiple users
+   */
+  async batchCheckPermissions(
+    checks: Array<{
+      userId: number
+      permission: string
+      context?: string
+      resourceId?: number
+    }>
+  ): Promise<Array<{ userId: number; permission: string; granted: boolean }>> {
+    const results = await Promise.all(
+      checks.map(async (check) => {
+        const granted = await this.checkSinglePermission(
+          check.userId,
+          check.permission,
+          check.context,
+          check.resourceId
+        )
+
+        return {
+          userId: check.userId,
+          permission: check.permission,
+          granted,
+        }
+      })
+    )
+
+    return results
+  }
+
+  /**
+   * Pre-warm cache for multiple users
+   */
+  async preWarmCache(userIds: number[]): Promise<void> {
+    await Promise.all(userIds.map((userId) => this.cacheService.warmUpUserCache(userId)))
+  }
+
+  /**
+   * Get user permission summary
+   */
+  async getUserPermissionSummary(userId: number): Promise<{
+    directPermissions: Permission[]
+    rolePermissions: Permission[]
+    effectivePermissions: Permission[]
+    roles: string[]
+  }> {
+    const user = await User.query()
+      .where('id', userId)
+      .preload('permissions')
+      .preload('roles', (query) => {
+        query.preload('permissions')
+      })
+      .first()
+
+    if (!user) {
+      return {
+        directPermissions: [],
+        rolePermissions: [],
+        effectivePermissions: [],
+        roles: [],
+      }
+    }
+
+    const directPermissions = user.permissions
+    const rolePermissions = new Map<number, Permission>()
+    const roles = user.roles.map((role) => role.slug)
+
+    // Collect all role permissions with inheritance
+    for (const role of user.roles) {
+      const effectiveRolePermissions = await this.inheritanceService.getEffectivePermissions(
+        role.slug
+      )
+      effectiveRolePermissions.forEach((permission) => {
+        rolePermissions.set(permission.id, permission)
+      })
+    }
+
+    const rolePermissionsList = Array.from(rolePermissions.values())
+
+    // Combine all permissions
+    const effectivePermissions = new Map<number, Permission>()
+    directPermissions.forEach((p) => effectivePermissions.set(p.id, p))
+    rolePermissionsList.forEach((p) => effectivePermissions.set(p.id, p))
+
+    return {
+      directPermissions,
+      rolePermissions: rolePermissionsList,
+      effectivePermissions: Array.from(effectivePermissions.values()),
+      roles,
+    }
+  }
+
+  /**
    * Check single permission for user
    */
   private async checkSinglePermission(
@@ -210,98 +303,5 @@ export default class OptimizedPermissionService {
     }
 
     return false
-  }
-
-  /**
-   * Batch check permissions for multiple users
-   */
-  async batchCheckPermissions(
-    checks: Array<{
-      userId: number
-      permission: string
-      context?: string
-      resourceId?: number
-    }>
-  ): Promise<Array<{ userId: number; permission: string; granted: boolean }>> {
-    const results = await Promise.all(
-      checks.map(async (check) => {
-        const granted = await this.checkSinglePermission(
-          check.userId,
-          check.permission,
-          check.context,
-          check.resourceId
-        )
-
-        return {
-          userId: check.userId,
-          permission: check.permission,
-          granted,
-        }
-      })
-    )
-
-    return results
-  }
-
-  /**
-   * Pre-warm cache for multiple users
-   */
-  async preWarmCache(userIds: number[]): Promise<void> {
-    await Promise.all(userIds.map((userId) => this.cacheService.warmUpUserCache(userId)))
-  }
-
-  /**
-   * Get user permission summary
-   */
-  async getUserPermissionSummary(userId: number): Promise<{
-    directPermissions: Permission[]
-    rolePermissions: Permission[]
-    effectivePermissions: Permission[]
-    roles: string[]
-  }> {
-    const user = await User.query()
-      .where('id', userId)
-      .preload('permissions')
-      .preload('roles', (query) => {
-        query.preload('permissions')
-      })
-      .first()
-
-    if (!user) {
-      return {
-        directPermissions: [],
-        rolePermissions: [],
-        effectivePermissions: [],
-        roles: [],
-      }
-    }
-
-    const directPermissions = user.permissions
-    const rolePermissions = new Map<number, Permission>()
-    const roles = user.roles.map((role) => role.slug)
-
-    // Collect all role permissions with inheritance
-    for (const role of user.roles) {
-      const effectiveRolePermissions = await this.inheritanceService.getEffectivePermissions(
-        role.slug
-      )
-      effectiveRolePermissions.forEach((permission) => {
-        rolePermissions.set(permission.id, permission)
-      })
-    }
-
-    const rolePermissionsList = Array.from(rolePermissions.values())
-
-    // Combine all permissions
-    const effectivePermissions = new Map<number, Permission>()
-    directPermissions.forEach((p) => effectivePermissions.set(p.id, p))
-    rolePermissionsList.forEach((p) => effectivePermissions.set(p.id, p))
-
-    return {
-      directPermissions,
-      rolePermissions: rolePermissionsList,
-      effectivePermissions: Array.from(effectivePermissions.values()),
-      roles,
-    }
   }
 }
