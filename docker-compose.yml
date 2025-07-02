@@ -9,7 +9,7 @@ services:
     ports:
       - '3334:3333'
     depends_on:
-      - timescaledb
+      - postgres
       - redis
     env_file:
       - .env
@@ -24,7 +24,7 @@ services:
       ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET}
       REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET}
 
-      DB_HOST: timescaledb
+      DB_HOST: postgres
       DB_PORT: ${DB_PORT}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
@@ -93,11 +93,11 @@ services:
     networks:
       - app-network
 
-  timescaledb:
-    image: timescale/timescaledb-ha:pg17
-    container_name: base-acl-timescaledb
+  postgres:
+    image: postgres:16
+    container_name: base-acl-postgres
     healthcheck:
-      test: ['CMD', 'pg_isready', '-q', '-d', '${DB_DATABASE}', '-U', '${DB_USER}']
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER} -d ${DB_DATABASE}']
       timeout: 45s
       interval: 10s
       retries: 10
@@ -137,13 +137,13 @@ services:
     ports:
       - '3000:3000'
     environment:
-      PGRST_DB_URI: postgres://${DB_USER}:${DB_PASSWORD}@timescaledb:5432/${DB_DATABASE}
+      PGRST_DB_URI: postgres://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_DATABASE}
       PGRST_DB_SCHEMA: public
       PGRST_DB_ANON_ROLE: web_anon
       PGRST_JWT_SECRET: ${APP_KEY}
       PGRST_SERVER_PORT: 3000
     depends_on:
-      - timescaledb
+      - postgres
     networks:
       - app-network
 
