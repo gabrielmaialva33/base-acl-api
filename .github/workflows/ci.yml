@@ -14,7 +14,7 @@ jobs:
 
     services:
       postgres:
-        image: timescale/timescaledb:latest-pg16
+        image: postgres:16
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
