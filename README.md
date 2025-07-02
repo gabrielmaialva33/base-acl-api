@@ -71,7 +71,7 @@ graph TB
     end
 
     subgraph "Data Layer"
-        TS[(TimescaleDB<br/>Main Database + Time-series)]
+        TS[(PostgreSQL<br/>Main Database)]
         REDIS[(Redis<br/>Cache & Sessions)]
         PGREST[PostgREST<br/>Auto-generated REST API]
     end
@@ -119,7 +119,7 @@ sequenceDiagram
     participant API as API Gateway
     participant AUTH as Auth Module
     participant JWT as JWT Service
-    participant DB as TimescaleDB
+    participant DB as PostgreSQL
     participant REDIS as Redis Cache
 
     C->>API: POST /api/v1/sessions/sign-in
@@ -152,60 +152,35 @@ graph TD
 
         subgraph "User Module"
             USER_M[user/]
-            USER_CTRL[controllers/]
-            USER_SVC[services/]
-            USER_REPO[repositories/]
-            USER_MODEL[models/]
-            USER_VAL[validators/]
-            USER_ROUTES[routes/]
         end
-
         subgraph "Role Module"
             ROLE_M[role/]
-            ROLE_CTRL[controllers/]
-            ROLE_SVC[services/]
-            ROLE_MODEL[models/]
-            ROLE_ROUTES[routes/]
         end
-
+        subgraph "Permission Module"
+            PERM_M[permission/]
+        end
         subgraph "File Module"
             FILE_M[file/]
-            FILE_CTRL[controllers/]
-            FILE_SVC[services/]
-            FILE_ROUTES[routes/]
         end
-
+        subgraph "Audit Module"
+            AUDIT_M[audit/]
+        end
         subgraph "Health Module"
             HEALTH_M[health/]
-            HEALTH_CTRL[controllers/]
-            HEALTH_ROUTES[routes/]
+        end
+        subgraph "Ownership Module"
+            OWNER_M[ownership/]
         end
     end
 
     APP --> MODULES
     MODULES --> USER_M
     MODULES --> ROLE_M
+    MODULES --> PERM_M
     MODULES --> FILE_M
+    MODULES --> AUDIT_M
     MODULES --> HEALTH_M
-
-    USER_M --> USER_CTRL
-    USER_M --> USER_SVC
-    USER_M --> USER_REPO
-    USER_M --> USER_MODEL
-    USER_M --> USER_VAL
-    USER_M --> USER_ROUTES
-
-    ROLE_M --> ROLE_CTRL
-    ROLE_M --> ROLE_SVC
-    ROLE_M --> ROLE_MODEL
-    ROLE_M --> ROLE_ROUTES
-
-    FILE_M --> FILE_CTRL
-    FILE_M --> FILE_SVC
-    FILE_M --> FILE_ROUTES
-
-    HEALTH_M --> HEALTH_CTRL
-    HEALTH_M --> HEALTH_ROUTES
+    MODULES --> OWNER_M
 ```
 
 ## 🌟 Key Features
@@ -215,7 +190,7 @@ graph TD
 - **🔐 JWT Authentication**: Secure token-based authentication with refresh tokens
 - **👥 Role-Based Access Control**: Fine-grained permissions with ROOT, ADMIN, USER, EDITOR, and GUEST roles
 - **📁 Modular Architecture**: Clean separation of concerns with feature modules
-- **🗄️ TimescaleDB**: PostgreSQL + time-series data capabilities
+- **🗄️ PostgreSQL**: Robust and reliable database
 - **🚀 RESTful API**: Well-structured endpoints following REST principles
 - **📤 File Uploads**: Secure file handling with multiple storage drivers
 - **🏥 Health Monitoring**: Built-in health check endpoints
@@ -223,7 +198,6 @@ graph TD
 - **📝 Request Validation**: DTOs with runtime validation
 - **🌐 i18n Ready**: Internationalization support built-in
 - **🔗 PostgREST Integration**: Auto-generated REST API for direct database access
-- **📊 Time-series Support**: Built on TimescaleDB for analytics and metrics
 
 ### Advanced ACL Features
 
@@ -343,7 +317,7 @@ erDiagram
 - **[Typescript](https://www.typescriptlang.org/)**
 - **[Node.js](https://nodejs.org/)**
 - **[AdonisJS](https://adonisjs.com/)**
-- **[TimescaleDB](https://www.timescale.com/)** - PostgreSQL for time-series
+- **[PostgreSQL](https://www.postgresql.org/)**
 - **[Redis](https://redis.io/)** - In-memory data store
 - **[PostgREST](https://postgrest.org/)** - Auto-generated REST API
 - **[Docker](https://www.docker.com/)**
@@ -392,7 +366,7 @@ The following software must be installed:
   # Data base creation.
   $ node ace migration:run # or docker-compose up --build
   # API start
-  $ node ace serve --watch # or yarn dev or npm dev
+  $ node ace serve --hmr # or pnpm dev
 ```
 
 <br>
@@ -441,26 +415,33 @@ graph LR
 
 ### 📋 Route Details
 
-| Method     | Endpoint                               | Description                  | Auth Required | Permission/Role    |
-| ---------- | -------------------------------------- | ---------------------------- | ------------- | ------------------ |
-| **GET**    | `/`                                    | API information              | ❌            | -                  |
-| **GET**    | `/api/v1/health`                       | Health check                 | ❌            | -                  |
-| **POST**   | `/api/v1/sessions/sign-in`             | User login                   | ❌            | -                  |
-| **POST**   | `/api/v1/sessions/sign-up`             | User registration            | ❌            | -                  |
-| **GET**    | `/api/v1/me`                           | Get current user profile     | ✅            | -                  |
-| **GET**    | `/api/v1/me/permissions`               | Get current user permissions | ✅            | -                  |
-| **GET**    | `/api/v1/me/roles`                     | Get current user roles       | ✅            | -                  |
-| **GET**    | `/api/v1/users`                        | List users (paginated)       | ✅            | users.list         |
-| **GET**    | `/api/v1/users/:id`                    | Get user by ID               | ✅            | users.read         |
-| **POST**   | `/api/v1/users`                        | Create user                  | ✅            | users.create       |
-| **PUT**    | `/api/v1/users/:id`                    | Update user                  | ✅            | users.update       |
-| **DELETE** | `/api/v1/users/:id`                    | Delete user                  | ✅            | users.delete       |
-| **GET**    | `/api/v1/admin/roles`                  | List roles                   | ✅            | ROOT, ADMIN        |
-| **PUT**    | `/api/v1/admin/roles/attach`           | Attach role to user          | ✅            | ROOT, ADMIN        |
-| **GET**    | `/api/v1/admin/permissions`            | List permissions             | ✅            | permissions.list   |
-| **POST**   | `/api/v1/admin/permissions`            | Create permission            | ✅            | permissions.create |
-| **PUT**    | `/api/v1/admin/roles/permissions/sync` | Sync role permissions        | ✅            | permissions.update |
-| **POST**   | `/api/v1/files/upload`                 | Upload file                  | ✅            | files.create       |
+| Method     | Endpoint                                    | Description                   | Auth Required | Permission/Role    |
+| ---------- | ------------------------------------------- | ----------------------------- | ------------- | ------------------ |
+| **GET**    | `/`                                         | API information               | ❌            | -                  |
+| **GET**    | `/api/v1/health`                            | Health check                  | ❌            | -                  |
+| **POST**   | `/api/v1/sessions/sign-in`                  | User login                    | ❌            | -                  |
+| **POST**   | `/api/v1/sessions/sign-up`                  | User registration             | ❌            | -                  |
+| **GET**    | `/api/v1/verify-email`                      | Verify user email             | ❌            | -                  |
+| **POST**   | `/api/v1/resend-verification-email`         | Resend verification email     | ✅            | -                  |
+| **GET**    | `/api/v1/me`                                | Get current user profile      | ✅            | -                  |
+| **GET**    | `/api/v1/me/permissions`                    | Get current user permissions  | ✅            | -                  |
+| **GET**    | `/api/v1/me/roles`                          | Get current user roles        | ✅            | -                  |
+| **GET**    | `/api/v1/users`                             | List users (paginated)        | ✅            | users.list         |
+| **GET**    | `/api/v1/users/:id`                         | Get user by ID                | ✅            | users.read         |
+| **POST**   | `/api/v1/users`                             | Create user                   | ✅            | users.create       |
+| **PUT**    | `/api/v1/users/:id`                         | Update user                   | ✅            | users.update       |
+| **DELETE** | `/api/v1/users/:id`                         | Delete user                   | ✅            | users.delete       |
+| **GET**    | `/api/v1/admin/roles`                       | List roles                    | ✅            | ROOT, ADMIN        |
+| **PUT**    | `/api/v1/admin/roles/attach`                | Attach role to user           | ✅            | ROOT, ADMIN        |
+| **GET**    | `/api/v1/admin/permissions`                 | List permissions              | ✅            | permissions.list   |
+| **POST**   | `/api/v1/admin/permissions`                 | Create permission             | ✅            | permissions.create |
+| **PUT**    | `/api/v1/admin/roles/permissions/sync`      | Sync role permissions         | ✅            | permissions.update |
+| **PUT**    | `/api/v1/admin/roles/permissions/attach`    | Attach permissions to role    | ✅            | permissions.update |
+| **PUT**    | `/api/v1/admin/roles/permissions/detach`    | Detach permissions from role  | ✅            | permissions.update |
+| **PUT**    | `/api/v1/admin/users/permissions/sync`      | Sync user permissions         | ✅            | permissions.update |
+| **GET**    | `/api/v1/admin/users/:id/permissions`       | Get user's direct permissions | ✅            | permissions.list   |
+| **POST**   | `/api/v1/admin/users/:id/permissions/check` | Check user permissions        | ✅            | permissions.list   |
+| **POST**   | `/api/v1/files/upload`                      | Upload file                   | ✅            | files.create       |
 
 ### 🔄 Request/Response Flow
 
@@ -539,10 +520,10 @@ ROOT
 - `files.delete.team` - Can delete files from team members
 - `reports.read.department` - Can read reports from own department
 
-### 📥 Postman Collection
+### 📥 Insomnia Collection
 
 Get the complete API collection for
-Postman: [Download](https://raw.githubusercontent.com/gabrielmaialva33/base-acl-api/master/docs/openapi.yaml)
+Insomnia: [Download](https://raw.githubusercontent.com/gabrielmaialva33/base-acl-api/master/.github/assets/insomnia/Insomnia.json.zip)
 
 ## :memo: License
 

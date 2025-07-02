@@ -71,7 +71,7 @@ graph TB
     end
 
     subgraph "Camada de Dados"
-        TS[(TimescaleDB<br/>Banco Principal + Séries Temporais)]
+        TS[(PostgreSQL<br/>Banco Principal)]
         REDIS[(Redis<br/>Cache & Sessões)]
         PGREST[PostgREST<br/>API REST Auto-gerada]
     end
@@ -119,7 +119,7 @@ sequenceDiagram
     participant API as Gateway API
     participant AUTH as Módulo Auth
     participant JWT as Serviço JWT
-    participant DB as TimescaleDB
+    participant DB as PostgreSQL
     participant REDIS as Cache Redis
 
     C->>API: POST /api/v1/sessions/sign-in
@@ -152,60 +152,35 @@ graph TD
 
         subgraph "Módulo Usuário"
             USER_M[user/]
-            USER_CTRL[controllers/]
-            USER_SVC[services/]
-            USER_REPO[repositories/]
-            USER_MODEL[models/]
-            USER_VAL[validators/]
-            USER_ROUTES[routes/]
         end
-
         subgraph "Módulo Papel"
             ROLE_M[role/]
-            ROLE_CTRL[controllers/]
-            ROLE_SVC[services/]
-            ROLE_MODEL[models/]
-            ROLE_ROUTES[routes/]
         end
-
+        subgraph "Módulo Permissão"
+            PERM_M[permission/]
+        end
         subgraph "Módulo Arquivo"
             FILE_M[file/]
-            FILE_CTRL[controllers/]
-            FILE_SVC[services/]
-            FILE_ROUTES[routes/]
         end
-
+        subgraph "Módulo Auditoria"
+            AUDIT_M[audit/]
+        end
         subgraph "Módulo Saúde"
             HEALTH_M[health/]
-            HEALTH_CTRL[controllers/]
-            HEALTH_ROUTES[routes/]
+        end
+        subgraph "Módulo Propriedade"
+            OWNER_M[ownership/]
         end
     end
 
     APP --> MODULES
     MODULES --> USER_M
     MODULES --> ROLE_M
+    MODULES --> PERM_M
     MODULES --> FILE_M
+    MODULES --> AUDIT_M
     MODULES --> HEALTH_M
-
-    USER_M --> USER_CTRL
-    USER_M --> USER_SVC
-    USER_M --> USER_REPO
-    USER_M --> USER_MODEL
-    USER_M --> USER_VAL
-    USER_M --> USER_ROUTES
-
-    ROLE_M --> ROLE_CTRL
-    ROLE_M --> ROLE_SVC
-    ROLE_M --> ROLE_MODEL
-    ROLE_M --> ROLE_ROUTES
-
-    FILE_M --> FILE_CTRL
-    FILE_M --> FILE_SVC
-    FILE_M --> FILE_ROUTES
-
-    HEALTH_M --> HEALTH_CTRL
-    HEALTH_M --> HEALTH_ROUTES
+    MODULES --> OWNER_M
 ```
 
 ## 🌟 Principais Funcionalidades
@@ -215,7 +190,7 @@ graph TD
 - **🔐 Autenticação JWT**: Autenticação segura baseada em tokens com refresh tokens
 - **👥 Controle de Acesso Baseado em Papéis**: Permissões refinadas com papéis ROOT, ADMIN, USER, EDITOR e GUEST
 - **📁 Arquitetura Modular**: Clara separação de responsabilidades com módulos de funcionalidades
-- **🗄️ TimescaleDB**: PostgreSQL + capacidades de séries temporais
+- **🗄️ PostgreSQL**: Banco de dados robusto e confiável
 - **🚀 API RESTful**: Endpoints bem estruturados seguindo princípios REST
 - **📤 Upload de Arquivos**: Manipulação segura de arquivos com múltiplos drivers de armazenamento
 - **🏥 Monitoramento de Saúde**: Endpoints integrados para verificação de saúde
@@ -223,7 +198,6 @@ graph TD
 - **📝 Validação de Requisições**: DTOs com validação em tempo de execução
 - **🌐 Pronto para i18n**: Suporte a internacionalização integrado
 - **🔗 Integração PostgREST**: API REST auto-gerada para acesso direto ao banco
-- **📊 Suporte a Séries Temporais**: Construído sobre TimescaleDB para análises e métricas
 
 ### Funcionalidades Avançadas de ACL
 
@@ -343,7 +317,7 @@ erDiagram
 - **[Typescript](https://www.typescriptlang.org/)**
 - **[Node.js](https://nodejs.org/)**
 - **[AdonisJS](https://adonisjs.com/)**
-- **[TimescaleDB](https://www.timescale.com/)** - PostgreSQL para séries temporais
+- **[PostgreSQL](https://www.postgresql.org/)**
 - **[Redis](https://redis.io/)** - Armazenamento de dados em memória
 - **[PostgREST](https://postgrest.org/)** - API REST auto-gerada
 - **[Docker](https://www.docker.com/)**
@@ -392,7 +366,7 @@ Os seguintes softwares devem estar instalados:
   # Criação de banco de dados.
   $ node ace migration:run # ou docker-compose up --build
   # Iniciar API
-  $ node ace serve --watch # ou yarn start ou npm dev
+  $ node ace serve --hmr # ou pnpm dev
 ```
 
 <br>
@@ -441,26 +415,33 @@ graph LR
 
 ### 📋 Detalhes das Rotas
 
-| Método     | Endpoint                               | Descrição                         | Auth Obrigatória | Permissão/Papel    |
-| ---------- | -------------------------------------- | --------------------------------- | ---------------- | ------------------ |
-| **GET**    | `/`                                    | Informações da API                | ❌               | -                  |
-| **GET**    | `/api/v1/health`                       | Verificação de saúde              | ❌               | -                  |
-| **POST**   | `/api/v1/sessions/sign-in`             | Login de usuário                  | ❌               | -                  |
-| **POST**   | `/api/v1/sessions/sign-up`             | Registro de usuário               | ❌               | -                  |
-| **GET**    | `/api/v1/me`                           | Obter perfil do usuário atual     | ✅               | -                  |
-| **GET**    | `/api/v1/me/permissions`               | Obter permissões do usuário atual | ✅               | -                  |
-| **GET**    | `/api/v1/me/roles`                     | Obter papéis do usuário atual     | ✅               | -                  |
-| **GET**    | `/api/v1/users`                        | Listar usuários (paginado)        | ✅               | users.list         |
-| **GET**    | `/api/v1/users/:id`                    | Obter usuário por ID              | ✅               | users.read         |
-| **POST**   | `/api/v1/users`                        | Criar usuário                     | ✅               | users.create       |
-| **PUT**    | `/api/v1/users/:id`                    | Atualizar usuário                 | ✅               | users.update       |
-| **DELETE** | `/api/v1/users/:id`                    | Deletar usuário                   | ✅               | users.delete       |
-| **GET**    | `/api/v1/admin/roles`                  | Listar papéis                     | ✅               | ROOT, ADMIN        |
-| **PUT**    | `/api/v1/admin/roles/attach`           | Atribuir papel ao usuário         | ✅               | ROOT, ADMIN        |
-| **GET**    | `/api/v1/admin/permissions`            | Listar permissões                 | ✅               | permissions.list   |
-| **POST**   | `/api/v1/admin/permissions`            | Criar permissão                   | ✅               | permissions.create |
-| **PUT**    | `/api/v1/admin/roles/permissions/sync` | Sincronizar permissões do papel   | ✅               | permissions.update |
-| **POST**   | `/api/v1/files/upload`                 | Upload de arquivo                 | ✅               | files.create       |
+| Método     | Endpoint                                    | Descrição                           | Auth Obrigatória | Permissão/Papel    |
+| ---------- | ------------------------------------------- | ----------------------------------- | ---------------- | ------------------ |
+| **GET**    | `/`                                         | Informações da API                  | ❌               | -                  |
+| **GET**    | `/api/v1/health`                            | Verificação de saúde                | ❌               | -                  |
+| **POST**   | `/api/v1/sessions/sign-in`                  | Login de usuário                    | ❌               | -                  |
+| **POST**   | `/api/v1/sessions/sign-up`                  | Registro de usuário                 | ❌               | -                  |
+| **GET**    | `/api/v1/verify-email`                      | Verificar email do usuário          | ❌               | -                  |
+| **POST**   | `/api/v1/resend-verification-email`         | Reenviar email de verificação       | ✅               | -                  |
+| **GET**    | `/api/v1/me`                                | Obter perfil do usuário atual       | ✅               | -                  |
+| **GET**    | `/api/v1/me/permissions`                    | Obter permissões do usuário atual   | ✅               | -                  |
+| **GET**    | `/api/v1/me/roles`                          | Obter papéis do usuário atual       | ✅               | -                  |
+| **GET**    | `/api/v1/users`                             | Listar usuários (paginado)          | ✅               | users.list         |
+| **GET**    | `/api/v1/users/:id`                         | Obter usuário por ID                | ✅               | users.read         |
+| **POST**   | `/api/v1/users`                             | Criar usuário                       | ✅               | users.create       |
+| **PUT**    | `/api/v1/users/:id`                         | Atualizar usuário                   | ✅               | users.update       |
+| **DELETE** | `/api/v1/users/:id`                         | Deletar usuário                     | ✅               | users.delete       |
+| **GET**    | `/api/v1/admin/roles`                       | Listar papéis                       | ✅               | ROOT, ADMIN        |
+| **PUT**    | `/api/v1/admin/roles/attach`                | Atribuir papel ao usuário           | ✅               | ROOT, ADMIN        |
+| **GET**    | `/api/v1/admin/permissions`                 | Listar permissões                   | ✅               | permissions.list   |
+| **POST**   | `/api/v1/admin/permissions`                 | Criar permissão                     | ✅               | permissions.create |
+| **PUT**    | `/api/v1/admin/roles/permissions/sync`      | Sincronizar permissões do papel     | ✅               | permissions.update |
+| **PUT**    | `/api/v1/admin/roles/permissions/attach`    | Anexar permissões ao papel          | ✅               | permissions.update |
+| **PUT**    | `/api/v1/admin/roles/permissions/detach`    | Desanexar permissões do papel       | ✅               | permissions.update |
+| **PUT**    | `/api/v1/admin/users/permissions/sync`      | Sincronizar permissões do usuário   | ✅               | permissions.update |
+| **GET**    | `/api/v1/admin/users/:id/permissions`       | Obter permissões diretas do usuário | ✅               | permissions.list   |
+| **POST**   | `/api/v1/admin/users/:id/permissions/check` | Verificar permissões do usuário     | ✅               | permissions.list   |
+| **POST**   | `/api/v1/files/upload`                      | Upload de arquivo                   | ✅               | files.create       |
 
 ### 🔄 Fluxo de Requisição/Resposta
 
