@@ -58,9 +58,9 @@ info:
     url: https://opensource.org/licenses/MIT
 
 servers:
-  - url: http://localhost:3333
+  - url: http://127.0.0.1:3333
     description: Local development server
-  - url: https://api.production.com
+  - url: https://api.yourdomain.com
     description: Production server
 
 security:
@@ -335,6 +335,10 @@ tags:
     description: Role management operations (admin only)
   - name: Files
     description: File upload and management
+  - name: Profile
+    description: Current user profile operations
+  - name: Permissions
+    description: Permission management operations (admin only)
 
 paths:
   /:
@@ -369,6 +373,12 @@ paths:
                     type: array
                     items:
                       type: string
+        '429':
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /api/v1/health:
     get:
@@ -398,6 +408,12 @@ paths:
                           healthy:
                             type: boolean
                             example: true
+        '429':
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '503':
           description: Service unhealthy
           content:
@@ -457,6 +473,68 @@ paths:
         '422':
           $ref: '#/components/responses/ValidationError'
 
+  /api/v1/me:
+    get:
+      operationId: getProfile
+      summary: Get current user profile
+      description: Retrieve the profile of the currently authenticated user
+      tags:
+        - Profile
+      responses:
+        '200':
+          description: Profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/v1/me/permissions:
+    get:
+      operationId: getMyPermissions
+      summary: Get current user permissions
+      description: Retrieve the permissions of the currently authenticated user
+      tags:
+        - Profile
+      responses:
+        '200':
+          description: Permissions retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  permissions:
+                    type: array
+                    items:
+                      type: string
+                      example: 'users.create'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/v1/me/roles:
+    get:
+      operationId: getMyRoles
+      summary: Get current user roles
+      description: Retrieve the roles of the currently authenticated user
+      tags:
+        - Profile
+      responses:
+        '200':
+          description: Roles retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  roles:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Role'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
   /api/v1/sessions/sign-up:
     post:
       operationId: signUp
@@ -506,6 +584,40 @@ paths:
                 $ref: '#/components/schemas/AuthResponse'
         '422':
           $ref: '#/components/responses/ValidationError'
+
+  /api/v1/verify-email:
+    get:
+      operationId: verifyEmail
+      summary: Verify user email
+      description: Verify a user's email address using a token from the verification link.
+      tags:
+        - Authentication
+      security: []
+      parameters:
+        - name: token
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The email verification token
+      responses:
+        '200':
+          description: Email verified successfully
+        '400':
+          description: Invalid or expired token
+
+  /api/v1/resend-verification-email:
+    post:
+      operationId: resendVerificationEmail
+      summary: Resend verification email
+      description: Resends the email verification link to the authenticated user.
+      tags:
+        - Authentication
+      responses:
+        '200':
+          description: Verification email sent successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
 
   /api/v1/users:
     get:
@@ -722,6 +834,248 @@ paths:
                   message:
                     type: string
                     example: 'Role attached successfully'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /api/v1/admin/permissions:
+    get:
+      operationId: listPermissions
+      summary: List permissions
+      description: Get a paginated list of permissions
+      tags:
+        - Permissions
+      parameters:
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam'
+      responses:
+        '200':
+          description: Permission list retrieved successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+    post:
+      operationId: createPermission
+      summary: Create permission
+      description: Create a new permission
+      tags:
+        - Permissions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - resource
+                - action
+              properties:
+                resource:
+                  type: string
+                  example: 'posts'
+                action:
+                  type: string
+                  example: 'create'
+                description:
+                  type: string
+                  example: 'Allow creating posts'
+      responses:
+        '201':
+          description: Permission created successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /api/v1/admin/roles/permissions/sync:
+    put:
+      operationId: syncRolePermissions
+      summary: Sync role permissions
+      description: Sync all permissions for a specific role
+      tags:
+        - Permissions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - role_id
+                - permission_ids
+              properties:
+                role_id:
+                  type: integer
+                  example: 2
+                permission_ids:
+                  type: array
+                  items:
+                    type: integer
+                  example: [1, 2, 3]
+      responses:
+        '200':
+          description: Permissions synced successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /api/v1/admin/roles/permissions/attach:
+    put:
+      operationId: attachRolePermissions
+      summary: Attach permissions to role
+      description: Attach one or more permissions to a role
+      tags:
+        - Permissions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - role_id
+                - permission_ids
+              properties:
+                role_id:
+                  type: integer
+                  example: 2
+                permission_ids:
+                  type: array
+                  items:
+                    type: integer
+                  example: [4, 5]
+      responses:
+        '200':
+          description: Permissions attached successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /api/v1/admin/roles/permissions/detach:
+    put:
+      operationId: detachRolePermissions
+      summary: Detach permissions from role
+      description: Detach one or more permissions from a role
+      tags:
+        - Permissions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - role_id
+                - permission_ids
+              properties:
+                role_id:
+                  type: integer
+                  example: 2
+                permission_ids:
+                  type: array
+                  items:
+                    type: integer
+                  example: [1]
+      responses:
+        '200':
+          description: Permissions detached successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /api/v1/admin/users/permissions/sync:
+    put:
+      operationId: syncUserPermissions
+      summary: Sync user permissions
+      description: Sync all direct permissions for a specific user
+      tags:
+        - Permissions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user_id
+                - permission_ids
+              properties:
+                user_id:
+                  type: integer
+                  example: 3
+                permission_ids:
+                  type: array
+                  items:
+                    type: integer
+                  example: [10, 11]
+      responses:
+        '200':
+          description: User permissions synced successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /api/v1/admin/users/{id}/permissions:
+    get:
+      operationId: getUserPermissions
+      summary: Get user's direct permissions
+      description: Get a list of direct permissions for a specific user
+      tags:
+        - Permissions
+      parameters:
+        - $ref: '#/components/parameters/pathId'
+      responses:
+        '200':
+          description: User permissions retrieved successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+
+  /api/v1/admin/users/{id}/permissions/check:
+    post:
+      operationId: checkUserPermissions
+      summary: Check user permissions
+      description: Check if a user has specific permissions
+      tags:
+        - Permissions
+      parameters:
+        - $ref: '#/components/parameters/pathId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - permissions
+              properties:
+                permissions:
+                  type: array
+                  items:
+                    type: string
+                  example: ['users.create', 'files.delete']
+      responses:
+        '200':
+          description: Check result
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '403':

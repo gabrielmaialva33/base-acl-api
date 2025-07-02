@@ -78,6 +78,39 @@ Content-Type: application/json
 }
 
 ###############################################################################
+### PROFILE ENDPOINTS (Requires Authentication)
+###############################################################################
+
+### Get Current User Profile
+GET {{baseUrl}}/api/v1/me
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Get Current User Permissions
+GET {{baseUrl}}/api/v1/me/permissions
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Get Current User Roles
+GET {{baseUrl}}/api/v1/me/roles
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###############################################################################
+### EMAIL VERIFICATION ENDPOINTS
+###############################################################################
+
+### Verify Email
+# This endpoint is typically opened from a link in an email
+GET {{baseUrl}}/api/v1/verify-email?token=VERIFICATION_TOKEN
+Accept: application/json
+
+### Resend Verification Email (Requires Authentication)
+POST {{baseUrl}}/api/v1/resend-verification-email
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###############################################################################
 ### USER MANAGEMENT ENDPOINTS (Requires Authentication)
 ###############################################################################
 
@@ -182,6 +215,80 @@ Content-Type: application/json
   "role_ids": [
     2
   ]
+}
+
+###############################################################################
+### PERMISSION MANAGEMENT ENDPOINTS (Requires ADMIN or ROOT role)
+###############################################################################
+
+### List Permissions
+GET {{baseUrl}}/api/v1/admin/permissions
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Create Permission
+POST {{baseUrl}}/api/v1/admin/permissions
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "resource": "posts",
+  "action": "create",
+  "description": "Allow creating posts"
+}
+
+### Sync Role Permissions
+PUT {{baseUrl}}/api/v1/admin/roles/permissions/sync
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "role_id": 2,
+  "permission_ids": [1, 2, 3]
+}
+
+### Attach Permissions to Role
+PUT {{baseUrl}}/api/v1/admin/roles/permissions/attach
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "role_id": 2,
+  "permission_ids": [4, 5]
+}
+
+### Detach Permissions from Role
+PUT {{baseUrl}}/api/v1/admin/roles/permissions/detach
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "role_id": 2,
+  "permission_ids": [1]
+}
+
+### Sync User Direct Permissions
+PUT {{baseUrl}}/api/v1/admin/users/permissions/sync
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "user_id": 3,
+  "permission_ids": [10, 11]
+}
+
+### Get User's Direct Permissions
+GET {{baseUrl}}/api/v1/admin/users/{{userId}}/permissions
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Check User Permissions
+POST {{baseUrl}}/api/v1/admin/users/{{userId}}/permissions/check
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "permissions": ["users.create", "files.delete"]
 }
 
 ###############################################################################
