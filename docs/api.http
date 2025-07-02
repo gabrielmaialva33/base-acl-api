@@ -244,7 +244,11 @@ Content-Type: application/json
 
 {
   "role_id": 2,
-  "permission_ids": [1, 2, 3]
+  "permission_ids": [
+    1,
+    2,
+    3
+  ]
 }
 
 ### Attach Permissions to Role
@@ -254,7 +258,10 @@ Content-Type: application/json
 
 {
   "role_id": 2,
-  "permission_ids": [4, 5]
+  "permission_ids": [
+    4,
+    5
+  ]
 }
 
 ### Detach Permissions from Role
@@ -264,7 +271,9 @@ Content-Type: application/json
 
 {
   "role_id": 2,
-  "permission_ids": [1]
+  "permission_ids": [
+    1
+  ]
 }
 
 ### Sync User Direct Permissions
@@ -274,7 +283,10 @@ Content-Type: application/json
 
 {
   "user_id": 3,
-  "permission_ids": [10, 11]
+  "permission_ids": [
+    10,
+    11
+  ]
 }
 
 ### Get User's Direct Permissions
@@ -288,7 +300,10 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "permissions": ["users.create", "files.delete"]
+  "permissions": [
+    "users.create",
+    "files.delete"
+  ]
 }
 
 ###############################################################################
