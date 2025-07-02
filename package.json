@@ -84,7 +84,7 @@
     "@adonisjs/session": "^7.5.1",
     "@adonisjs/shield": "^8.2.0",
     "@aws-sdk/client-s3": "^3.837.0",
-    "@aws-sdk/s3-request-presigner": "^3.837.0",
+    "@aws-sdk/s3-request-presigner": "^3.840.0",
     "@google-cloud/storage": "^7.16.0",
     "@rlanz/bull-queue": "^3.1.0",
     "@vinejs/vine": "^3.0.1",
