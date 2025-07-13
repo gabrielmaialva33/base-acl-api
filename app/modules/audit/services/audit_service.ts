@@ -1,6 +1,6 @@
 import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
-import AuditLog from '../../../models/audit_log.js'
+import AuditLog from '../models/audit_log.js'
 
 export interface AuditLogData {
   userId?: number

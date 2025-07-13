@@ -14,9 +14,9 @@
 
 ### Variables (replace with actual values)
 @baseUrl = http://localhost:3333
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-@userId = 1
-@roleId = 1
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc1MjE5MDY4NywiZXhwIjoxNzUyMTkxNTg3fQ.mN5_LyaxP1nZ46wWjRFVVB26E-0FD9vXJ7J5JlkE8AE
+@userId = 3
+@roleId = 3
 
 ###############################################################################
 ### HEALTH ENDPOINTS
