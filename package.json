@@ -71,7 +71,7 @@
   },
   "dependencies": {
     "@adonisjs/ally": "^5.1.0",
-    "@adonisjs/auth": "^9.4.0",
+    "@adonisjs/auth": "^9.4.2",
     "@adonisjs/cache": "^1.2.0",
     "@adonisjs/core": "^6.19.0",
     "@adonisjs/cors": "^2.2.1",
