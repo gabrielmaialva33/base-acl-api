@@ -88,7 +88,7 @@
     "@google-cloud/storage": "^7.16.0",
     "@rlanz/bull-queue": "^3.1.0",
     "@vinejs/vine": "^3.0.1",
-    "argon2": "^0.43.0",
+    "argon2": "^0.43.1",
     "bcrypt": "^6.0.0",
     "jsonwebtoken": "^9.0.2",
     "luxon": "^3.7.1",
