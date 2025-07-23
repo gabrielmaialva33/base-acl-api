@@ -78,7 +78,7 @@
     "@adonisjs/drive": "^3.4.1",
     "@adonisjs/i18n": "^2.2.1",
     "@adonisjs/limiter": "^2.4.0",
-    "@adonisjs/lucid": "^21.7.0",
+    "@adonisjs/lucid": "^21.8.0",
     "@adonisjs/mail": "^9.2.2",
     "@adonisjs/redis": "^9.2.0",
     "@adonisjs/session": "^7.5.1",
