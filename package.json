@@ -51,7 +51,7 @@
     "@adonisjs/prettier-config": "^1.4.5",
     "@adonisjs/tsconfig": "^1.4.1",
     "@japa/api-client": "^3.1.0",
-    "@japa/assert": "^4.0.1",
+    "@japa/assert": "^4.1.0",
     "@japa/openapi-assertions": "^0.1.1",
     "@japa/plugin-adonisjs": "^4.0.0",
     "@japa/runner": "^4.2.0",
