@@ -55,7 +55,7 @@
     "@japa/openapi-assertions": "^0.1.1",
     "@japa/plugin-adonisjs": "^4.0.0",
     "@japa/runner": "^4.4.0",
-    "@stylistic/eslint-plugin": "^5.2.3",
+    "@stylistic/eslint-plugin": "^5.3.1",
     "@swc/core": "1.13.5",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/luxon": "^3.7.1",
