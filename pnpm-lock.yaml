@@ -16,7 +16,7 @@ importers:
         version: 5.1.1(@adonisjs/core@6.19.0(@adonisjs/assembler@7.8.2(typescript@5.9.2))(@vinejs/vine@3.0.1(typescript@5.9.2))(argon2@0.44.0)(bcrypt@6.0.0)(edge.js@6.2.1))
       '@adonisjs/auth':
         specifier: ^9.4.2
-        version: 9.4.2(6b3cdd23604cc024ee0efda7296ce2f7)
+        version: 9.4.2(ybmxslcie7okpcmwes5lhuphvi)
       '@adonisjs/cache':
         specifier: ^1.3.0
         version: 1.3.0(@adonisjs/assembler@7.8.2(typescript@5.9.2))(@adonisjs/core@6.19.0(@adonisjs/assembler@7.8.2(typescript@5.9.2))(@vinejs/vine@3.0.1(typescript@5.9.2))(argon2@0.44.0)(bcrypt@6.0.0)(edge.js@6.2.1))(@adonisjs/lucid@21.8.0(@adonisjs/assembler@7.8.2(typescript@5.9.2))(@adonisjs/core@6.19.0(@adonisjs/assembler@7.8.2(typescript@5.9.2))(@vinejs/vine@3.0.1(typescript@5.9.2))(argon2@0.44.0)(bcrypt@6.0.0)(edge.js@6.2.1))(@vinejs/vine@3.0.1(typescript@5.9.2))(luxon@3.7.1)(pg@8.16.3))(@adonisjs/redis@9.2.0(@adonisjs/core@6.19.0(@adonisjs/assembler@7.8.2(typescript@5.9.2))(@vinejs/vine@3.0.1(typescript@5.9.2))(argon2@0.44.0)(bcrypt@6.0.0)(edge.js@6.2.1)))(ioredis@5.7.0)(knex@3.1.0(pg@8.16.3))
@@ -49,7 +49,7 @@ importers:
         version: 7.5.1(@adonisjs/core@6.19.0(@adonisjs/assembler@7.8.2(typescript@5.9.2))(@vinejs/vine@3.0.1(typescript@5.9.2))(argon2@0.44.0)(bcrypt@6.0.0)(edge.js@6.2.1))(@adonisjs/redis@9.2.0(@adonisjs/core@6.19.0(@adonisjs/assembler@7.8.2(typescript@5.9.2))(@vinejs/vine@3.0.1(typescript@5.9.2))(argon2@0.44.0)(bcrypt@6.0.0)(edge.js@6.2.1)))(@japa/api-client@3.1.0(@japa/assert@4.1.1(@japa/runner@4.4.0))(@japa/openapi-assertions@0.1.1(@japa/assert@4.1.1(@japa/runner@4.4.0))(@japa/runner@4.4.0)(openapi-types@1.3.4))(@japa/runner@4.4.0))(edge.js@6.2.1)
       '@adonisjs/shield':
         specifier: ^8.2.0
-        version: 8.2.0(c968ccd5d48d884610b52488acf1b7a7)
+        version: 8.2.0(e52jeaeam62f7cvg3azc43yuk4)
       '@aws-sdk/client-s3':
         specifier: ^3.879.0
         version: 3.879.0
@@ -112,8 +112,8 @@ importers:
         specifier: ^4.4.0
         version: 4.4.0
       '@stylistic/eslint-plugin':
-        specifier: ^5.2.3
-        version: 5.2.3(eslint@9.34.0)
+        specifier: ^5.3.1
+        version: 5.3.1(eslint@9.34.0)
       '@swc/core':
         specifier: 1.13.5
         version: 1.13.5
@@ -1344,8 +1344,8 @@ packages:
   '@speed-highlight/core@1.2.7':
     resolution: {integrity: sha512-0dxmVj4gxg3Jg879kvFS/msl4s9F3T9UXC1InxgOf7t5NvcPD97u/WTA5vL/IxWHMn7qSxBozqrnnE2wvl1m8g==}
 
-  '@stylistic/eslint-plugin@5.2.3':
-    resolution: {integrity: sha512-oY7GVkJGVMI5benlBDCaRrSC1qPasafyv5dOBLLv5MTilMGnErKhO6ziEfodDDIZbo5QxPUNW360VudJOFODMw==}
+  '@stylistic/eslint-plugin@5.3.1':
+    resolution: {integrity: sha512-Ykums1VYonM0TgkD0VteVq9mrlO2FhF48MDJnPyv3MktIB2ydtuhlO0AfWm7xnW1kyf5bjOqA6xc7JjviuVTxg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: '>=9.0.0'
@@ -1579,6 +1579,10 @@ packages:
 
   '@typescript-eslint/types@8.41.0':
     resolution: {integrity: sha512-9EwxsWdVqh42afLbHP90n2VdHaWU/oWgbH2P0CfcNfdKL7CuKpwMQGjwev56vWu9cSKU7FWSu6r9zck6CVfnag==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@typescript-eslint/types@8.42.0':
+    resolution: {integrity: sha512-LdtAWMiFmbRLNP7JNeY0SqEtJvGMYSzfiWBSmx+VSZ1CH+1zyl8Mmw1TT39OrtsRvIYShjJWzTDMPWZJCpwBlw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@typescript-eslint/typescript-estree@8.41.0':
@@ -2147,6 +2151,7 @@ packages:
 
   dayjs@1.11.17:
     resolution: {integrity: sha512-qgiVOerp5QCVMfE7hZ6z/gM+ug52I+xv70rCf6rWJXf0b4d8Kv6Yw9BmcLZlCvP3Xz8i3fjXbaU6Hwu7aGRXfA==}
+    deprecated: This version has a bug that adds semantic-release dependencies by mistake. Please upgrade to 1.11.18.
 
   debug@4.3.4:
     resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
@@ -4007,6 +4012,9 @@ packages:
   prettier-plugin-edgejs@1.0.3:
     resolution: {integrity: sha512-fPDY1RPVPDmfHDbScjxYKa79oh3HfwbmV7s1+h6HVit6AUklxhuvdEmsliViO11FbDxa/C5UHIev0WQO0b9QPQ==}
 
+  prettier-plugin-edgejs@1.0.5:
+    resolution: {integrity: sha512-09DDjBeQ9ePyubR3PtKyq9c84PC3L/NfCpiNgYksuLssqfmfnBI09NiN/4azQlHcQ8yPizJU+cQFSMPMr2MjmA==}
+
   prettier@3.6.2:
     resolution: {integrity: sha512-I7AIg5boAr5R0FFtJ6rCfD+LFsWHp81dolrFD8S79U9tb8Az2nGrJncnMSnys+bpQJfRUzqs9hnA81OAA3hCuQ==}
     engines: {node: '>=14'}
@@ -4926,7 +4934,7 @@ snapshots:
     transitivePeerDependencies:
       - babel-plugin-macros
 
-  '@adonisjs/auth@9.4.2(6b3cdd23604cc024ee0efda7296ce2f7)':
+  '@adonisjs/auth@9.4.2(ybmxslcie7okpcmwes5lhuphvi)':
     dependencies:
       '@adonisjs/core': 6.19.0(@adonisjs/assembler@7.8.2(typescript@5.9.2))(@vinejs/vine@3.0.1(typescript@5.9.2))(argon2@0.44.0)(bcrypt@6.0.0)(edge.js@6.2.1)
       '@adonisjs/presets': 2.6.4(@adonisjs/assembler@7.8.2(typescript@5.9.2))(@adonisjs/core@6.19.0(@adonisjs/assembler@7.8.2(typescript@5.9.2))(@vinejs/vine@3.0.1(typescript@5.9.2))(argon2@0.44.0)(bcrypt@6.0.0)(edge.js@6.2.1))
@@ -5042,7 +5050,7 @@ snapshots:
   '@adonisjs/eslint-config@2.1.2(eslint@9.34.0)(prettier@3.6.2)(typescript@5.9.2)':
     dependencies:
       '@adonisjs/eslint-plugin': 2.0.1(eslint@9.34.0)(typescript@5.9.2)
-      '@stylistic/eslint-plugin': 5.2.3(eslint@9.34.0)
+      '@stylistic/eslint-plugin': 5.3.1(eslint@9.34.0)
       eslint: 9.34.0
       eslint-config-prettier: 10.1.8(eslint@9.34.0)
       eslint-plugin-prettier: 5.5.4(eslint-config-prettier@10.1.8(eslint@9.34.0))(eslint@9.34.0)(prettier@3.6.2)
@@ -5237,7 +5245,7 @@ snapshots:
       '@japa/api-client': 3.1.0(@japa/assert@4.1.1(@japa/runner@4.4.0))(@japa/openapi-assertions@0.1.1(@japa/assert@4.1.1(@japa/runner@4.4.0))(@japa/runner@4.4.0)(openapi-types@1.3.4))(@japa/runner@4.4.0)
       edge.js: 6.2.1
 
-  '@adonisjs/shield@8.2.0(c968ccd5d48d884610b52488acf1b7a7)':
+  '@adonisjs/shield@8.2.0(e52jeaeam62f7cvg3azc43yuk4)':
     dependencies:
       '@adonisjs/core': 6.19.0(@adonisjs/assembler@7.8.2(typescript@5.9.2))(@vinejs/vine@3.0.1(typescript@5.9.2))(argon2@0.44.0)(bcrypt@6.0.0)(edge.js@6.2.1)
       '@adonisjs/session': 7.5.1(@adonisjs/core@6.19.0(@adonisjs/assembler@7.8.2(typescript@5.9.2))(@vinejs/vine@3.0.1(typescript@5.9.2))(argon2@0.44.0)(bcrypt@6.0.0)(edge.js@6.2.1))(@adonisjs/redis@9.2.0(@adonisjs/core@6.19.0(@adonisjs/assembler@7.8.2(typescript@5.9.2))(@vinejs/vine@3.0.1(typescript@5.9.2))(argon2@0.44.0)(bcrypt@6.0.0)(edge.js@6.2.1)))(@japa/api-client@3.1.0(@japa/assert@4.1.1(@japa/runner@4.4.0))(@japa/openapi-assertions@0.1.1(@japa/assert@4.1.1(@japa/runner@4.4.0))(@japa/runner@4.4.0)(openapi-types@1.3.4))(@japa/runner@4.4.0))(edge.js@6.2.1)
@@ -6750,10 +6758,10 @@ snapshots:
 
   '@speed-highlight/core@1.2.7': {}
 
-  '@stylistic/eslint-plugin@5.2.3(eslint@9.34.0)':
+  '@stylistic/eslint-plugin@5.3.1(eslint@9.34.0)':
     dependencies:
       '@eslint-community/eslint-utils': 4.7.0(eslint@9.34.0)
-      '@typescript-eslint/types': 8.41.0
+      '@typescript-eslint/types': 8.42.0
       eslint: 9.34.0
       eslint-visitor-keys: 4.2.1
       espree: 10.4.0
@@ -6960,7 +6968,7 @@ snapshots:
   '@typescript-eslint/project-service@8.41.0(typescript@5.9.2)':
     dependencies:
       '@typescript-eslint/tsconfig-utils': 8.41.0(typescript@5.9.2)
-      '@typescript-eslint/types': 8.41.0
+      '@typescript-eslint/types': 8.42.0
       debug: 4.4.1
       typescript: 5.9.2
     transitivePeerDependencies:
@@ -6988,6 +6996,8 @@ snapshots:
       - supports-color
 
   '@typescript-eslint/types@8.41.0': {}
+
+  '@typescript-eslint/types@8.42.0': {}
 
   '@typescript-eslint/typescript-estree@8.41.0(typescript@5.9.2)':
     dependencies:
@@ -9373,13 +9383,20 @@ snapshots:
 
   prettier-edgejs@0.2.36:
     dependencies:
-      prettier-plugin-edgejs: 1.0.3
+      prettier-plugin-edgejs: 1.0.5
 
   prettier-linter-helpers@1.0.0:
     dependencies:
       fast-diff: 1.3.0
 
   prettier-plugin-edgejs@1.0.3:
+    dependencies:
+      '@adobe/css-tools': 4.4.4
+      edgejs-parser: 0.2.16
+      prettier: 3.6.2
+      uglify-js: 3.19.3
+
+  prettier-plugin-edgejs@1.0.5:
     dependencies:
       '@adobe/css-tools': 4.4.4
       edgejs-parser: 0.2.16
