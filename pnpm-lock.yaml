@@ -112,8 +112,8 @@ importers:
         specifier: ^4.4.0
         version: 4.4.0
       '@stylistic/eslint-plugin':
-        specifier: ^5.2.3
-        version: 5.2.3(eslint@9.34.0)
+        specifier: ^5.5.0
+        version: 5.5.0(eslint@9.34.0)
       '@swc/core':
         specifier: 1.13.5
         version: 1.13.5
@@ -689,6 +689,12 @@ packages:
     peerDependencies:
       eslint: ^6.0.0 || ^7.0.0 || >=8.0.0
 
+  '@eslint-community/eslint-utils@4.9.0':
+    resolution: {integrity: sha512-ayVFHdtZ+hsq1t2Dy24wCmGXGe4q9Gu3smhLYALJrr473ZH27MsnSL+LKUlimp4BWJqMDMLmPpx/Q9R3OAlL4g==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    peerDependencies:
+      eslint: ^6.0.0 || ^7.0.0 || >=8.0.0
+
   '@eslint-community/regexpp@4.12.1':
     resolution: {integrity: sha512-CCZCDJuduB9OUkFkY2IgppNZMi2lBQgD2qzwXkEia16cge2pijY/aXi96CJMquDMn3nJdlPV1A5KrJEXwfLNzQ==}
     engines: {node: ^12.0.0 || ^14.0.0 || >=16.0.0}
@@ -1017,6 +1023,9 @@ packages:
   '@poppinss/macroable@1.0.5':
     resolution: {integrity: sha512-6u61y1HHd090MEk1Av0/1btDmm2Hh/+XoJj+HgFYRh9koUPI822ybJbwLHuqjLNCiY+o1gRykg2igEqOf/VBZw==}
 
+  '@poppinss/macroable@1.1.0':
+    resolution: {integrity: sha512-y/YKzZDuG8XrpXpM7Z1RdQpiIc0MAKyva24Ux1PB4aI7RiSI/79K8JVDcdyubriTm7vJ1LhFs8CrZpmPnx/8Pw==}
+
   '@poppinss/matchit@3.2.0':
     resolution: {integrity: sha512-9SoMICN+LMO7ZtMj2ja8N7RHlC4mmuv5WwIBXWjabMd2SyXE1dIydh29exlgm+dGMP84PjwvfJH1TmWL4qz1og==}
 
@@ -1344,8 +1353,8 @@ packages:
   '@speed-highlight/core@1.2.7':
     resolution: {integrity: sha512-0dxmVj4gxg3Jg879kvFS/msl4s9F3T9UXC1InxgOf7t5NvcPD97u/WTA5vL/IxWHMn7qSxBozqrnnE2wvl1m8g==}
 
-  '@stylistic/eslint-plugin@5.2.3':
-    resolution: {integrity: sha512-oY7GVkJGVMI5benlBDCaRrSC1qPasafyv5dOBLLv5MTilMGnErKhO6ziEfodDDIZbo5QxPUNW360VudJOFODMw==}
+  '@stylistic/eslint-plugin@5.5.0':
+    resolution: {integrity: sha512-IeZF+8H0ns6prg4VrkhgL+yrvDXWDH2cKchrbh80ejG9dQgZWp10epHMbgRuQvgchLII/lfh6Xn3lu6+6L86Hw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: '>=9.0.0'
@@ -1579,6 +1588,10 @@ packages:
 
   '@typescript-eslint/types@8.41.0':
     resolution: {integrity: sha512-9EwxsWdVqh42afLbHP90n2VdHaWU/oWgbH2P0CfcNfdKL7CuKpwMQGjwev56vWu9cSKU7FWSu6r9zck6CVfnag==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@typescript-eslint/types@8.46.2':
+    resolution: {integrity: sha512-lNCWCbq7rpg7qDsQrd3D6NyWYu+gkTENkG5IKYhUIcxSb59SQC/hEQ+MrG4sTgBVghTonNWq42bA/d4yYumldQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@typescript-eslint/typescript-estree@8.41.0':
@@ -2147,6 +2160,7 @@ packages:
 
   dayjs@1.11.17:
     resolution: {integrity: sha512-qgiVOerp5QCVMfE7hZ6z/gM+ug52I+xv70rCf6rWJXf0b4d8Kv6Yw9BmcLZlCvP3Xz8i3fjXbaU6Hwu7aGRXfA==}
+    deprecated: This version has a bug that adds semantic-release dependencies by mistake. Please upgrade to 1.11.18.
 
   debug@4.3.4:
     resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
@@ -2284,6 +2298,9 @@ packages:
 
   edgejs-parser@0.2.16:
     resolution: {integrity: sha512-P3863zpy21l40nbV1rCRHzxmAkLLVqng0vy/8YQ6/lqUn/ngxJ/sEhJBSsBVCNFP9hlZhQXn2H3ICWFSKXw72w==}
+
+  edgejs-parser@0.2.18:
+    resolution: {integrity: sha512-O1Xg3ISESg2bl8DqP5q3x1b88cqTSgLmEBqNhGH482JdAIexDY7gh7FA9Y5kHOFwRNsTLFoziwQou0lprJ1MYQ==}
 
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
@@ -4007,6 +4024,9 @@ packages:
   prettier-plugin-edgejs@1.0.3:
     resolution: {integrity: sha512-fPDY1RPVPDmfHDbScjxYKa79oh3HfwbmV7s1+h6HVit6AUklxhuvdEmsliViO11FbDxa/C5UHIev0WQO0b9QPQ==}
 
+  prettier-plugin-edgejs@1.0.6:
+    resolution: {integrity: sha512-RZ3xPEiHfw6ca/YzfKmu6rSOviheC9THfGlqg7rs8srbr1RugJQ8k3KmjLHH1oXadQBzZeIeZ3d25Dhs+fe4UA==}
+
   prettier@3.6.2:
     resolution: {integrity: sha512-I7AIg5boAr5R0FFtJ6rCfD+LFsWHp81dolrFD8S79U9tb8Az2nGrJncnMSnys+bpQJfRUzqs9hnA81OAA3hCuQ==}
     engines: {node: '>=14'}
@@ -5042,7 +5062,7 @@ snapshots:
   '@adonisjs/eslint-config@2.1.2(eslint@9.34.0)(prettier@3.6.2)(typescript@5.9.2)':
     dependencies:
       '@adonisjs/eslint-plugin': 2.0.1(eslint@9.34.0)(typescript@5.9.2)
-      '@stylistic/eslint-plugin': 5.2.3(eslint@9.34.0)
+      '@stylistic/eslint-plugin': 5.5.0(eslint@9.34.0)
       eslint: 9.34.0
       eslint-config-prettier: 10.1.8(eslint@9.34.0)
       eslint-plugin-prettier: 5.5.4(eslint-config-prettier@10.1.8(eslint@9.34.0))(eslint@9.34.0)(prettier@3.6.2)
@@ -5862,6 +5882,11 @@ snapshots:
       eslint: 9.34.0
       eslint-visitor-keys: 3.4.3
 
+  '@eslint-community/eslint-utils@4.9.0(eslint@9.34.0)':
+    dependencies:
+      eslint: 9.34.0
+      eslint-visitor-keys: 3.4.3
+
   '@eslint-community/regexpp@4.12.1': {}
 
   '@eslint/config-array@0.21.0':
@@ -6233,6 +6258,8 @@ snapshots:
       moize: 6.1.6
 
   '@poppinss/macroable@1.0.5': {}
+
+  '@poppinss/macroable@1.1.0': {}
 
   '@poppinss/matchit@3.2.0':
     dependencies:
@@ -6750,10 +6777,10 @@ snapshots:
 
   '@speed-highlight/core@1.2.7': {}
 
-  '@stylistic/eslint-plugin@5.2.3(eslint@9.34.0)':
+  '@stylistic/eslint-plugin@5.5.0(eslint@9.34.0)':
     dependencies:
-      '@eslint-community/eslint-utils': 4.7.0(eslint@9.34.0)
-      '@typescript-eslint/types': 8.41.0
+      '@eslint-community/eslint-utils': 4.9.0(eslint@9.34.0)
+      '@typescript-eslint/types': 8.46.2
       eslint: 9.34.0
       eslint-visitor-keys: 4.2.1
       espree: 10.4.0
@@ -6960,7 +6987,7 @@ snapshots:
   '@typescript-eslint/project-service@8.41.0(typescript@5.9.2)':
     dependencies:
       '@typescript-eslint/tsconfig-utils': 8.41.0(typescript@5.9.2)
-      '@typescript-eslint/types': 8.41.0
+      '@typescript-eslint/types': 8.46.2
       debug: 4.4.1
       typescript: 5.9.2
     transitivePeerDependencies:
@@ -6989,6 +7016,8 @@ snapshots:
 
   '@typescript-eslint/types@8.41.0': {}
 
+  '@typescript-eslint/types@8.46.2': {}
+
   '@typescript-eslint/typescript-estree@8.41.0(typescript@5.9.2)':
     dependencies:
       '@typescript-eslint/project-service': 8.41.0(typescript@5.9.2)
@@ -7007,7 +7036,7 @@ snapshots:
 
   '@typescript-eslint/utils@8.41.0(eslint@9.34.0)(typescript@5.9.2)':
     dependencies:
-      '@eslint-community/eslint-utils': 4.7.0(eslint@9.34.0)
+      '@eslint-community/eslint-utils': 4.9.0(eslint@9.34.0)
       '@typescript-eslint/scope-manager': 8.41.0
       '@typescript-eslint/types': 8.41.0
       '@typescript-eslint/typescript-estree': 8.41.0(typescript@5.9.2)
@@ -7701,7 +7730,7 @@ snapshots:
   edge.js@6.2.1:
     dependencies:
       '@poppinss/inspect': 1.0.1
-      '@poppinss/macroable': 1.0.5
+      '@poppinss/macroable': 1.1.0
       '@poppinss/utils': 6.10.1
       classnames: 2.5.1
       edge-error: 4.0.2
@@ -7714,6 +7743,10 @@ snapshots:
       stringify-attributes: 4.0.0
 
   edgejs-parser@0.2.16:
+    dependencies:
+      chevrotain: 11.0.3
+
+  edgejs-parser@0.2.18:
     dependencies:
       chevrotain: 11.0.3
 
@@ -7861,7 +7894,7 @@ snapshots:
   eslint-plugin-unicorn@60.0.0(eslint@9.34.0):
     dependencies:
       '@babel/helper-validator-identifier': 7.27.1
-      '@eslint-community/eslint-utils': 4.7.0(eslint@9.34.0)
+      '@eslint-community/eslint-utils': 4.9.0(eslint@9.34.0)
       '@eslint/plugin-kit': 0.3.5
       change-case: 5.4.4
       ci-info: 4.3.0
@@ -9373,7 +9406,7 @@ snapshots:
 
   prettier-edgejs@0.2.36:
     dependencies:
-      prettier-plugin-edgejs: 1.0.3
+      prettier-plugin-edgejs: 1.0.6
 
   prettier-linter-helpers@1.0.0:
     dependencies:
@@ -9383,6 +9416,13 @@ snapshots:
     dependencies:
       '@adobe/css-tools': 4.4.4
       edgejs-parser: 0.2.16
+      prettier: 3.6.2
+      uglify-js: 3.19.3
+
+  prettier-plugin-edgejs@1.0.6:
+    dependencies:
+      '@adobe/css-tools': 4.4.4
+      edgejs-parser: 0.2.18
       prettier: 3.6.2
       uglify-js: 3.19.3
 
